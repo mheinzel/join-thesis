@@ -1,0 +1,12 @@
+*.pdf
+
+## Core latex/pdflatex auxiliary files:
+*.aux
+*.lof
+*.log
+*.toc
+
+## Bibliography auxiliary files (bibtex/biblatex/biber):
+*.bbl
+*.bcf
+*.blg
