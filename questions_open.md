@@ -1,7 +1,3 @@
-
-**Answered Questions**
-
-
 **Open Questions**
 
 Which implementations exist?
