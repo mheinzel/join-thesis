@@ -2,17 +2,20 @@
 
 Which implementations exist?
     JoCaml (old)
+        compiler extension with locations and go()
         first implementation by Le Fessant
     JoCaml (new)
+        compiler extension
         reimplementation
-        better compatibility with OCaml
-    Polyphonic C#, Cw
-    Join Java
-
-How are they implemented?
-    JoCaml (old)
-    JoCaml (new)
-    Polyphonic C#, Cw
+        better compatibility with OCaml (for a price)
+    Polyphonic C#
+        compiler extension
+        developed by Fernet et al. at Microsoft Research
+    Cw
+        compiler extension
+        combination of Polyphonic C# and data storage features
+    Joins (concurrency library)
+        library for .NET
     Join Java
 
 Which shortcomings do they have?
@@ -20,9 +23,13 @@ Which shortcomings do they have?
         unmaintained,
         beta version from 2003
     JoCaml (new)
-        missing primitives
-    Polyphonic C#, Cw
+        missing primitives (locations, go)
+    Polyphonic C#
+        not distributed? / no locations
+    Cw
+        not distributed? / no locations
     Join Java
+        not distributed? / no locations
 
 Which requirements do we have for the language we want to use for the implementation?
     moving processes between nodes
