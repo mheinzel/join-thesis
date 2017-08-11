@@ -17,8 +17,9 @@ So erfordern sowohl im synchronen als auch asynchronen Pi-Kalkül vorhandene Kom
 
 Sehr gut verteilen lässt sich hingegen der Join-Kalkül, bei dem sich mehrere Empfänger auf dem selben Kanal immer am selben Ort befinden müssen.
 In seiner grundlegenden Definition ermöglicht er, asynchrone Nachrichten zu senden und mithilfe von Join-Patterns zu empfangen.
-Es existieren jedoch Erweiterungen wie Möglichkeiten zur synchronen Kommunikation, die mithilfe von Continuation-Passing auf die grundlegende Semantik zurückgeführt werden kann, explizite Verwaltung von Locations sowie eine Typtheorie im Stil von ML.
-Dadurch eignet er sich zur Einbettung in Programmiersprachen. Es existieren bereits Implementierungen in OCaml (JoCaml) und Scala (Chymyst). Chymyst ist jedoch nicht verteilt und profitiert so nicht von der Verteilbarkeit des Join-Kalküls. Bei JoCaml handelt es sich um eine Erweiterung des Ocaml-Compilers, die jedoch ...
+Zusätzlich existieren Erweiterungen wie Möglichkeiten zur synchronen Kommunikation, die mithilfe von Continuation-Passing auf die grundlegende Semantik zurückgeführt werden kann, explizite Verwaltung von Locations sowie eine Typtheorie im Stil von ML. Dadurch eignet er sich zur Einbettung in Programmiersprachen.
+
+Es existieren bereits Implementierungen in Form von Libraries (Chymyst,  (JoCaml) und Scala (Chymyst). Chymyst ist jedoch nicht verteilt und profitiert so nicht von der Verteilbarkeit des Join-Kalküls. Bei JoCaml handelt es sich um eine Erweiterung des Ocaml-Compilers, die jedoch ...
 
 Für eine verteilte Implementierung des Join-Kalküls bietet es sich an, auf existierenden Möglichkeiten zur verteilten Kommunikation aufzubauen.
 So stellt zum Beispiel eine Implementierung des Aktorenmodells bereits viel Funktionalität zur Verfügung, so dass eine direkte Auseinandersetzung mit den Details des Netzwerkstacks erspart bleibt.
