@@ -1,11 +1,22 @@
-\title{Expos\'e}
-\author{Matthias Heinzel}
-\date{\today}
-
 \documentclass[12pt]{article}
 
 \usepackage[ngerman]{babel}
+\usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+
+
+\title{{\large Expos\'e zur Bachelorarbeit}
+\\ Implementing the Distributed Join Calculus by Translation into the Actor Model
+%\\ Implementierung des verteilten Join-Kalküls durch Übersetzung in das Aktorenmodell
+%\\ Translating Distributed Join to Actors
+%
+%\\ Joins and Locations as Actors
+%\\ Joins und Locations als Aktoren
+%\\ Letting Actors Do the Joins
+}
+\author{Matthias Heinzel\\Matrikelnummer 359143}
+\date{\today}
 
 
 \begin{document}
@@ -15,19 +26,21 @@ Prozesskalküle erlauben eine formale, abstrakte Beschreibung von nebenläufigen
 Sollen so beschriebene Prozesse jedoch ihrer Semantik getreu implementiert und verteilt ausführbar gemacht werden, ergeben sich oft Probleme.
 So erfordern sowohl im synchronen als auch asynchronen Pi-Kalkül vorhandene Kommunikationsprimitive das Lösen komplexer Konsensprobleme, da Kanäle sich an keinem eindeutigen Ort befinden.
 
-Sehr gut verteilen lässt sich hingegen der Join-Kalkül, bei dem sich mehrere Empfänger auf dem selben Kanal immer am selben Ort befinden müssen.
+Sehr gut verteilen lässt sich hingegen der Join-Kalkül, bei dem sich alle Empfänger auf demselben Kanal immer auch am selben Ort befinden.
 In seiner grundlegenden Definition ermöglicht er, asynchrone Nachrichten zu senden und mithilfe von Join-Patterns zu empfangen.
 Zusätzlich existieren Erweiterungen wie Möglichkeiten zur synchronen Kommunikation, die mithilfe von Continuation-Passing auf die grundlegende Semantik zurückgeführt werden kann, explizite Verwaltung von Locations sowie eine Typtheorie im Stil von ML. Dadurch eignet er sich zur Einbettung in Programmiersprachen.
 
-Es existieren bereits Implementierungen in Form von Libraries (Chymyst,  (JoCaml) und Scala (Chymyst). Chymyst ist jedoch nicht verteilt und profitiert so nicht von der Verteilbarkeit des Join-Kalküls. Bei JoCaml handelt es sich um eine Erweiterung des Ocaml-Compilers, die jedoch ...
+Es existieren bereits Implementierungen des Join-Kalküls in Form von Compiler-Erweiterungen (JoCaml, Polyphonic C\#, Join Java) und Libraries (Chymyst, Joins Concurrency Library für .NET).
+Die bisher einzige Umsetzung von expliziten Locations zur Beschreibung von verteilten Systemen findet sich jedoch in einer nicht mehr gepflegten Beta-Version des JoCaml-Compilers, die Limitationen unter anderem bei der Erkennung von Failures aufweist.
+Spätere Versionen unterstützen Locations und die zugehörigen Sprachprimitive nicht mehr.
 
-Für eine verteilte Implementierung des Join-Kalküls bietet es sich an, auf existierenden Möglichkeiten zur verteilten Kommunikation aufzubauen.
-So stellt zum Beispiel eine Implementierung des Aktorenmodells bereits viel Funktionalität zur Verfügung, so dass eine direkte Auseinandersetzung mit den Details des Netzwerkstacks erspart bleibt.
+Um den hohen Implementierungs- und Wartungsaufwand von Erweiterungen an Compiler und Laufzeitumgebung zu vermeiden, bietet es sich an, auf existierenden Möglichkeiten zur verteilten Kommunikation aufzubauen.
+So stellen zum Beispiel Implementierungen des Aktorenmodells bereits viel Funktionalität zur Verfügung, durch die eine direkte Auseinandersetzung mit den Details des Netzwerkstacks erspart bleibt.
 Nötig wäre somit nur eine auf hoher Abstraktionsebene stattfindende Übersetzung von Konstrukten des Join-Kalküls in das Aktorenmodell.
 
 Im Rahmen dieser Bachelorarbeit soll die Möglichkeit einer solchen Übersetzung überprüft und darauf aufbauend ein Prototyp einer verteilten Implementierung entwickelt werden.
 Dazu ist zuerst die Auseinandersetzung mit der Semantik des Join-Kalküls und des Aktorenmodells notwendig, die in einer formalen Beschreibung der Übersetzung resultieren soll.
-Diese dient dann als Grundlage der Implementierung auf Basis des Akka-Frameworks in Scala.
-Hier ist zu klären, welche Vor- und Nachteile eine Umsetzung als Scala-Library, eine externe Kompilation zu Scala-Quellcode oder auch eine Integration in den Compiler bieten.
+Diese dient dann als Grundlage der Entwicklung auf Basis einer existierenden Implementierung des Aktorenmodells.
+Hier ist unter anderem zu klären, welche Vor- und Nachteile eine Umsetzung als Library, eine externe Kompilation zu Quellcode oder möglichst einfache Integration in einen existierenden Compiler bieten.
 
 \end{document}
