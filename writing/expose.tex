@@ -8,36 +8,36 @@
 
 
 \title{
-  {\large Expos\'e zur Bachelorarbeit} \\
-  Implementing the Distributed Join Calculus with Actors
+  {\large expos\'e on} \\
+  Implementing the Distributed Join Calculus using Actors
 }
-\author{Matthias Heinzel\\Matrikelnummer 359143}
+\author{Matthias Heinzel\\Technical University of Berlin, 359143}
 \date{\today}
 
 
 \begin{document}
 \maketitle
 
-Prozesskalküle erlauben eine formale, abstrakte Beschreibung von nebenläufigen und verteilten Systemen, die mithilfe algebraischer Gesetze umgeformt und analysiert werden kann.
-Sollen so beschriebene Prozesse jedoch ihrer Semantik getreu implementiert und verteilt ausführbar gemacht werden, ergeben sich oft Probleme.
-So erfordern sowohl im synchronen als auch asynchronen Pi-Kalkül vorhandene Kommunikationsprimitive das Lösen komplexer Konsensprobleme, da sich Kanäle an keinem eindeutigen Ort befinden.
+Process calculi allow a formal, abstract description of concurrent and distributed systems, which can be transformed and analysed using algebraic laws.
+But when trying to implement processes described this way, problems can arise.
+Both synchronous and asynchronous pi calculus, for example, contain communication primitives that require solving complex consensus problems, since canals are not located at a specific node.
 
-Sehr gut verteilen lässt sich hingegen der Join-Kalkül, bei dem sich alle Empfänger auf demselben Kanal immer auch am selben Ort befinden\cite{fournet_reflexive_1996}.
-In seiner grundlegenden Definition ermöglicht er, asynchrone Nachrichten zu senden und mithilfe von Join-Patterns zu empfangen.
-Zusätzlich existieren Erweiterungen wie Möglichkeiten zur synchronen Kommunikation, die mithilfe von Continuation-Passing auf die grundlegende Semantik zurückgeführt werden kann, explizite Verwaltung von Locations\cite{fournet_calculus_1996} sowie eine Typtheorie im Stil von ML\cite{fournet_implicit_1997}. Dadurch eignet er sich zur Einbettung in Programmiersprachen.
+By contrast, the join calculus avoids these issues by ensuring that all recipients on a channel (and thus the channel itself) reside in the same location\cite{fournet_reflexive_1996}.
+In its elementery form, it allows sending asynchronous messages and receiving them using join patterns.
+Additionally, there are extensions such as synchronous channels (which can be desugared to the elementary calculus by using continuation passing), an explicit notion of locations and migration\cite{fournet_calculus_1996}, as well as an ML-style typing theory\cite{fournet_implicit_1997}. Therefore, it is well suited to being embedded into programming languages.
 
-Es existieren bereits Implementierungen des Join-Kalküls in Form von Compiler-Erweiterungen (JoCaml\cite{mandel_programming_2007}, Polyphonic C\#\cite{benton_modern_2002}, Join Java\cite{itzstein_implementing_2003}) und Libraries (ScalaJoins\cite{haller_implementing_2008}, Joins Concurrency Library für .NET\cite{russo_joins_2007}).
-Die bisher einzige Umsetzung von expliziten Locations zur Beschreibung von verteilten Systemen findet sich jedoch in einer nicht mehr gepflegten Beta-Version des JoCaml-Compilers, die Limitationen unter anderem bei der Erkennung von Failures aufweist\cite{conchon_jocaml:_1999}.
-Spätere Versionen unterstützen Locations und die zugehörigen Sprachprimitive nicht mehr.
+Several implementations of the join calculus exist as compiler extensions (JoCaml\cite{mandel_programming_2007}, Polyphonic C\#\cite{benton_modern_2002}, Join Java\cite{itzstein_implementing_2003}) or libraries (ScalaJoins\cite{haller_implementing_2008}, Joins Concurrency Library für .NET\cite{russo_joins_2007}).
+The only implementation of the distributed join calculus with locations, however, is an unmaintained beta version of JoCaml that makes heavy modifications to the original OCaml compiler and runtime system\cite{conchon_jocaml:_1999}.
+This sacrifices binary compatibility and makes it difficult to incorporate upstream changes. Later versions of JoCaml dropped support for locations and related primitives.
 
-Um den hohen Implementierungs- und Wartungsaufwand von Erweiterungen an Compiler und Laufzeitumgebung zu vermeiden, bietet es sich an, auf existierenden Möglichkeiten zur verteilten Kommunikation aufzubauen.
-So stellen zum Beispiel Implementierungen des Aktorenmodells bereits viel Funktionalität zur Verfügung, durch die eine direkte Auseinandersetzung mit den Details des Netzwerkstacks erspart bleibt.
-Nötig wäre somit nur eine auf hoher Abstraktionsebene stattfindende Übersetzung von Konstrukten des Join-Kalküls in das Aktorenmodell.
+To reduce effort of implementation and maintainance, it might prove help\-ful to rely on existing possibilities for distributed communication. For example, implementations of the actor model provide a lot of functionality, making it possible to avoid working on low-level problems of the network stack.
+The remaining work would be limited to translating constructs of the join calculus into the actor model on a high level of abstraction.
 
-Im Rahmen dieser Bachelorarbeit soll die Möglichkeit einer solchen Übersetzung überprüft und darauf aufbauend ein Prototyp einer verteilten Implementierung entwickelt werden.
-Dazu ist zuerst die Auseinandersetzung mit der Semantik des Join-Kalküls und des Aktorenmodells notwendig, die in einer formalen Beschreibung der Übersetzung resultieren soll.
-Diese dient dann als Grundlage der Entwicklung auf Basis einer existierenden Implementierung des Aktorenmodells.
-Hier ist unter anderem zu klären, welche Vor- und Nachteile eine Umsetzung als Library, eine externe Kompilation zu Quellcode oder möglichst einfache Integration in einen existierenden Compiler bieten.
+My bachelor thesis aims to analyse the feasibility of such a translation and, going from there, develop a prototype of a distributed implementation.
+As a first step, this requires research into the semantics of both join calculus and actor model, which will serve as the basis for a formal description of the translation method.
+The theoretical work should then result in an implementation that makes use of an existing actor model implementation.
+Many design decisions have to be taken, including whether to realize the implementation as a library, source-to-source transpiler or integration into an existing compiler.
+
 
 \section*{Zeitplan}
 
