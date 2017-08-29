@@ -3,6 +3,7 @@
 \usepackage[ngerman]{babel}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
+\usepackage{hyperref}
 \usepackage{lmodern}
 
 
@@ -26,12 +27,12 @@ Prozesskalküle erlauben eine formale, abstrakte Beschreibung von nebenläufigen
 Sollen so beschriebene Prozesse jedoch ihrer Semantik getreu implementiert und verteilt ausführbar gemacht werden, ergeben sich oft Probleme.
 So erfordern sowohl im synchronen als auch asynchronen Pi-Kalkül vorhandene Kommunikationsprimitive das Lösen komplexer Konsensprobleme, da sich Kanäle an keinem eindeutigen Ort befinden.
 
-Sehr gut verteilen lässt sich hingegen der Join-Kalkül, bei dem sich alle Empfänger auf demselben Kanal immer auch am selben Ort befinden.
+Sehr gut verteilen lässt sich hingegen der Join-Kalkül, bei dem sich alle Empfänger auf demselben Kanal immer auch am selben Ort befinden\cite{fournet_reflexive_1996}.
 In seiner grundlegenden Definition ermöglicht er, asynchrone Nachrichten zu senden und mithilfe von Join-Patterns zu empfangen.
-Zusätzlich existieren Erweiterungen wie Möglichkeiten zur synchronen Kommunikation, die mithilfe von Continuation-Passing auf die grundlegende Semantik zurückgeführt werden kann, explizite Verwaltung von Locations sowie eine Typtheorie im Stil von ML. Dadurch eignet er sich zur Einbettung in Programmiersprachen.
+Zusätzlich existieren Erweiterungen wie Möglichkeiten zur synchronen Kommunikation, die mithilfe von Continuation-Passing auf die grundlegende Semantik zurückgeführt werden kann, explizite Verwaltung von Locations\cite{fournet_calculus_1996} sowie eine Typtheorie im Stil von ML\cite{fournet_implicit_1997}. Dadurch eignet er sich zur Einbettung in Programmiersprachen.
 
-Es existieren bereits Implementierungen des Join-Kalküls in Form von Compiler-Erweiterungen (JoCaml, Polyphonic C\#, Join Java) und Libraries (Chymyst, Joins Concurrency Library für .NET).
-Die bisher einzige Umsetzung von expliziten Locations zur Beschreibung von verteilten Systemen findet sich jedoch in einer nicht mehr gepflegten Beta-Version des JoCaml-Compilers, die Limitationen unter anderem bei der Erkennung von Failures aufweist.
+Es existieren bereits Implementierungen des Join-Kalküls in Form von Compiler-Erweiterungen (JoCaml\cite{mandel_programming_2007}, Polyphonic C\#\cite{benton_modern_2002}, Join Java\cite{itzstein_implementing_2003}) und Libraries (ScalaJoins\cite{haller_implementing_2008}, Joins Concurrency Library für .NET\cite{russo_joins_2007}).
+Die bisher einzige Umsetzung von expliziten Locations zur Beschreibung von verteilten Systemen findet sich jedoch in einer nicht mehr gepflegten Beta-Version des JoCaml-Compilers, die Limitationen unter anderem bei der Erkennung von Failures aufweist\cite{conchon_jocaml:_1999}.
 Spätere Versionen unterstützen Locations und die zugehörigen Sprachprimitive nicht mehr.
 
 Um den hohen Implementierungs- und Wartungsaufwand von Erweiterungen an Compiler und Laufzeitumgebung zu vermeiden, bietet es sich an, auf existierenden Möglichkeiten zur verteilten Kommunikation aufzubauen.
@@ -85,5 +86,10 @@ Hier ist unter anderem zu klären, welche Vor- und Nachteile eine Umsetzung als 
   \hline
 \end{tabular}
 
+\nocite{levy_results_1997}
+\nocite{maranget_compiling_1998}
+
+\bibliography{expose}{}
+\bibliographystyle{unsrt}
 
 \end{document}
