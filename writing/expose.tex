@@ -2,6 +2,7 @@
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
+\usepackage{cite}
 \usepackage{hyperref}
 \usepackage{lmodern}
 
@@ -22,19 +23,19 @@ But when trying to implement processes described this way, problems can arise.
 Both synchronous and asynchronous pi calculus, for example, contain communication primitives that require solving complex consensus problems, since canals are not located at a specific node.
 
 By contrast, the join calculus avoids these issues by ensuring that all recipients on a channel (and thus the channel itself) reside in the same location\cite{fournet_reflexive_1996}.
-In its elementery form, it allows sending asynchronous messages and receiving them using join patterns.
-Additionally, there are extensions such as synchronous channels (which can be desugared to the elementary calculus by using continuation passing), an explicit notion of locations and migration\cite{fournet_calculus_1996}, as well as an ML-style typing theory\cite{fournet_implicit_1997}. Therefore, it is well suited to being embedded into programming languages.
+In its elementery form, it allows sending asynchronous messages and receiving them with join patterns.
+Additionally, there are extensions such as synchronous channels (which can be desugared to the elementary calculus using continuation passing), an explicit notion of locations and migration\cite{fournet_calculus_1996}, as well as an ML-style typing theory\cite{fournet_implicit_1997}. Therefore, it is well suited to being embedded into programming languages.
 
 Several implementations of the join calculus exist as compiler extensions (JoCaml\cite{mandel_programming_2007}, Polyphonic C\#\cite{benton_modern_2002}, Join Java\cite{itzstein_implementing_2003}) or libraries (ScalaJoins\cite{haller_implementing_2008}, Joins Concurrency Library für .NET\cite{russo_joins_2007}).
 The only implementation of the distributed join calculus with locations, however, is an unmaintained beta version of JoCaml that makes heavy modifications to the original OCaml compiler and runtime system\cite{conchon_jocaml:_1999}.
 This sacrifices binary compatibility and makes it difficult to incorporate upstream changes. Later versions of JoCaml dropped support for locations and related primitives.
 
-To reduce effort of implementation and maintainance, it might prove help\-ful to rely on existing possibilities for distributed communication. For example, implementations of the actor model provide a lot of functionality, making it possible to avoid working on low-level problems of the network stack.
+To reduce effort of development and maintenance, it might prove helpful to rely on existing possibilities for distributed communication. For example, implementations of the actor model provide a lot of functionality, making it possible to avoid working on low-level problems of the network stack.
 The remaining work would be limited to translating constructs of the join calculus into the actor model on a high level of abstraction.
 
 My bachelor thesis aims to analyse the feasibility of such a translation and, going from there, develop a prototype of a distributed implementation.
 As a first step, this requires research into the semantics of both join calculus and actor model, which will serve as the basis for a formal description of the translation method.
-The theoretical work should then result in an implementation that makes use of an existing actor model implementation.
+The theoretical work should then result in a prototype that makes use of an existing actor model implementation.
 Many design decisions have to be taken, including whether to realize the implementation as a library, source-to-source transpiler or integration into an existing compiler.
 
 
@@ -83,6 +84,7 @@ Many design decisions have to be taken, including whether to realize the impleme
 \nocite{levy_results_1997}
 \nocite{maranget_compiling_1998}
 
+\pagebreak
 \bibliography{expose}{}
 \bibliographystyle{unsrt}
 
