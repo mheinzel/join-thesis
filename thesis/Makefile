@@ -1,8 +1,11 @@
-TEX=pdflatex -output-directory=tmp
-BIB=bibtex
+TEX= pdflatex -output-directory=tmp
+BIB= bibtex
 
-TEXFILES=thesis.tex
-BIBFILES=bibliography/thesis.bib
+TEXFILES= thesis.tex \
+		  background/pi.tex
+BIBFILES= bibliography/thesis.bib
+STYFILES= style/thesis.sty \
+		  style/grammar.sty
 
 
 .PHONY: all thesis clean-logs clean
@@ -11,7 +14,7 @@ all: thesis
 
 thesis: thesis.pdf clean-logs
 
-thesis.pdf: $(TEXFILES) $(BIBFILES)
+thesis.pdf: $(TEXFILES) $(BIBFILES) $(STYFILES)
 	$(TEX) $(TEXFILES)
 	$(BIB) tmp/thesis
 	$(TEX) $(TEXFILES)

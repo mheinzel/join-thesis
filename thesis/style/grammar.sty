@@ -1,0 +1,15 @@
+\usepackage{environ}
+\usepackage{amsmath}
+
+
+\NewEnviron{grammar}{%
+  \begin{equation}
+    \begin{split}
+      \BODY
+    \end{split}
+  \end{equation}
+}
+
+\newcommand{\grm}{::=&\ }
+\newcommand{\alt}{\\ \big|&\ }
+
