@@ -1,10 +1,63 @@
 \section{The Pi Calculus}
 
-\begin{grammar}
-P, Q
-\grm \Sigma_{i \in I} \pi_i . P_i
-\alt P\ |\ Q
-\alt !P
-\alt (\nu x) P
-\end{grammar}
+\subsection{Monadic}
+
+\begin{definition}{grammar of the \picalc}
+  P, Q
+  \grmr \Sigma_{i \in I} \pi_i . P_i
+  \altn P \para Q
+  \altn !P
+  \altn \new{x} P
+  \\ \\
+  \pi
+  \grmr \recv{x}{y}
+  \alt  \send{x}{y}
+\end{definition}
+
+\begin{definition}{bound and free names}
+  \bn(\recv{x}{y}) &= \{y\} \\
+  \bn(\send{x}{y}) &= \emptyset \\
+  \fn(\recv{x}{y}) &= \{x\} \\
+  \fn(\send{x}{y}) &= \{x,y\} \\
+  \names(P) &= \bn(P) \cup \fn(P)
+\end{definition}
+
+% TODO: congruence
+
+\begin{figure}[H]
+  \infrule{comm}
+    {}
+    {(\dotsb + \recv{x}{y} . P) \para (\dotsb + \send{x}{z} . Q)
+    \to
+    P\subst{z}{y} \para Q}
+  \infrule{par}
+    {P \to P'}
+    {P \para Q \to P' \para Q}
+  \infrule{res}
+    {P \to P'}
+    {\new{x} P \to \new{x} P'}
+  \infruleIII{struct}
+    {Q \equiv P}
+    {P \to P'}
+    {P \equiv P'}
+    {Q \to Q'}
+  \caption{reduction rules}
+\end{figure}
+
+% observability?
+
+
+\subsection{Polyadic}
+
+\begin{definition}{abbreviations}
+  \abbreviation
+    {\recv{x}{y_1 \dotsb y_n}}
+    {\recv{x}{w} . \recv{w}{y_1} . \dotsb . \recv{w}{y_n}}
+  \\
+  \abbreviation
+    {\send{x}{y_1 \dotsb y_n}}
+    {\new{w} \send{x}{w} . \send{w}{y_1} . \dotsb . \send{w}{y_n}}
+\end{definition}
+
+% abbreviations for parametric processes
 
