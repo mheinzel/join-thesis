@@ -8,6 +8,13 @@
 \usepackage{bussproofs}
 
 
+\NewEnviron{fig}[1]{%
+  \begin{figure}[H]
+    \BODY
+    \caption{#1}
+  \end{figure}
+}
+
 \NewEnviron{definition}[1]{%
   \begin{figure}[H]
     \begin{equation}
@@ -23,6 +30,7 @@
 \newcommand{\altn}{\\ \big|&\ }
 \newcommand{\alt}{\ \big|\ }
 
+\newcommand{\zero}{\textbf{0}}
 \newcommand{\para}{\ |\ }
 \newcommand{\new}[1]{(\nu #1)}
 \newcommand{\send}[2]{\overline{#1}#2}
