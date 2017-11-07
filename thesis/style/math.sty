@@ -1,0 +1,54 @@
+\usepackage{environ}
+\usepackage{xargs}
+\usepackage{ifthen}
+\usepackage{xifthen}
+
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{bussproofs}
+
+
+\NewEnviron{definition}[1]{%
+  \begin{figure}[H]
+    \begin{equation}
+      \begin{split}
+        \BODY
+      \end{split}
+    \end{equation}
+    \caption{#1}
+  \end{figure}
+}
+
+\newcommand{\grmr}{::=&\ }
+\newcommand{\altn}{\\ \big|&\ }
+\newcommand{\alt}{\ \big|\ }
+
+\newcommand{\para}{\ |\ }
+\newcommand{\new}[1]{(\nu #1)}
+\newcommand{\send}[2]{\overline{#1}#2}
+\newcommand{\recv}[2]{#1(#2)}
+
+\newcommand{\bn}{\text{bn}}
+\newcommand{\fn}{\text{fn}}
+\newcommand{\names}{\text{n}}
+\newcommand{\subst}[2]{\{#1 / #2\}}
+
+\newcommand{\abbreviation}[2]{#1 \ \ &\text{for} \ \ #2}
+
+% bussproofs
+\newcommand{\infrule}[3]{%
+  \begin{prooftree}
+    \AxiomC{$#2$}
+    \LeftLabel{\textsc{#1} : }
+    \UnaryInfC{$#3$}
+  \end{prooftree}
+}
+\newcommand{\infruleIII}[5]{
+  \begin{prooftree}
+    \AxiomC{$#2$}
+    \AxiomC{$#3$}
+    \AxiomC{$#4$}
+    \LeftLabel{\textsc{#1} : }
+    \TrinaryInfC{$#5$}
+  \end{prooftree}
+}
