@@ -2,10 +2,13 @@ TEX= pdflatex -output-directory=tmp
 BIB= bibtex
 
 TEXFILES= thesis.tex \
-		  background/pi.tex
+		  titlepage/titlepage.tex \
+		  background/pi.tex \
+		  bibliography/wrapper.tex
 BIBFILES= bibliography/thesis.bib
 STYFILES= style/thesis.sty \
-		  style/grammar.sty
+		  style/terms.sty \
+		  style/math.sty
 
 
 .PHONY: all thesis clean-logs clean
