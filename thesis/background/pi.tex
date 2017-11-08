@@ -1,31 +1,31 @@
-\section{The Pi Calculus}
+\section{The \PiCalc}
 
 \subsection{Synchronous, Monadic, with Choice}
 
 \begin{definition}{grammar of the \picalc}
   P, Q
   \grmr \Sigma_{i \in I} \pi_i . P_i
-  \altn P \para Q
-  \altn !P
-  \altn \new{x} P
+  \altn P \ppar Q
+  \altn \prep{P}
+  \altn \pnew{x} P
   \\ \\
   \pi
-  \grmr \recv{x}{y}
-  \alt  \send{x}{y}
+  \grmr \prcv{x}{y}
+  \alt  \psnd{x}{y}
 \end{definition}
 
 \begin{definition}{normal form}
   M, N
   \grmr \pi . P
-  \alt  \zero
-  \alt  M + N
+  \alt  \pnullproc
+  \alt  M \pchc N
 \end{definition}
 
 \begin{definition}{bound and free names}
-  \bn(\recv{x}{y}) &= \{y\} \\
-  \bn(\send{x}{y}) &= \emptyset \\
-  \fn(\recv{x}{y}) &= \{x\} \\
-  \fn(\send{x}{y}) &= \{x,y\} \\
+  \bn(\prcv{x}{y}) &= \{y\} \\
+  \bn(\psnd{x}{y}) &= \emptyset \\
+  \fn(\prcv{x}{y}) &= \{x\} \\
+  \fn(\psnd{x}{y}) &= \{x,y\} \\
   \names(P) &= \bn(P) \cup \fn(P)
 \end{definition}
 
@@ -34,15 +34,15 @@
 \begin{fig}{reduction rules}
   \infrule{comm}
     {}
-    {(\dotsb + \recv{x}{y} . P) \para (\dotsb + \send{x}{z} . Q)
+    {(\dotsb \pchc \prcv{x}{y} . P) \ppar (\dotsb \pchc \psnd{x}{z} . Q)
     \to
-    P\subst{z}{y} \para Q}
+    P\subst{z}{y} \ppar Q}
   \infrule{par}
     {P \to P'}
-    {P \para Q \to P' \para Q}
+    {P \ppar Q \to P' \ppar Q}
   \infrule{res}
     {P \to P'}
-    {\new{x} P \to \new{x} P'}
+    {\pnew{x} P \to \pnew{x} P'}
   \infruleIII{struct}
     {Q \equiv P}
     {P \to P'}
@@ -55,11 +55,11 @@
 
 \begin{definition}{abbreviations}
   \abbreviation
-    {\recv{x}{y_1 \dotsb y_n}}
-    {\recv{x}{w} . \recv{w}{y_1} . \dotsb . \recv{w}{y_n}}
+    {\prcv{x}{y_1 \dotsb y_n}}
+    {\prcv{x}{w} . \prcv{w}{y_1} . \dotsb . \prcv{w}{y_n}}
   \\
   \abbreviation
-    {\send{x}{y_1 \dotsb y_n}}
-    {\new{w} \send{x}{w} . \send{w}{y_1} . \dotsb . \send{w}{y_n}}
+    {\psnd{x}{y_1 \dotsb y_n}}
+    {\pnew{w} \psnd{x}{w} . \psnd{w}{y_1} . \dotsb . \psnd{w}{y_n}}
 \end{definition}
 
