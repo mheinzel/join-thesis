@@ -4,6 +4,7 @@ BIB= bibtex
 TEXFILES= thesis.tex \
 		  titlepage/titlepage.tex \
 		  background/pi.tex \
+		  background/join.tex \
 		  bibliography/wrapper.tex
 BIBFILES= bibliography/thesis.bib
 STYFILES= style/thesis.sty \

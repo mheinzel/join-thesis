@@ -1,0 +1,18 @@
+\section{The \JoinCalc}
+
+\begin{definition}{grammar of the \joincalc}
+  P, Q
+  \grmr \jsnd{x}{v_1, \dotsb, v_n}
+  \altn \jdef{D}{P}
+  \altn P \jpar Q
+  \altn \jnullproc
+  \\ \\
+  D, E
+  \grmr J \jrct P
+  \altn D \jcon E
+  \altn \jnulldef
+  \\ \\
+  J, K
+  \grmr \jrcv{x}{y_1, \dotsb, y_n}
+  \altn J \jpat K
+\end{definition}
