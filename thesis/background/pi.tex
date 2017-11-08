@@ -63,3 +63,14 @@
     {\pnew{w} \psnd{x}{w} . \psnd{w}{y_1} . \dotsb . \psnd{w}{y_n}}
 \end{definition}
 
+
+\subsection{Asynchronous}
+
+\begin{definition}{grammar of the asynchronous, monadic \picalc}
+  P, Q
+  \grmr \psnd{x}{u}
+  \altn P \ppar Q
+  \altn \prcv{x}{u} . P
+  \altn \prep{\prcv{x}{u}.P}
+  \altn \pnew{x}{P}
+\end{definition}
