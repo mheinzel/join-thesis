@@ -16,3 +16,12 @@
   \grmr \jrcv{x}{y_1, \dotsb, y_n}
   \altn J \jpat K
 \end{definition}
+
+\begin{definition}{grammar of the monadic \joincalc}
+  P, Q
+  \grmr \jsnd{x}{u}
+  \altn P \jpar Q
+  \altn \jdef{\jrcv{x}{u} \jpat \jrcv{y}{v} \jrct P}{Q}
+\end{definition}
+
+% pi <-> join
