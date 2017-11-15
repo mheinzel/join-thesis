@@ -22,15 +22,16 @@
 \end{JDef}
 
 \begin{JDef}{bound and free names}
-  \bn(\prcv{x}{y}) &= \{y\} \\
-  \bn(\psnd{x}{y}) &= \emptyset \\
-  \fn(\prcv{x}{y}) &= \{x\} \\
-  \fn(\psnd{x}{y}) &= \{x,y\} \\
-  \names(P) &= \bn(P) \cup \fn(P)
+  \bn{\prcv{x}{y}} &= \{y\} \\
+  \bn{\psnd{x}{y}} &= \emptyset \\
+  \fn{\prcv{x}{y}} &= \{x\} \\
+  \fn{\psnd{x}{y}} &= \{x,y\} \\
+  \names{P} &= \bn{P} \cup \fn{P}
 \end{JDef}
 
 % TODO: congruence
 
+% to -> ??
 \begin{JFig}{reduction rules}
   \infrule{comm}
     {}
@@ -70,7 +71,7 @@
   P, Q
   \grmr \psnd{x}{u}
   \altn P \ppar Q
-  \altn \prcv{x}{u} . P
+  \altn \prcv{x}{u} . P %prefix
   \altn \prep{\prcv{x}{u}.P}
   \altn \pnew{x}{P}
 \end{JDef}
