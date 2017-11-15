@@ -37,7 +37,9 @@
 \newcommand{\pnullproc}{\textbf{0}}
 \newcommand{\ppar}{\ |\ }
 \newcommand{\prep}[1]{!#1}
-\newcommand{\pnew}[1]{(\nu #1)}
+\newcommand{\pnew}{\@ifstar{\@pnewp}{\@pnewn}}
+\newcommand{\@pnewp}[2]{(\nu #1)\left(#2\right)}
+\newcommand{\@pnewn}[2]{(\nu #1)#2}
 \newcommand{\psnd}[2]{\overline{#1}#2}
 \newcommand{\prcv}[2]{#1(#2)}
 \newcommand{\pchc}{+}

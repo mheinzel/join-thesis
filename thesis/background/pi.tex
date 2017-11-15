@@ -7,7 +7,7 @@
   \grmr \Sigma_{i \in I} \pi_i . P_i
   \altn P \ppar Q
   \altn \prep{P}
-  \altn \pnew{x} P
+  \altn \pnew{x}{P}
   \\ \\
   \pi
   \grmr \prcv{x}{y}
@@ -42,7 +42,7 @@
     {P \ppar Q \reduction P' \ppar Q}
   \infrule{res}
     {P \reduction P'}
-    {\pnew{x} P \reduction \pnew{x} P'}
+    {\pnew{x}{P} \reduction \pnew{x}{P'}}
   \infruleIII{struct}
     {Q \equiv P}
     {P \reduction P'}
@@ -60,7 +60,7 @@
   \\
   \abbreviation
     {\psnd{x}{y_1 \dotsb y_n}}
-    {\pnew{w} \psnd{x}{w} . \psnd{w}{y_1} . \dotsb . \psnd{w}{y_n}}
+    {\pnew{w}{\psnd{x}{w} . \psnd{w}{y_1} . \dotsb . \psnd{w}{y_n}}}
 \end{JDef}
 
 
