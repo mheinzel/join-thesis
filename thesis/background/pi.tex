@@ -2,7 +2,7 @@
 
 \subsection{Synchronous, Monadic, with Choice}
 
-\begin{definition}{grammar of the \picalc}
+\begin{JDef}{grammar of the \picalc}
   P, Q
   \grmr \Sigma_{i \in I} \pi_i . P_i
   \altn P \ppar Q
@@ -12,26 +12,26 @@
   \pi
   \grmr \prcv{x}{y}
   \alt  \psnd{x}{y}
-\end{definition}
+\end{JDef}
 
-\begin{definition}{normal form}
+\begin{JDef}{normal form}
   M, N
   \grmr \pi . P
   \alt  \pnullproc
   \alt  M \pchc N
-\end{definition}
+\end{JDef}
 
-\begin{definition}{bound and free names}
+\begin{JDef}{bound and free names}
   \bn(\prcv{x}{y}) &= \{y\} \\
   \bn(\psnd{x}{y}) &= \emptyset \\
   \fn(\prcv{x}{y}) &= \{x\} \\
   \fn(\psnd{x}{y}) &= \{x,y\} \\
   \names(P) &= \bn(P) \cup \fn(P)
-\end{definition}
+\end{JDef}
 
 % TODO: congruence
 
-\begin{fig}{reduction rules}
+\begin{JFig}{reduction rules}
   \infrule{comm}
     {}
     {(\dotsb \pchc \prcv{x}{y} . P) \ppar (\dotsb \pchc \psnd{x}{z} . Q)
@@ -48,12 +48,12 @@
     {P \to P'}
     {Q' \equiv P'}
     {Q \to Q'}
-\end{fig}
+\end{JFig}
 
 
 \subsection{Polyadic}
 
-\begin{definition}{abbreviations}
+\begin{JDef}{abbreviations}
   \abbreviation
     {\prcv{x}{y_1 \dotsb y_n}}
     {\prcv{x}{w} . \prcv{w}{y_1} . \dotsb . \prcv{w}{y_n}}
@@ -61,16 +61,16 @@
   \abbreviation
     {\psnd{x}{y_1 \dotsb y_n}}
     {\pnew{w} \psnd{x}{w} . \psnd{w}{y_1} . \dotsb . \psnd{w}{y_n}}
-\end{definition}
+\end{JDef}
 
 
 \subsection{Asynchronous}
 
-\begin{definition}{grammar of the asynchronous, monadic \picalc}
+\begin{JDef}{grammar of the asynchronous, monadic \picalc test}
   P, Q
   \grmr \psnd{x}{u}
   \altn P \ppar Q
   \altn \prcv{x}{u} . P
   \altn \prep{\prcv{x}{u}.P}
   \altn \pnew{x}{P}
-\end{definition}
+\end{JDef}

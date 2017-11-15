@@ -1,6 +1,6 @@
 \section{The \JoinCalc}
 
-\begin{definition}{grammar of the \joincalc}
+\begin{JDef}{grammar of the \joincalc}
   P, Q
   \grmr \jsnd{x}{v_1, \dotsb, v_n}
   \altn \jdef{D}{P}
@@ -15,13 +15,13 @@
   J, K
   \grmr \jrcv{x}{y_1, \dotsb, y_n}
   \altn J \jpat K
-\end{definition}
+\end{JDef}
 
-\begin{definition}{grammar of the monadic \joincalc}
+\begin{JDef}{grammar of the monadic \joincalc}
   P, Q
   \grmr \jsnd{x}{u}
   \altn P \jpar Q
   \altn \jdef{\jrcv{x}{u} \jpat \jrcv{y}{v} \jrct P}{Q}
-\end{definition}
+\end{JDef}
 
 % pi <-> join
