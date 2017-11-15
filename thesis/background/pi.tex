@@ -31,24 +31,23 @@
 
 % TODO: congruence
 
-% to -> ??
 \begin{JFig}{reduction rules}
   \infrule{comm}
     {}
     {(\dotsb \pchc \prcv{x}{y} . P) \ppar (\dotsb \pchc \psnd{x}{z} . Q)
-    \to
+    \reduction
     P\subst{z}{y} \ppar Q}
   \infrule{par}
-    {P \to P'}
-    {P \ppar Q \to P' \ppar Q}
+    {P \reduction P'}
+    {P \ppar Q \reduction P' \ppar Q}
   \infrule{res}
-    {P \to P'}
-    {\pnew{x} P \to \pnew{x} P'}
+    {P \reduction P'}
+    {\pnew{x} P \reduction \pnew{x} P'}
   \infruleIII{struct}
     {Q \equiv P}
-    {P \to P'}
+    {P \reduction P'}
     {Q' \equiv P'}
-    {Q \to Q'}
+    {Q \reduction Q'}
 \end{JFig}
 
 
