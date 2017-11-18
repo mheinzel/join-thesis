@@ -70,13 +70,35 @@ define b params@(x:xs, ys) (Fix (Pre (Recv x1 z) p))
 define _ _ _ = Nothing
 
 
+
+-- short-hand notations:
+
+nullproc :: Process b n
 nullproc = Fix Null
+
+recv :: n -> n -> Recv n
 recv = Recv
+
+(.-) :: Recv n -> Process b n -> Process b n
 s .- p = Fix (Pre s p)
-infixr 2 .-
+infixr 3 .-
+
+send :: n -> n -> Process b n
 send x y = Fix (Snd (Send x y))
+
+new :: n -> Process b n -> Process b n
 new x p = Fix (New x p)
+
+(.|) :: Process b n -> Process b n -> Process b n
+p .| q = Fix (Par p q)
+infixr 2 .|
+
+(~:) :: n -> Process b n -> (n, Process b n)
 (~:) = (,)
 infix 1 ~:
+
+caseof :: n -> [(n, Process b n)] -> Process b n
 caseof x cs = Fix (Cse x cs)
+
+become :: b -> [n] -> [n] -> Process b n
 become b xs ys = Fix (Bhv (Behavior b xs ys))
