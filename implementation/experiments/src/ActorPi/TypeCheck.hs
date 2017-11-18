@@ -1,3 +1,4 @@
+{-# LANGUAGE TupleSections #-}
 module ActorPi.TypeCheck where
 
 import           Data.List          (delete, nub)
@@ -5,15 +6,21 @@ import           Data.Set           (Set, (\\))
 import qualified Data.Set           as S
 import           Data.Map           (Map)
 import qualified Data.Map           as M
-import           Control.Monad      (when, unless, foldM)
+import           Data.Bifunctor     (first)
+import           Control.Monad      (when, unless, foldM, guard)
 import           Control.Error.Util (note)
 
+import           Control.Comonad.Cofree
+import           Data.Functor.Foldable
+
+import Util.Recursion
 import ActorPi.Syntax
 import ActorPi.Context
 
 
 data TypeError n =
-    NotLocal n
+    Assertion String
+  | NotLocal n
   | CtxShape (Context n)
   | ChTooLong [n]
   | IncompatCtx (Context n) (Context n)
@@ -21,47 +28,63 @@ data TypeError n =
   | InvInst
   deriving (Show)
 
-data Error b n =
-    Assertion String
-  | Err (Process b n) (TypeError n)
-  deriving (Show)
+type Prooftree b n = Cofree (ProcessF b n) (Context n)
 
 
-dropHeadCh :: Ord n => n -> [n] -> Maybe [n]
-dropHeadCh x ns | x `notElem` drop 1 ns = Just (delete x ns)
-dropHeadCh _ _ = Nothing
+infer
+  :: Ord n
+  => Process b n
+  -> Either (TypeError n) (Context n)
+infer = cataM typeInferAlg
+
+inferTree
+  :: Ord n
+  => Process b n
+  -> Either (TypeError n) (Prooftree b n)
+inferTree = annotateM typeInferAlg
+
+inferErrCtx
+  :: Ord n
+  => Process b n
+  -> Either (Process b n, TypeError n) (Context n)
+inferErrCtx = paraM $ (\(btt,p) -> first (Fix btt, ) (typeInferAlg p)) . split
+  where
+    split x = (fst <$> x, snd <$> x)
 
 
-typeInfer :: Ord n => Process b n -> Either (Error b n) (Context n)
-typeInfer Null    = return emptyContext
-typeInfer (Snd _) = return emptyContext
+typeInferAlg
+  :: Ord n
+  => ProcessF b n (Context n)
+  -> Either (TypeError n) (Context n)
 
-typeInfer proc@(Pre (Recv x y) p) = do
-  f <- typeInfer p
+typeInferAlg Null    = return emptyContext
+
+typeInferAlg (Snd _) = return emptyContext
+
+typeInferAlg (Pre (Recv x y) f) = do
   let rho = domain f
+      dropHeadCh x ns = guard (x `notElem` drop 1 ns) *> Just (delete x ns)
 
-  when (y `S.member` rho) $ Left (Err proc (NotLocal y))
-  z <- note (Err proc (CtxShape f)) $ dropHeadCh x =<< asCh f
-  note (Err proc (ChTooLong (x : z))) $ ch (x : z)
+  when (y `S.member` rho) $ Left (NotLocal y)
+  -- TODO: separate error types
+  z <- note (CtxShape f) $ dropHeadCh x =<< asCh f
+  note (ChTooLong (x : z)) $ ch (x : z)
 
-typeInfer proc@(Cse x cases) = do
-  fs <- traverse (typeInfer . snd) cases
+typeInferAlg (Cse x cases) = do
+  let fs = fmap snd cases
   let checkCompatibility f1 f2 =
-        unless (isCompatible f1 f2) $ Left (Err proc (IncompatCtx f1 f2))
+        unless (isCompatible f1 f2) $ Left (IncompatCtx f1 f2)
   sequence_ $ checkCompatibility <$> fs <*> fs
   note (Assertion "compat") $ foldM combine emptyContext fs
 
-typeInfer proc@(Par p1 p2) = do
-  f1 <- typeInfer p1
-  f2 <- typeInfer p2
+typeInferAlg proc@(Par f1 f2) = do
   let intersection = domain f1 `S.intersection` domain f2
-  unless (S.null intersection) $ Left (Err proc (NotUnique intersection))
-  note (Err proc (IncompatCtx f1 f2)) $ combine f1 f2
+  unless (S.null intersection) $ Left (NotUnique intersection)
+  note (IncompatCtx f1 f2) $ combine f1 f2
 
-typeInfer proc@(New x p) = do
-  f <- typeInfer p
+typeInferAlg proc@(New x f) = do
   return $ restrictTo (domain f \\ S.singleton x) f
 
-typeInfer proc@(Bhv (Behavior b x y)) = do
-  unless (x == nub x) $ Left (Err proc InvInst)
-  note (Err proc InvInst) $ ch x
+typeInferAlg proc@(Bhv (Behavior b x y)) = do
+  unless (x == nub x) $ Left InvInst
+  note InvInst $ ch x
