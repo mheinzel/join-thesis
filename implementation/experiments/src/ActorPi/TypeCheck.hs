@@ -1,4 +1,3 @@
-{-# LANGUAGE TupleSections #-}
 module ActorPi.TypeCheck where
 
 import           Data.List          (delete, nub)
@@ -42,15 +41,19 @@ inferTree
   :: Ord n
   => Process b n
   -> Either (TypeError n) (Prooftree b n)
-inferTree = annotateM typeInferAlg
+inferTree = annotateCataM typeInferAlg
 
 inferErrCtx
   :: Ord n
   => Process b n
   -> Either (Process b n, TypeError n) (Context n)
-inferErrCtx = paraM $ (\(btt,p) -> first (Fix btt, ) (typeInferAlg p)) . split
-  where
-    split x = (fst <$> x, snd <$> x)
+inferErrCtx = paraM (withErrCtx typeInferAlg)
+
+inferTreeErrCtx
+  :: Ord n
+  => Process b n
+  -> Either (Process b n, TypeError n) (Prooftree b n)
+inferTreeErrCtx = annotateParaM (withErrCtx typeInferAlg)
 
 
 typeInferAlg
