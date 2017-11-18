@@ -8,8 +8,6 @@ import qualified Data.Set              as S
 import           Data.Functor.Foldable (Fix(..), cata)
 import           Text.Show.Deriving    (deriveShow1)
 
-import ActorPi.Context
-
 
 data Recv n = Recv n n
   deriving (Show)

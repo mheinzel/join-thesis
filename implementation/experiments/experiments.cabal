@@ -19,6 +19,7 @@ library
                      , ActorPi.TypeCheck
                      , Util.Recursion
   default-language:    Haskell2010
+  ghc-options:         -Wall
   build-depends:       base >= 4.7 && < 5
                      , containers
                      , errors
