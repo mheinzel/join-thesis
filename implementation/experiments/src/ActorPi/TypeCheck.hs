@@ -21,7 +21,8 @@ import ActorPi.Context
 data TypeError n =
     Assertion String
   | NotLocal n
-  | CtxShape (Context n)
+  | ChShape (Context n)
+  | ChShapeX n [n]
   | ChTooLong [n]
   | IncompatCtx (Context n) (Context n)
   | NotUnique (Set n)
@@ -66,8 +67,8 @@ typeInferAlg (Pre (Recv x y) f) = do
       dropHeadCh x ns = guard (x `notElem` drop 1 ns) *> Just (delete x ns)
 
   when (y `S.member` rho) $ Left (NotLocal y)
-  -- TODO: separate error types
-  z <- note (CtxShape f) $ dropHeadCh x =<< asCh f
+  xz <- note (ChShape f) $ asCh f
+  z <- note (ChShapeX x xz) $ dropHeadCh x xz
   note (ChTooLong (x : z)) $ ch (x : z)
 
 typeInferAlg (Cse x cases) = do
