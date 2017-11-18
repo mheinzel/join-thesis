@@ -28,3 +28,15 @@ data ProcessF b n p =
 deriveShow1 ''ProcessF  -- TODO
 
 type Process b n = Fix (ProcessF b n)
+
+
+nullproc = Fix Null
+recv = Recv
+s .- p = Fix (Pre s p)
+infixr 2 .-
+send x y = Fix (Snd (Send x y))
+new x p = Fix (New x p)
+(~:) = (,)
+infix 1 ~:
+caseof x cs = Fix (Cse x cs)
+become b xs ys = Fix (Bhv (Behavior b xs ys))
