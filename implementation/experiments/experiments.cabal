@@ -10,7 +10,6 @@ copyright:           2017 Matthias Heinzel
 category:            Development
 build-type:          Simple
 cabal-version:       >=1.10
-extra-source-files:  README.md
 
 library
   hs-source-dirs:      src
