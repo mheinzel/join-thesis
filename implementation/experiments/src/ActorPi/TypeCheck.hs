@@ -1,11 +1,13 @@
 module ActorPi.TypeCheck where
 
+import           Data.Bifunctor     (bimap)
 import           Data.List          (delete, nub)
 import           Data.Set           (Set, (\\))
 import qualified Data.Set           as S
 import           Control.Monad      (when, unless, foldM)
 import           Control.Error.Util (note)
 
+import           Data.Functor.Foldable (Fix(Fix))
 import           Control.Comonad.Cofree (Cofree)
 
 import Util.Recursion
@@ -31,33 +33,32 @@ data TypeError b n = TypeError
   }
   deriving (Show)
 
-type JudgementCtx b n = ProcessF b n (Process b n, Context n)
-type Prooftree b n = Cofree (ProcessF b n) (Context n)
+
+data Judgement b n = Judgement
+  { judgementType :: Context n
+  , judgementProc :: Process b n
+  }
+  deriving (Show)
+
+type JudgementCtx b n = ProcessF b n (Judgement b n)
+type JudgementTree b n = Cofree (ProcessF b n) (Judgement b n)
 
 
-infer
-  :: Ord n
-  => Process b n
-  -> Either (TypeErrorReason n) (Context n)
-infer = cataM typeInferAlg
-
-inferTree
-  :: Ord n
-  => Process b n
-  -> Either (TypeErrorReason n) (Prooftree b n)
-inferTree = annotateCataM typeInferAlg
-
-inferErrCtx
+typeInfer
   :: Ord n
   => Process b n
   -> Either (TypeError b n) (Context n)
-inferErrCtx = paraM (withErrCtx TypeError typeInferAlg)
+typeInfer = fmap (judgementType . headCofree) . typeInferTree
 
-inferTreeErrCtx
+typeInferTree
   :: Ord n
   => Process b n
-  -> Either (TypeError b n) (Prooftree b n)
-inferTreeErrCtx = annotateParaM (withErrCtx TypeError typeInferAlg)
+  -> Either (TypeError b n) (JudgementTree b n)
+typeInferTree = bimap toErr (fmap toJudgement) . annotateCataM alg
+  where
+    alg = withErrCtx (typeInferAlg `algCompose` (return . Fix))
+    toErr = uncurry (TypeError . fmap toJudgement)
+    toJudgement = uncurry Judgement
 
 
 dropHeadCh :: Eq n => n -> [n] -> Maybe [n]

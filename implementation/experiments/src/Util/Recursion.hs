@@ -1,6 +1,5 @@
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE ScopedTypeVariables #-}
 module Util.Recursion where
 
 import Data.Functor.Foldable
@@ -8,6 +7,17 @@ import Data.Bifunctor (first)
 import Control.Monad (join)
 import Control.Comonad.Cofree (Cofree(..))
 
+
+headCofree :: Cofree f a -> a
+headCofree (h :< _) = h
+
+algCompose
+  :: (Functor f, Monad m)
+  => (f a -> m a)
+  -> (f b -> m b)
+  -> f (a, b)
+  -> m (a, b)
+algCompose f g fab = (,) <$> f (fmap fst fab) <*> g (fmap snd fab)
 
 cataM
   :: (Recursive t, Traversable (Base t), Monad m)
@@ -35,14 +45,7 @@ annotateParaM
   => (Base t (t, a) -> m a)
   -> t
   -> m (Cofree (Base t) a)
-annotateParaM alg = paraM (\ftca -> (:< fmap snd ftca) <$> alg (fmap label <$> ftca))
-  where
-    label (l :< _) = l
+annotateParaM alg = paraM (\ftca -> (:< fmap snd ftca) <$> alg (fmap headCofree <$> ftca))
 
-withErrCtx
-  :: Functor (Base t)
-  => (Base t (t, a) -> e -> e')
-  -> (Base t a -> Either e a)
-  -> Base t (t, a)
-  -> Either e' a
-withErrCtx f alg ctx = first (f ctx) $ alg (snd <$> ctx)
+withErrCtx :: (a -> Either e b) -> a -> Either (a, e) b
+withErrCtx alg ctx = first ((,) ctx) (alg ctx)
