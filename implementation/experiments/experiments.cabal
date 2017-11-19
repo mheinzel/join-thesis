@@ -17,6 +17,7 @@ library
   exposed-modules:     ActorPi.Syntax
                      , ActorPi.Context
                      , ActorPi.TypeCheck
+                     , ActorPi.Examples
                      , Util.Recursion
   default-language:    Haskell2010
   ghc-options:         -Wall
