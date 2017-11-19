@@ -79,7 +79,7 @@ recv = Recv
 
 (.-) :: Recv n -> Process b n -> Process b n
 s .- p = Fix (Pre s p)
-infixr 3 .-
+infixr 5 .-
 
 send :: n -> n -> Process b n
 send x y = Fix (Snd (Send x y))

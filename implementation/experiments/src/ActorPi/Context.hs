@@ -4,6 +4,7 @@ module ActorPi.Context
   , emptyContext
   , domain
   , restrictTo
+  , assocs
   , isCompatible
   , combine
   , ch

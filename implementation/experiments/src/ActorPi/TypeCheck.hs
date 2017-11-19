@@ -19,7 +19,8 @@ data TypeErrorReason n =
   | ChShape (Context n)
   | ChShapeX n [n]
   | ChTooLong [n]
-  | IncompatCtx (Context n) (Context n)
+  | IncompatCtxCASE (Context n) (Context n)
+  | IncompatCtxCOMP (Context n) (Context n)
   | NotUnique (Set n)
   | InvInst
   deriving (Show)
@@ -84,14 +85,14 @@ typeInferAlg (Pre (Recv x y) f) = do
 typeInferAlg (Cse _ cases) = do
   let fs = fmap snd cases
   let checkCompatibility f1 f2 =
-        unless (isCompatible f1 f2) $ Left (IncompatCtx f1 f2)
+        unless (isCompatible f1 f2) $ Left (IncompatCtxCASE f1 f2)
   sequence_ $ checkCompatibility <$> fs <*> fs
   note (Assertion "compat") $ foldM combine emptyContext fs
 
 typeInferAlg (Par f1 f2) = do
   let intersection = domain f1 `S.intersection` domain f2
   unless (S.null intersection) $ Left (NotUnique intersection)
-  note (IncompatCtx f1 f2) $ combine f1 f2
+  note (IncompatCtxCOMP f1 f2) $ combine f1 f2
 
 typeInferAlg (New x f) =
   return $ restrictTo (domain f \\ S.singleton x) f
