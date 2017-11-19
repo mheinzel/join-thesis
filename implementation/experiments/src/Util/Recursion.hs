@@ -40,10 +40,9 @@ annotateParaM alg = paraM (\ftca -> (:< fmap snd ftca) <$> alg (fmap label <$> f
     label (l :< _) = l
 
 withErrCtx
-  :: (Recursive t, Corecursive t)
-  => (Base t a -> Either e a)
+  :: Functor (Base t)
+  => (Base t (t, a) -> e -> e')
+  -> (Base t a -> Either e a)
   -> Base t (t, a)
-  -> Either (t, e) a
-withErrCtx alg = (\(bt, ba) -> first ((,) (embed bt)) $ alg ba) . split
-  where
-    split x = (fst <$> x, snd <$> x)
+  -> Either e' a
+withErrCtx f alg ctx = first (f ctx) $ alg (snd <$> ctx)

@@ -13,7 +13,7 @@ import ActorPi.Syntax
 import ActorPi.Context
 
 
-data TypeError n =
+data TypeErrorReason n =
     Assertion String
   | NotLocal n
   | ChShape (Context n)
@@ -24,32 +24,39 @@ data TypeError n =
   | InvInst
   deriving (Show)
 
+data TypeError b n = TypeError
+  { errorContext :: JudgementCtx b n
+  , errorReason :: TypeErrorReason n
+  }
+  deriving (Show)
+
+type JudgementCtx b n = ProcessF b n (Process b n, Context n)
 type Prooftree b n = Cofree (ProcessF b n) (Context n)
 
 
 infer
   :: Ord n
   => Process b n
-  -> Either (TypeError n) (Context n)
+  -> Either (TypeErrorReason n) (Context n)
 infer = cataM typeInferAlg
 
 inferTree
   :: Ord n
   => Process b n
-  -> Either (TypeError n) (Prooftree b n)
+  -> Either (TypeErrorReason n) (Prooftree b n)
 inferTree = annotateCataM typeInferAlg
 
 inferErrCtx
   :: Ord n
   => Process b n
-  -> Either (Process b n, TypeError n) (Context n)
-inferErrCtx = paraM (withErrCtx typeInferAlg)
+  -> Either (TypeError b n) (Context n)
+inferErrCtx = paraM (withErrCtx TypeError typeInferAlg)
 
 inferTreeErrCtx
   :: Ord n
   => Process b n
-  -> Either (Process b n, TypeError n) (Prooftree b n)
-inferTreeErrCtx = annotateParaM (withErrCtx typeInferAlg)
+  -> Either (TypeError b n) (Prooftree b n)
+inferTreeErrCtx = annotateParaM (withErrCtx TypeError typeInferAlg)
 
 
 dropHeadCh :: Eq n => n -> [n] -> Maybe [n]
@@ -60,7 +67,7 @@ dropHeadCh x ns = if x `elem` drop 1 ns
 typeInferAlg
   :: Ord n
   => ProcessF b n (Context n)
-  -> Either (TypeError n) (Context n)
+  -> Either (TypeErrorReason n) (Context n)
 
 typeInferAlg Null = return emptyContext
 
