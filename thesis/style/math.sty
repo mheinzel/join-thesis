@@ -58,6 +58,23 @@
 \newcommand{\jrcv}[2]{#1\langle#2\rangle}
 \newcommand{\jpat}{\ |\ }
 
+% actor pi
+\newcommand{\anullproc}{\textbf{0}}
+\newcommand{\arcv}[2]{#1(#2)}  % TODO: parens?
+\newcommand{\asnd}[2]{\overline{#1}#2}
+\newcommand{\anew}{\@ifstar{\@pnewp}{\@pnewn}}
+\newcommand{\@anewp}[2]{(\nu #1)\parens{#2}}
+\newcommand{\@anewn}[2]{(\nu #1)#2}
+\newcommand{\apar}{\ |\ }
+\newcommand{\acse}[2]{\textbf{case} \ #1 \ \textbf{of} \ \parens{#2}}
+\newcommand{\aalt}[2]{#1 : #2}
+\newcommand{\ains}[3]{#1 \langle #2 ; #3 \rangle}
+
+% actor pi judgement
+\newcommand{\judgement}[3]{#1 ; #2 \vdash #3}
+\newcommand{\ch}[1]{\operatorname{ch}\parens{#1}}
+
+
 \newcommand{\bn}[1]{\operatorname{bn}\parens{#1}}
 \newcommand{\fn}[1]{\operatorname{fn}\parens{#1}}
 \newcommand{\names}[1]{\operatorname{n}\parens{#1}}

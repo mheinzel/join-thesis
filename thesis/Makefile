@@ -5,6 +5,7 @@ TEXFILES= thesis.tex \
 		  titlepage/titlepage.tex \
 		  background/pi.tex \
 		  background/join.tex \
+		  background/actor-pi.tex \
 		  bibliography/wrapper.tex
 BIBFILES= bibliography/thesis.bib
 STYFILES= style/thesis.sty \
