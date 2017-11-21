@@ -9,6 +9,8 @@
 \usepackage{bussproofs}
 
 
+\newcommand{\parens}[1]{\left(#1\right)}
+
 % TODO: one equation or multiple???
 \NewEnviron{JFig}[1]{%
   \begin{figure}[H]
@@ -39,7 +41,7 @@
 \newcommand{\ppar}{\ |\ }
 \newcommand{\prep}[1]{!#1}
 \newcommand{\pnew}{\@ifstar{\@pnewp}{\@pnewn}}
-\newcommand{\@pnewp}[2]{(\nu #1)\left(#2\right)}
+\newcommand{\@pnewp}[2]{(\nu #1)\parens{#2}}
 \newcommand{\@pnewn}[2]{(\nu #1)#2}
 \newcommand{\psnd}[2]{\overline{#1}#2}
 \newcommand{\prcv}[2]{#1(#2)}
@@ -56,9 +58,9 @@
 \newcommand{\jrcv}[2]{#1\langle#2\rangle}
 \newcommand{\jpat}{\ |\ }
 
-\newcommand{\bn}[1]{\operatorname{bn}\left(#1\right)}
-\newcommand{\fn}[1]{\operatorname{fn}\left(#1\right)}
-\newcommand{\names}[1]{\operatorname{n}\left(#1\right)}
+\newcommand{\bn}[1]{\operatorname{bn}\parens{#1}}
+\newcommand{\fn}[1]{\operatorname{fn}\parens{#1}}
+\newcommand{\names}[1]{\operatorname{n}\parens{#1}}
 \newcommand{\subst}[2]{\{#1 / #2\}}
 
 \newcommand{\abbreviation}[2]{#1 \ \ &\text{for} \ \ #2}
