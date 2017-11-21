@@ -12,11 +12,11 @@ STYFILES= style/thesis.sty \
 		  style/math.sty
 
 
-.PHONY: all thesis clean-logs clean
+.PHONY: all thesis clean
 
 all: thesis
 
-thesis: thesis.pdf clean-logs
+thesis: thesis.pdf
 
 thesis.pdf: $(TEXFILES) $(BIBFILES) $(STYFILES)
 	$(TEX) $(TEXFILES)
@@ -25,5 +25,7 @@ thesis.pdf: $(TEXFILES) $(BIBFILES) $(STYFILES)
 	$(TEX) $(TEXFILES)
 	mv tmp/thesis.pdf .
 
-clean: clean-logs
+clean:
 	rm -f tmp/*
+	rm -f thesis.pdf
+
