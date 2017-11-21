@@ -11,13 +11,6 @@ import Control.Comonad.Cofree (Cofree(..))
 headCofree :: Cofree f a -> a
 headCofree (h :< _) = h
 
-algCompose
-  :: (Functor f, Monad m)
-  => (f a -> m a)
-  -> (f b -> m b)
-  -> f (a, b)
-  -> m (a, b)
-algCompose f g fab = (,) <$> f (fmap fst fab) <*> g (fmap snd fab)
 
 cataM
   :: (Recursive t, Traversable (Base t), Monad m)
@@ -47,5 +40,8 @@ annotateParaM
   -> m (Cofree (Base t) a)
 annotateParaM alg = paraM (\ftca -> (:< fmap snd ftca) <$> alg (fmap headCofree <$> ftca))
 
-withErrCtx :: (a -> Either e b) -> a -> Either (a, e) b
-withErrCtx alg ctx = first ((,) ctx) (alg ctx)
+withErrCtx
+  :: (a -> e -> e')
+  -> (a -> Either e b)
+  -> a -> Either e' b
+withErrCtx err alg ctx = first (err ctx) (alg ctx)

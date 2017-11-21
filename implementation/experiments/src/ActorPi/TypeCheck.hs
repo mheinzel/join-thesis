@@ -1,6 +1,5 @@
 module ActorPi.TypeCheck where
 
-import           Data.Bifunctor     (bimap)
 import           Data.List          (delete, nub)
 import           Data.Set           (Set, (\\))
 import qualified Data.Set           as S
@@ -54,11 +53,11 @@ typeInferTree
   :: Ord n
   => Process b n
   -> Either (TypeError b n) (JudgementTree b n)
-typeInferTree = bimap toErr (fmap toJudgement) . annotateCataM alg
+typeInferTree = annotateCataM (withErrCtx TypeError judgementAlg)
   where
-    alg = withErrCtx (typeInferAlg `algCompose` (return . Fix))
-    toErr = uncurry (TypeError . fmap toJudgement)
-    toJudgement = uncurry Judgement
+    judgementAlg ctx = Judgement
+      <$> typeInferAlg (fmap judgementType ctx)
+      <*> (return . Fix) (fmap judgementProc ctx)
 
 
 dropHeadCh :: Eq n => n -> [n] -> Maybe [n]
