@@ -15,9 +15,6 @@ parens, indent :: String -> String
 parens x = "(" <> x <> ")"
 indent = ("  " <>)
 
-showCommaSep :: Show n => [n] -> String
-showCommaSep = intercalate ", " . fmap show
-
 showIn :: String -> String -> String -> [String] -> String
 showIn left sep right xs = left <> intercalate sep xs <> right
 
@@ -58,9 +55,13 @@ showProcess proc = cata alg proc (0 :: Int)
 showF :: Context String -> String
 showF f = case asCh f of
   Just ns -> showCh ns
-  Nothing -> showIn "{" ", " "}" $ fmap showAssoc $ assocs f
+  Nothing -> showIn "{" ", " "}" (showAssoc <$> assocs f)
     where
       showAssoc (x, fx) = showIn "(" ", " ")" [x, showStar id fx]
+
+
+showJudgement :: Judgement String String -> String
+showJudgement (Judgement f p) = showF f <> "  |--  " <> showProcess p
 
 
 showErrorReason :: TypeErrorReason String -> String
@@ -84,13 +85,14 @@ showErrorReason e = case e of
   InvInst ->
     "INST: Invalid behavior instantiation"
 
+
 showJudgementCtx :: JudgementCtx String String -> String
 showJudgementCtx ctx =
   unlines (indent (showProcess p) : "in context:" : ctxDescription)
   where
     p = Fix (judgementProc <$> ctx)
-    showSubContext (Judgement f subP) = showF f <> "  |-  " <> showProcess subP
-    ctxDescription = fmap (indent . showSubContext) $ toList ctx
+    ctxDescription = indent . showJudgement <$> toList ctx
+
 
 showTypeError :: TypeError String String -> String
 showTypeError (TypeError ctx reason) =
