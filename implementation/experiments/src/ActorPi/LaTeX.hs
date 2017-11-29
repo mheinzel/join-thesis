@@ -57,7 +57,7 @@ fToLatex f = case asCh f of
       assocToLatex (x, fx) = showIn "(" ", " ")" [x, starToLatex id fx]
 
 recipientsToLatex :: Context String -> String
-recipientsToLatex = showIn "\\{" ", " "\\}" . toList . domain
+recipientsToLatex = intercalate ", " . toList . domain
 
 judgementToLatex :: Judgement String String -> String
 judgementToLatex (Judgement t p) =
