@@ -16,7 +16,7 @@ import ActorPi.Context
 
 data TypeErrorReason n =
     Assertion String
-  | NotLocal n
+  | NotLocal [n]
   | ChShape (Context n)
   | ChShapeX n [n]
   | ChTooLong [n]
@@ -74,10 +74,10 @@ typeInferAlg Null = return emptyContext
 
 typeInferAlg (Snd _) = return emptyContext
 
-typeInferAlg (Pre (Recv x y) f) = do
+typeInferAlg (Pre (Recv x ys) f) = do
   let rho = domain f
 
-  when (y `S.member` rho) $ Left (NotLocal y)
+  when (any (`S.member` rho) ys) $ Left (NotLocal (filter (`S.member` rho) ys))
   xz <- note (ChShape f) $ asCh f
   z <- note (ChShapeX x xz) $ dropHeadCh x xz
   note (ChTooLong (x : z)) $ ch (x : z)

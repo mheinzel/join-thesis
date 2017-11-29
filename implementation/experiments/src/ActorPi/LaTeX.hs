@@ -32,10 +32,10 @@ processToLatex proc = cata alg proc (0 :: Int)
                                   else x
     alg Null _ =
       macro "anullproc" []
-    alg (Snd (Send x y)) _ =
-      macro "asnd" [x, y]
-    alg (Pre (Recv x y) p) prec =
-      parensPrec prec 5 (macro "arcv" [x, y] <> " . " <> p 5)
+    alg (Snd (Send x ys)) _ =
+      macro "asnd" [x, intercalate "," ys]
+    alg (Pre (Recv x ys) p) prec =
+      parensPrec prec 5 (macro "arcv" [x, intercalate "," ys] <> " . " <> p 5)
     alg (New x p) _ =
       macro "anew" [x, p 4]
     alg (Par p1 p2) prec =

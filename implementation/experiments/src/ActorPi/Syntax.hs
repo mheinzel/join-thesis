@@ -9,9 +9,9 @@ import           Data.Functor.Foldable (Fix(..), cata)
 import           Text.Show.Deriving    (deriveShow1)
 
 
-data Recv n = Recv n n
+data Recv n = Recv n [n]
   deriving (Show)
-data Send n = Send n n
+data Send n = Send n [n]
   deriving (Show)
 data Behavior b n = Behavior b [n] [n]
   deriving (Show)
@@ -46,8 +46,8 @@ freeNames = cata namesAlg
     set = S.fromList
     namesAlg proc = case proc of
       Null -> set []
-      Pre (Recv x y) p -> set [x] <> (p \\ set [y])
-      Snd (Send x y) -> set [x, y]
+      Pre (Recv x ys) p -> set [x] <> (p \\ set ys)
+      Snd (Send x ys) -> set (x : ys)
       New x p -> p \\ set [x]
       Par p1 p2 -> p1 <> p2
       Cse x cases -> set (x : fmap fst cases) <> foldMap snd cases
@@ -74,15 +74,15 @@ define _ _ _ = Nothing
 nullproc :: Process b n
 nullproc = Fix Null
 
-recv :: n -> n -> Recv n
+recv :: n -> [n] -> Recv n
 recv = Recv
 
 (.-) :: Recv n -> Process b n -> Process b n
 s .- p = Fix (Pre s p)
 infixr 5 .-
 
-send :: n -> n -> Process b n
-send x y = Fix (Snd (Send x y))
+send :: n -> [n] -> Process b n
+send x ys = Fix (Snd (Send x ys))
 
 new :: n -> Process b n -> Process b n
 new x p = Fix (New x p)

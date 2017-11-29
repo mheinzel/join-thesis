@@ -35,10 +35,10 @@ showProcess proc = cata alg proc (0 :: Int)
 
     alg Null _ =
       "0"
-    alg (Snd (Send x y)) _ =
-      x <> "!" <> y
-    alg (Pre (Recv x y) p) prec =
-      parensPrec prec 5 (x <> "(" <> y <> ") . " <> p 5)
+    alg (Snd (Send x ys)) _ =
+      x <> "!" <> intercalate "," ys
+    alg (Pre (Recv x ys) p) prec =
+      parensPrec prec 5 (x <> "(" <> intercalate "," ys <> ") . " <> p 5)
     alg (New x p) _ =
       "(new " <> x <> ") " <> p 4
     alg (Par p1 p2) prec =
@@ -68,8 +68,8 @@ showErrorReason :: TypeErrorReason String -> String
 showErrorReason e = case e of
   Assertion str ->
     "Internal assertion failed: " <> str
-  NotLocal n ->
-    "ACT: The name " <> show n <> " is not local"
+  NotLocal ns ->
+    "ACT: The names " <> show ns <> " are not local"
   ChShape f ->
     "ACT: Renaming " <> showF f <> " is not ch()-shaped"
   ChShapeX n ns ->
