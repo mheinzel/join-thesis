@@ -52,6 +52,14 @@ showProcess proc = cata alg proc (0 :: Int)
       b <> "<" <> intercalate "," us <> ";" <> intercalate "," vs <> ">"
 
 
+showDefinition :: Definition String String -> String
+showDefinition d =
+  behaviorName d <> " = " <> args <> " " <> showProcess (definedProcess d)
+  where
+    args = parens $ intercalate "," (recipients d)
+          <> ";" <> intercalate "," (paramsY d)
+
+
 showF :: Context String -> String
 showF f = case asCh f of
   Just ns -> showCh ns

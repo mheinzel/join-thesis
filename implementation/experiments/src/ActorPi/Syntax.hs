@@ -3,9 +3,13 @@
 module ActorPi.Syntax where
 
 import           Data.Monoid           ((<>))
+import           Data.Maybe            (maybeToList)
 import           Data.Set              (Set, (\\))
 import qualified Data.Set              as S
 import           Data.Functor.Foldable (Fix(..), cata)
+import           Control.Monad         (when)
+import           Control.Error.Util    (note)
+
 import           Text.Show.Deriving    (deriveShow1)
 
 
@@ -38,6 +42,13 @@ data Definition b n = Def
   , paramsY :: [n]
   , continuation :: Process b n
   }
+  deriving (Show)
+
+recipients :: Definition b n -> [n]
+recipients (Def _ (Recv x _) mX _ _) = x : maybeToList mX
+
+definedProcess :: Definition b n -> Process b n
+definedProcess d = firstRecv d .- continuation d
 
 
 freeNames :: Ord n => Process b n -> Set n
@@ -58,14 +69,29 @@ oneOrEmpty [] = Just Nothing
 oneOrEmpty [x] = Just (Just x)
 oneOrEmpty _ = Nothing
 
+data DefErrorReason b n
+  = NoReceive n
+  | NumberOfXs [n]
+  | FreeNames [n] [n]
+  deriving (Show)
+
 -- error message?
-define :: Ord n => b -> ([n], [n]) -> Process b n -> Maybe (Definition b n)
-define b params@(x:xs, ys) (Fix (Pre (Recv x1 z) p))
-  | x == x1
-  , Just x2 <- oneOrEmpty xs
-  , S.fromList (uncurry (++) params) == freeNames p
-  = Just $ Def b (Recv x1 z) x2 ys p
-define _ _ _ = Nothing
+define
+  :: Ord n
+  => b
+  -> [n]
+  -> [n]
+  -> Process b n
+  -> Either (DefErrorReason b n) (Definition b n)
+define b (x:xs) ys p@(Fix (Pre (Recv x1 z) cont)) = do
+  when (x /= x1) $ Left (NoReceive x)
+  mX2 <- note (NumberOfXs (x:xs)) $ oneOrEmpty xs
+  let vars = x : xs ++ ys
+
+  when (S.fromList vars /= freeNames p) $ Left $ FreeNames vars $ S.toList $ freeNames p
+  return $ Def b (Recv x1 z) mX2 ys cont
+define _ (x:_) _ _ = Left (NoReceive x)
+define _ [] _ _ = Left (NumberOfXs [])
 
 
 

@@ -8,14 +8,21 @@ import ActorPi.LaTeX
 
 dumpProofTree :: FilePath -> Process String String -> IO ()
 dumpProofTree path proc =
-  case standalone . judgementTreeToLatex <$> typeInferTree proc of
-    Left err -> putStrLn (showTypeError err)
-    Right latex -> writeFile path latex
+  either
+    (putStrLn . showTypeError)
+    (dumpLatex path . judgementTreeToLatex)
+    (typeInferTree proc)
 
+mathLines :: [String] -> String
+mathLines strs = unlines (["\\begin{align*}"] ++ map (\x -> "& " ++ x ++ " \\\\") strs ++ ["\\end{align*}"])
+
+dumpLatex :: FilePath -> String -> IO ()
+dumpLatex path = writeFile path . standalone
   where
     standalone latex = unlines
-      [ "\\documentclass[varwidth=\\maxdimen]{standalone}"
+      [ "\\documentclass{article}"
       , "\\usepackage{../../thesis/style/math}"
+      , "\\usepackage[active,tightpage,displaymath]{preview}"
       , "\\nofiles"
       , "\\begin{document}\n"
       , latex

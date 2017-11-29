@@ -1,5 +1,6 @@
 module ActorPi.LaTeX where
 
+import Data.Maybe (maybeToList)
 import Data.Monoid ((<>))
 import Data.List (intercalate)
 import Data.Foldable (toList)
@@ -94,3 +95,11 @@ judgementTreeToLatex = wrap . fmap stepToLatex . linearizeJudgementTree
       5 -> "QuinaryInfC"
       _ -> error $ "invalid arity of " <> show a
 
+definitionToLatex :: Definition String String -> String
+definitionToLatex d =
+  macro "adef"
+    [ behaviorName d
+    , intercalate "," (recipients d)
+    , intercalate "," (paramsY d)
+    , processToLatex (definedProcess d)
+    ]
