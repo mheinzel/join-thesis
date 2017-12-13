@@ -5,6 +5,8 @@
 
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{stmaryrd}
+\usepackage{mathtools}
 \usepackage{float}
 \usepackage{bussproofs}
 
@@ -49,7 +51,7 @@
 
 % join calculus
 \newcommand{\jsnd}[2]{#1\langle#2\rangle}
-\newcommand{\jdef}[2]{\text{def} \ #1 \ \text{in} \ #2}
+\newcommand{\jdef}[2]{\textbf{def} \ #1 \ \textbf{in} \ #2}
 \newcommand{\jpar}{\ |\ }
 \newcommand{\jnullproc}{\textbf{0}}
 \newcommand{\jrct}[2]{#1 \vartriangleright #2}
@@ -61,18 +63,24 @@
 % actor pi
 \newcommand{\anullproc}{\textbf{0}}
 \newcommand{\arcv}[2]{#1(#2)}  % TODO: parens?
-\newcommand{\asnd}[2]{\overline{#1}#2}
-\newcommand{\anew}{\@ifstar{\@pnewp}{\@pnewn}}
+\newcommand{\asnd}[2]{\overline{#1}\langle#2\rangle}
+\newcommand{\anew}{\@ifstar{\@anewp}{\@anewn}}
 \newcommand{\@anewp}[2]{(\nu #1)\parens{#2}}
 \newcommand{\@anewn}[2]{(\nu #1)#2}
 \newcommand{\apar}{\ |\ }
 \newcommand{\acse}[2]{\textbf{case} \ #1 \ \textbf{of} \ \parens{#2}}
 \newcommand{\aalt}[2]{#1 : #2}
 \newcommand{\ains}[3]{#1 \langle #2 ; #3 \rangle}
+\newcommand{\adef}{\@ifstar{\@adefa}{\@adefn}}
+\newcommand{\@adefa}[4]{#1 &\overset{\mathclap{def}}{=} \left( #2 ; #3 \right) #4}
+\newcommand{\@adefn}[4]{#1 \overset{def}{=} \left( #2 ; #3 \right) #4}
 
 % actor pi judgement
-\newcommand{\judgement}[3]{#1 ; #2 \vdash #3}
-\newcommand{\ch}[1]{\operatorname{ch}\parens{#1}}
+\newcommand{\judgement}[3]{%
+  \ifthenelse{\isempty{#1}}{\emptyset}{\{#1\}}%
+  ;\ifthenelse{\isempty{#2}}{\{\}}{#2}%
+  \vdash #3}
+\newcommand{\ch}[1]{ch(#1)}
 
 
 \newcommand{\bn}[1]{\operatorname{bn}\parens{#1}}
@@ -83,6 +91,11 @@
 \newcommand{\abbreviation}[2]{#1 \ \ &\text{for} \ \ #2}
 
 % bussproofs
+\newcommand{\axiom}[1]{\AxiomC{$#1$}}
+\newcommand{\infI}[2]{\LeftLabel{\textsc{#1}:}\UnaryInfC{$#2$}}
+\newcommand{\infII}[2]{\LeftLabel{\textsc{#1}:}\BinaryInfC{$#2$}}
+% TODO: number argument
+
 \newcommand{\infrule}[3]{%
   \begin{prooftree}
     \AxiomC{$#2$}
