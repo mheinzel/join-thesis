@@ -32,3 +32,27 @@ usesEverything =
     [ "v" ~: new ["k"] (send "z" ["k"] .| recv "k" ["y"] .- nullproc)
     , "w" ~: recv "x" ["b"] .- become "B" ["y"] ["b"]
     ]
+
+
+encDef =
+  new ["a","x","y"] $ become "B" ["a"] ["x","y"]
+                   .| become "B_c" ["x"] ["a"]
+                   .| become "B_c" ["y"] ["a"]
+
+encDefB = either (error . show) id $
+  define "B" ["a"] ["x","y"] $
+    recv "a" ["c","i"] .- caseof "c"
+      [ "x" ~: become "B_x" ["a"] ["x","y","i"]
+      , "y" ~: become "B" ["a"] ["x","y"] .| send "a" ["y","i"]
+      ]
+
+encDefBx = either (error . show) id $
+  define "B_x" ["a"] ["x","y","u"] $
+    recv "a" ["c","v"] .- caseof "c"
+      [ "x" ~: become "B_x" ["a"] ["x","y","v"] .| send "a" ["x","u"]
+      , "y" ~: become "B" ["a"] ["x","y"] .| become "P" [] ["x","y","u","v"]
+      ]
+
+encDefBc = either (error . show) id $
+  define "B_c" ["x"] ["a"] $
+    recv "x" ["i"] .- (send "a" ["x","i"] .| become "B_c" ["x"] ["a"])
