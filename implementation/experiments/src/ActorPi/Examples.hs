@@ -8,14 +8,14 @@ named p = become p [] []
 paperP9 =
   paperP9left .| paperP9right
 paperP9left =
-  new "x"
+  new ["x"]
     ( recv "x" ["u"] .- named "P_1"
    .| recv "y" ["v"] .- named "Q_1"
    .| send "x" ["y"]
    .| send "z" ["y"]
     )
 paperP9right =
-  new "x"
+  new ["x"]
     ( recv "x" ["u"] .- named "P_2"
    .| recv "z" ["v"] .- named "Q_2"
    .| send "w" ["z"]
@@ -29,6 +29,6 @@ caseSameActorDifferentTemp =
 
 usesEverything =
   recv "z" ["k"] .- send "k" ["a"] .| caseof "u"
-    [ "v" ~: new "k" (send "z" ["k"] .| recv "k" ["y"] .- nullproc)
+    [ "v" ~: new ["k"] (send "z" ["k"] .| recv "k" ["y"] .- nullproc)
     , "w" ~: recv "x" ["b"] .- become "B" ["y"] ["b"]
     ]

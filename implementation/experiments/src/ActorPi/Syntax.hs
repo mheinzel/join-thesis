@@ -110,8 +110,8 @@ infixr 5 .-
 send :: n -> [n] -> Process b n
 send x ys = Fix (Snd (Send x ys))
 
-new :: n -> Process b n -> Process b n
-new x p = Fix (New x p)
+new :: [n] -> Process b n -> Process b n
+new ns proc = foldr (\n p -> Fix (New n p)) proc ns
 
 (.|) :: Process b n -> Process b n -> Process b n
 p .| q = Fix (Par p q)
