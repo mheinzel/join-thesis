@@ -1,6 +1,5 @@
 module ActorPi.LaTeX where
 
-import Data.Maybe (maybeToList)
 import Data.Monoid ((<>))
 import Data.List (intercalate)
 import Data.Foldable (toList)
