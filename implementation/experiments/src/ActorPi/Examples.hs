@@ -56,3 +56,72 @@ encDefBx = either (error . show) id $
 encDefBc = either (error . show) id $
   define "B_c" ["x"] ["a"] $
     recv "x" ["i"] .- (send "a" ["x","i"] .| become "B_c" ["x"] ["a"])
+
+
+
+encList =
+  new ["a","x","y","l_u","l_v"] $ become "B_a" ["a"] ["x","y","l_u","l_v"]
+                   .| become "B_c" ["x"] ["a"]
+                   .| become "B_c" ["y"] ["a"]
+                   .| become "B_{nil}" ["l_u"] []
+                   .| become "B_{nil}" ["l_v"] []
+
+encDefBnil = either (error . show) id $
+  define "B_{nil}" ["l"] [] $
+    recv "l" ["k_n","k_c"] .- send "k_n" []
+
+encDefBcons = either (error . show) id $
+  define "B_{cons}" ["l"] ["h","t"] $
+    recv "l" ["k_n","k_c"] .- send "k_c" ["h","t"]
+
+encDefBjoin = either (error . show) id $
+  define "B_{join}" ["l"] ["u","v","l_v"] $
+    (recv "l" ["r_n","r_c"] .-) $ new ["k_n","k_c"]
+      $ send "l_v" ["k_n","k_c"]
+     .| recv "k_n" [] .- (become "P" [] ["u","v"] .| send "r_n" [])  -- must join here
+     .| recv "k_c" ["h_v","t_v"] .- caseof "u"  -- non-deterministic choice
+        [ "u" ~: become "P" [] ["u","v"] .| send "r_c" ["h_v", "t_v"]
+        , "u" ~: new ["l_{joined}"]
+          ( become "B_{join}" ["l_{joined}"] ["u","h_v","t_v"]
+         .| send "r_c" ["v", "l_{joined}"]  -- join in tail
+          )
+        ]
+
+encDefBinsert = either (error . show) id $
+  define "B_{insert}" ["t"] ["u","l_u","l_v"] $
+    recv "t" ["k"] .- new ["k_c","k_n"]
+      ( send "l_v" ["k_n","k_c"]
+     .| recv "k_n" [] .- new ["l_{u,new}"]
+         ( become "B_{cons}" ["l_{u,new}"] ["u","l_u"]
+        .| send "k" ["l_{u,new}","l_v"])
+     .| recv "k_c" ["h_v","t_v"] .- new ["l_{v,new}"]
+         ( become "B_{join}" ["l_{v,new}"] ["u","h_v","t_v"]
+        .| send "k" ["l_u","l_{v,new}"])
+      )
+
+encDefBa = either (error . show) id $
+  define "B_a" ["a"] ["x","y","l_u","l_v"] $
+    recv "a" ["c","i"] .- new ["k","t"]
+      ( caseof "c"
+        [ "x" ~: become "B_{insert}" ["t"] ["i","l_u","l_v"]
+              .| send "t" ["k"]
+              .| recv "k" ["l_{u,new}", "l_{v,new}"]
+                   .- become "B_a" ["a"] ["x","y","l_{u,new}","l_{v,new}"]
+        , "y" ~: become "B_{insert}" ["t"] ["i","l_v","l_u"]
+              .| send "t" ["k"]
+              .| recv "k" ["l_{v,new}", "l_{u,new}"]
+                   .- become "B_a" ["a"] ["x","y","l_{u,new}","l_{v,new}"]
+        ]
+      )
+
+listenc =
+  ( "listenc.tex"
+  , encList
+  , [ encDefBc
+    , encDefBnil
+    , encDefBcons
+    , encDefBa
+    , encDefBinsert
+    , encDefBjoin
+    ]
+  )
