@@ -17,21 +17,20 @@ Using polyadic communication:
   \end{split}
 \end{align}
 \begin{align}
-  \begin{split}
-       \adef*{B}{a}{x,y}{
-         \arcv{a}{c,i} . \acse{c}{
-            \aalt{x}{\ains{B_x}{a}{x,y,i}},\ 
-            \aalt{y}{\ains{B}{a}{x,y} \apar \asnd{a}{y,i}}
-          }
-       } \\
-       \adef*{B_x}{a}{x,y,u}{
-         \arcv{a}{c,v} . \acse{c}{
-           \aalt{x}{\ains{B_x}{a}{x,y,v} \apar \asnd{a}{x,u}},\ 
-           \aalt{y}{\ains{B}{a}{x,y} \apar \encMJtoAP{P}}
-         } \\
-       }
-       \adef*{B_c}{x}{a}{
-         \arcv{x}{i} . \parens{\asnd{a}{x,i} \apar \ains{B_c}{x}{a}}
-       } \\
-  \end{split}
+  \adef*{B}{a}{x,y}{
+    \arcv{a}{c,i} . \acse{c}{
+       \aalt{x}{\ains{B_x}{a}{x,y,i}},\ 
+       \aalt{y}{\ains{B}{a}{x,y} \apar \asnd{a}{y,i}}
+     }
+  } \\
+  \adef*{B_x}{a}{x,y,u}{
+    \arcv{a}{c,v} . \acse{c}{
+      \aalt{x}{\ains{B_x}{a}{x,y,v} \apar \asnd{a}{x,u}},\ 
+      \aalt{y}{\ains{B}{a}{x,y} \apar \encMJtoAP{P}}
+    } \\
+  }
+  \adef*{B_c}{x}{a}{
+    \arcv{x}{i} . \parens{\asnd{a}{x,i} \apar \ains{B_c}{x}{a}}
+  }
 \end{align}
+But this introduces divergence.
