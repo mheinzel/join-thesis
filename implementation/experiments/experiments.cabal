@@ -13,7 +13,8 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     ActorPi.Syntax
+  exposed-modules:     ActorPi
+                     , ActorPi.Syntax
                      , ActorPi.Context
                      , ActorPi.TypeCheck
                      , ActorPi.Show
