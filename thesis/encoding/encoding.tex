@@ -42,7 +42,7 @@ A more complex approach is to store available $x$ and $y$ payloads in a (church-
   \encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{Q}}
   =\
   \anew{a}{\anew{x}{\anew{y}{\anew{l_x}{\anew{l_y}{
-    &\left( \ains{B_a}{a}{x, y, l_x, l_y} \right. \nonumber \\
+    &\left(\ \ains{B_a}{a}{x, y, l_x, l_y} \right. \nonumber \\
     &\apar \ains{B_c}{x}{a} \apar \ains{B_c}{y}{a} \nonumber \\
     &\apar \ains{B_{nil}}{l_x}{} \apar \ains{B_{nil}}{l_y}{} \left.\right)
   }}}}}
@@ -79,11 +79,11 @@ A more complex approach is to store available $x$ and $y$ payloads in a (church-
       & \hspace{1cm}
         \bigl(\ \asnd{l_v}{k_n,k_c} \nonumber \\
       & \hspace{1cm}
-        \apar \arcv{k_n}{} . \parens{\ains{P}{}{u, v} \apar \asnd{r_n}{}} \nonumber \\
+        \apar \arcv{k_n}{} . \parens{\encMJtoAP{P} \apar \asnd{r_n}{}} \nonumber \\
       & \hspace{1cm}
         \apar \arcv{k_c}{h_v,t_v} . \acse{u}{ \right. \nonumber \\
           & \hspace{2cm}
-            \aalt{u}{\ains{P}{}{u, v} \apar \asnd{r_c}{h_v,t_v}}, \nonumber \\
+            \aalt{u}{\encMJtoAP{P} \apar \asnd{r_c}{h_v,t_v}}, \nonumber \\
           & \hspace{2cm}
             \aalt{u}{\anew{l_{joined}}{\parens{\ains{B_{join}}{l_{joined}}{u, h_v, t_v} \apar \asnd{r_c}{v,l_{joined}}}}}
         \left.}\bigr)
