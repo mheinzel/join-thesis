@@ -24,7 +24,7 @@ def(P, Q) when is_function(Q, 1) ->
 
 
 def(P, Q) ->
-  A = spawn(?MODULE, actor, [P, x, y, [], []]),
+  A = spawn(?MODULE, actor, [P, x, y, queue:new(), queue:new()]),
   X = spawn(?MODULE, forward, [x, A]),
   Y = spawn(?MODULE, forward, [y, A]),
   spawn(fun() -> Q(X, Y) end),
@@ -33,16 +33,16 @@ def(P, Q) ->
 actor(P, X, Y, Us, Vs) ->
   receive
     {X, U} ->
-      case Vs of
-        [] -> actor(P, X, Y, [U | Us], []);
-        [V | T] ->
+      case queue:out(Vs) of
+        {empty, _} -> actor(P, X, Y, queue:in(U, Us), Vs);
+        {{value, V}, T} ->
           spawn(fun() -> P(X, U, Y, V) end),
           actor(P, X, Y, Us, T)
       end;
     {Y, V} ->
-      case Us of
-        [] -> actor(P, X, Y, [], [V | Vs]);
-        [U | T] ->
+      case queue:out(Us) of
+        {empty, _} -> actor(P, X, Y, Us, [V | Vs]);
+        {{value, U}, T} ->
           spawn(fun() -> P(X, U, Y, V) end),
           actor(P, X, Y, T, Vs)
       end;
