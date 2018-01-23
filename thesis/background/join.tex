@@ -34,4 +34,38 @@ received names in an elementary clause are all different
   \altn \jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{Q}
 \end{JDef}
 
-% pi <-> join
+
+\subsection{The \JoinCalc with Locations}
+
+infinite set of location names
+$ \mathcal{L} = \{ a, b, c, \ldots \} $
+
+These can also be sent and received:
+$ v \in \mathcal{N} \cup \mathcal{L} $
+
+
+\begin{JDef}{grammar of the \joincalc with locations}
+  P, Q
+  \grmr \jsnd{x}{v_1, \dots, v_n}
+  \altn \jdef{D}{P}
+  \altn P \jpar Q
+  \altn \jnullproc
+  \altn \jgo{b}{\kappa}
+  \\ \\
+  D, E
+  \grmr \jrct{J}{P}
+  \altn D \jcon E
+  \altn \jnulldef
+  \altn \jloc{a}{D}{P}
+  \\ \\
+  J, K
+  \grmr \jrcv{x}{v_1, \dots, v_n}
+  \altn J \jpat K
+\end{JDef}
+
+Two syntactic restrictions:
+\begin{itemize}
+  \item a location $a$ can only be defined once in any definition $D$
+  \item a defined channel $x$ may only appear in the join patterns of one location
+\end{itemize}
+
