@@ -69,3 +69,32 @@ Two syntactic restrictions:
   \item a defined channel $x$ may only appear in the join patterns of one location
 \end{itemize}
 
+\begin{align*}
+  \chamred{comm}{(x \in \dv{J})}{
+    \chamcnf{\phi}{}{\jsnd{x}{\tilde{v}}}
+    \champar
+    \chamcnf{}{\jrct{J}{P}}{}
+  }{
+    \chamcnf{\phi}{}{}
+    \champar
+    \chamcnf{}{\jrct{J}{P}}{\jsnd{x}{\tilde{v}}}
+  }
+  \\
+  \chamequ{str-loc}{(a \ \text{frozen)}}{
+    \chamcnf{\phi}{\jloc{a}{D}{P}}{}
+  }{
+    \chamcnf{\phi}{}{}
+    \champar
+    \chamcnf{\phi a}{D}{P}
+  }
+  \\
+  \chamred{move}{}{
+    \chamcnf{\phi}{\jloc{a}{D}{P \jpar \jgo{b}{\kappa}}}{}
+    \champar
+    \chamcnf{\psi b}{}{}
+  }{
+    \chamcnf{\phi}{}{}
+    \champar
+    \chamcnf{\psi b}{\jloc{a}{D}{P \jpar \jsnd{\kappa}{}}}{}
+  }
+\end{align*}
