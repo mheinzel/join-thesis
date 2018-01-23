@@ -1,5 +1,10 @@
 \section{The \JoinCalc}
 
+infinite set of channel names
+$ \mathcal{N} = \{ x, y, z, u, v, \kappa, \ldots \} $
+
+$ \tilde{x}, \tilde{y}, \ldots $ for tuples of names
+
 \begin{JDef}{grammar of the \joincalc}
   P, Q
   \grmr \jsnd{x}{v_1, \dots, v_n}
@@ -13,9 +18,14 @@
   \altn \jnulldef
   \\ \\
   J, K
-  \grmr \jrcv{x}{y_1, \dots, y_n}
+  \grmr \jrcv{x}{v_1, \dots, v_n}
   \altn J \jpat K
 \end{JDef}
+
+received names in an elementary clause are all different
+
+
+\subsection{The Core \JoinCalc}
 
 \begin{JDef}{grammar of the monadic \joincalc}
   P, Q
