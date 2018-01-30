@@ -1,0 +1,4 @@
+locations
+    ??? would it make sense to give an encoding from CoreJoin+Loc into APi+? ?
+        ??? what would `?` be?
+        XXX

@@ -1,0 +1,36 @@
+erlang
+    ??? what is possible regarding cross-node communication?
+        ??? how to send a message to a process on another node?
+            !!! Pid is global
+        ??? can you move the "current process" to another node?
+            !!! not a running process, but function with state, respawn
+        XXX
+
+fundamentals
+    ??? how to represent a channel/name?
+        --- Pid of forwarder? (similar to encoding, abstraction)
+        --- Pid of common actor + index? (less names to register)
+        ??? Pid might change (respawned on different node)
+            --- forwarding is inefficient (can create long chain)
+            !!! ask registry (e.g. gproc) for every send
+        XXX
+
+distribution
+    ??? how to send a message to a remote receiver?
+        !!! lookup node
+            ??? move there (as in theory) or send directly (simpler)?
+            XXX
+        ??? what if the location just moved to a different machine?
+            !!! in the worst case, look it up again, chase it
+    ??? how to migrate to a remote location that just moved?
+        !!! lookup node of location, move whole own location to node
+            ??? how to free/package a location (incl. sublocations)?
+                XXX
+    ??? which infrastructure is needed?
+        !!! name registry (e.g. gproc)
+        !!! location registry (location name -> node or pid)
+        XXX
+    ??? how can we package a location for sending?
+        ??? what happens with processes that are still running?
+            ??? what happens if we just let them run?
+                --- they can do stuff here after the actor started somewhere else already

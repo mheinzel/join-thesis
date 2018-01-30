@@ -1,0 +1,4 @@
+locations
+    go
+        ??? which (implicit) location is migrated?
+            the current/innermost one (including sublocations)
