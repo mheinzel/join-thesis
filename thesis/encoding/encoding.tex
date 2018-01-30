@@ -42,10 +42,10 @@ A more complex approach is to store available $x$ and $y$ payloads in a (church-
   \encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{Q}}
   =\
   \anew{a}{\anew{x}{\anew{y}{\anew{l_x}{\anew{l_y}{
-    &\left(\ \ains{B_a}{a}{x, y, l_x, l_y} \right. \nonumber \\
+    &\big(\ \ains{B_a}{a}{x, y, l_x, l_y} \nonumber \\
     &\apar \ains{B_c}{x}{a} \apar \ains{B_c}{y}{a} \nonumber \\
     &\apar \ains{B_{nil}}{l_x}{} \apar \ains{B_{nil}}{l_y}{} \nonumber \\
-    &\apar \encMJtoAP{Q} \left.\right)
+    &\apar \encMJtoAP{Q}\ \big)
   }}}}}
 \end{align}
 
@@ -68,17 +68,17 @@ A more complex approach is to store available $x$ and $y$ payloads in a (church-
   \adef*{B_{insert}}{t}{u,l_u,l_v}{
     \arcv{t}{k} . \anew{k_c}{\anew{k_n}{ \nonumber \\
       & \hspace{1cm}
-        \bigl(\ \asnd{l_v}{k_n,k_c} \nonumber \\
+        \big(\ \asnd{l_v}{k_n,k_c} \nonumber \\
       & \hspace{1cm}
         \apar \arcv{k_n}{} . \anew{l_{u,new}}{\parens{\ains{B_{cons}}{l_{u,new}}{u, l_u} \apar \asnd{k}{l_{u,new},l_v}}} \nonumber \\
       & \hspace{1cm}
-        \apar \arcv{k_c}{h_v,t_v} . \anew{l_{v,new}}{\parens{\ains{B_{join}}{l_{v,new}}{u, h_v, t_v} \apar \asnd{k}{l_u,l_{v,new}}}} \bigr)
+        \apar \arcv{k_c}{h_v,t_v} . \anew{l_{v,new}}{\parens{\ains{B_{join}}{l_{v,new}}{u, h_v, t_v} \apar \asnd{k}{l_u,l_{v,new}}}} \big)
     }}
   } \\
   \adef*{B_{join}}{l}{u,v,l_v}{
     \arcv{l}{r_n,r_c} . \anew{k_n}{\anew{k_c}{ \nonumber \\
       & \hspace{1cm}
-        \bigl(\ \asnd{l_v}{k_n,k_c} \nonumber \\
+        \big(\ \asnd{l_v}{k_n,k_c} \nonumber \\
       & \hspace{1cm}
         \apar \arcv{k_n}{} . \parens{\encMJtoAP{P} \apar \asnd{r_n}{}} \nonumber \\
       & \hspace{1cm}
@@ -87,7 +87,7 @@ A more complex approach is to store available $x$ and $y$ payloads in a (church-
             \aalt{u}{\encMJtoAP{P} \apar \asnd{r_c}{h_v,t_v}}, \nonumber \\
           & \hspace{2cm}
             \aalt{u}{\anew{l_{joined}}{\parens{\ains{B_{join}}{l_{joined}}{u, h_v, t_v} \apar \asnd{r_c}{v,l_{joined}}}}}
-        \left.}\bigr)
+        \left.}\big)
     }}
   }
 \end{align}

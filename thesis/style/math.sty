@@ -65,7 +65,7 @@
 
 % actor pi
 \newcommand{\anullproc}{\textbf{0}}
-\newcommand{\arcv}[2]{#1(#2)}  % TODO: parens?
+\newcommand{\arcv}[2]{#1(#2)}
 \newcommand{\asnd}[2]{\overline{#1}\langle#2\rangle}
 \newcommand{\anew}{\@ifstar{\@anewp}{\@anewn}}
 \newcommand{\@anewp}[2]{(\nu #1)\parens{#2}}
@@ -96,10 +96,10 @@
 \newcommand{\ch}[1]{ch(#1)}
 
 
-\newcommand{\dv}[1]{\operatorname{dv}\parens{#1}}
-\newcommand{\bn}[1]{\operatorname{bn}\parens{#1}}
-\newcommand{\fn}[1]{\operatorname{fn}\parens{#1}}
-\newcommand{\names}[1]{\operatorname{n}\parens{#1}}
+\newcommand{\dv}[1]{\operatorname{dv}(#1)}
+\newcommand{\bn}[1]{\operatorname{bn}(#1)}
+\newcommand{\fn}[1]{\operatorname{fn}(#1)}
+\newcommand{\names}[1]{\operatorname{n}(#1)}
 \newcommand{\subst}[2]{\{#1 / #2\}}
 
 \newcommand{\encMJtoAP}[1]{\llbracket #1 \rrbracket}
