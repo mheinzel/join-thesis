@@ -1,0 +1,35 @@
+
+- introduction
+
+- related work ?
+
+- preliminaries
+    - pi calculus ?
+    - join calculus
+        - "normal"
+            CHAM
+            pi<->join (firewall for full abstraction)
+        - core
+            can encode whole join
+        - locations
+            DRCHAM
+            extra syntax and rules
+            syntactical rules in definitions
+    - actor model
+    - actor pi
+        typing rules enforce actor properties
+    - distributality ?
+        M
+
+- encoding
+    - core join to polyadic actor pi
+        no firewall necessary
+
+- implementation
+    - basic encoding from theory
+    - optimizations
+        queue for fairness
+        (removing forwarders)
+    - distributed implementation
+
+- applications ?
