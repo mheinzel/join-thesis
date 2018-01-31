@@ -1,3 +1,7 @@
+development process
+    ??? what to implement first: full join patterns or locations?
+    !!! locations!
+
 erlang
     ??? what is possible regarding cross-node communication?
         ??? how to send a message to a process on another node?
@@ -10,27 +14,60 @@ fundamentals
     ??? how to represent a channel/name?
         --- Pid of forwarder? (similar to encoding, abstraction)
         --- Pid of common actor + index? (less names to register)
-        ??? Pid might change (respawned on different node)
+        --- but Pid might change (respawned on different node)
             --- forwarding is inefficient (can create long chain)
-            !!! ask registry (e.g. gproc) for every send
+            !!! use some kind of ID and ask registry (e.g. gproc) for every send
         XXX
+    ??? how is failure handled
+        !!! ignore for now
 
 distribution
+    ??? how to connect nodes initially?
+        (add physical locations to level 1 of tree)
+        XXX
     ??? how to send a message to a remote receiver?
         !!! lookup node
             ??? move there (as in theory) or send directly (simpler)?
             XXX
         ??? what if the location just moved to a different machine?
             !!! in the worst case, look it up again, chase it
-    ??? how to migrate to a remote location that just moved?
-        !!! lookup node of location, move whole own location to node
-            ??? how to free/package a location (incl. sublocations)?
-                XXX
-    ??? which infrastructure is needed?
-        !!! name registry (e.g. gproc)
-        !!! location registry (location name -> node or pid)
-        XXX
-    ??? how can we package a location for sending?
+    ??? how to migrate a process
+        !!! implement message asking for state + function,
+            send it to another node and spawn
+            ??? what if it uses modules that are not present on the other node?
+                send all modules to all nodes on connection?
+                send modules on-demand?
+                ??? how to find out when a module is missing?
+                    XXX
+            ??? what about local state/context
+                !!! will lose process dictionary (DOCUMENT!)
+                !!! should be mostly expected that ETS tables etc. don't move with process
+            XXX
+    ??? how to migrate a location?
+        !!! represent location as an actor knowing its sublocations and defs,
+            recursively packacke everything up and send to other location
         ??? what happens with processes that are still running?
-            ??? what happens if we just let them run?
-                --- they can do stuff here after the actor started somewhere else already
+            !!! just let them run (but DOCUMENT that fact)!
+            --- they can do stuff here after the actor started somewhere else already,
+            --- violating some reasonable assumptions
+        ??? how do we find out which location to move when using `go`? (implicit in calculus)
+            --- explicit parameter for now? (more flexible, but not true to calculus)
+            --- could probably be done using parse_transform (if really necessary)
+    ??? which infrastructure is needed?
+        !!! global registry (e.g. gproc) with mappings:
+            name -> pid of forwarder (or def actor)
+            name -> location (if implementing remote sending using `go`)
+            location -> pid of location actor
+        ??? infrastructure for migrating processes?
+            --- there is something by Michal Piotrowksi (github.com/michalwski/proc_mobility)
+            --- but it is about migrating processes, not logical units (location tree)
+            --- doing it myself should not be too bad
+        XXX
+    ??? does migration to a different machine require anything else?
+        --- e.g. over TCP?
+
+syntax
+    ??? how to get it to look nice?
+        macros?
+        parsetransform?
+        --- probably ignore for now
