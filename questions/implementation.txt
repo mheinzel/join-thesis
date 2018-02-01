@@ -20,6 +20,10 @@ fundamentals
         XXX
     ??? how is failure handled
         !!! ignore for now
+    ??? how to implement parallel operator?
+        --- probably using spawn
+        --- no binary operators, but function taking list of functions (so not evaluated immediately)
+        --- syntax could be very noisy, but we could have macros later
 
 distribution
     ??? how to connect nodes initially?
@@ -37,8 +41,9 @@ distribution
             ??? what if it uses modules that are not present on the other node?
                 send all modules to all nodes on connection?
                 send modules on-demand?
+                ??? what is loaded automatically? erlang? stdlib?
                 ??? how to find out when a module is missing?
-                    XXX
+                !!! distribute own module, ignore rest (for now)
             ??? what about local state/context
                 !!! will lose process dictionary (DOCUMENT!)
                 !!! should be mostly expected that ETS tables etc. don't move with process
