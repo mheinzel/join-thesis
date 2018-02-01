@@ -1,0 +1,19 @@
+{application, join,
+ [
+  {description, "Prototype of a distributed Join Calculus DSL"},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {mod, {join_app, []}},
+  {applications,
+   [kernel,
+    stdlib
+   ]
+  },
+  {env,[]},
+  {modules, []},
+
+  {maintainers, ["Matthias Heinzel"]},
+  {licenses, ["Apache 2.0"]},
+  {links, []}
+ ]
+}.

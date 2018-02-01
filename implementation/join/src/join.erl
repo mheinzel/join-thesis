@@ -1,10 +1,8 @@
--module(core).
+-module(join).
 -export([
   def/2,
   actor/5,
-  forward/2,
-  test_print/0,
-  test_pi_channel/0
+  forward/2
 ]).
 
 % TODO:
@@ -55,14 +53,3 @@ forward(X, A) ->
   receive
     I -> A ! {X, I}, forward(X, A)
   end.
-
-
-test_print() ->
-  def(fun(_X,U,_Y,V) -> io:format("joined ~p and ~p~n", [U, V]) end,
-      fun(X,Y) -> X ! "a", X ! "b", Y ! "1", Y ! "2", Y ! "3" end).
-
-test_pi_channel() ->
-  def(fun(_S,X,_R,K) -> K ! X end, % "reply X to _R"
-      fun(Send,Receive) -> Send ! 1, Send ! 2,
-                           def(fun(_K,V) -> io:format("received ~p~n", [V]) end,
-                               fun(K) -> Receive ! K end) end).
