@@ -1,19 +1,14 @@
 -module(join).
+-include("debug.hrl").
 -compile(export_all).
 
 
--define(DEBUG(F, A), ok).
-%-define(DEBUG(Format, Args), io:format("~p:~p: " ++ Format ++ "~n", [?FUNCTION_NAME, ?LINE | Args])).
 
 % TODO
-% split out insert and join?
 % rename function names corresponing to actor definitions?
+% top location should always exist (and be defaulted to?)
 
 
-
-% node() makes it globally unique
-get_id(Who) ->
-  {Who, node(), erlang:unique_integer()}.
 
 send(Channel, Payload) ->
   ?DEBUG("sending ~p to ~p", [Payload, Channel]),
@@ -22,31 +17,23 @@ send(Channel, Payload) ->
             Pid ! Payload
         end).
 
-% spawn and register a behavior on a given channel
-% based on behavior syntax in ActorPi
-behavior(Bhv, Channel, Args) ->
-  ?DEBUG("starting on ~p", [Channel]),
-  spawn(fun() ->
-            gproc:reg({n, l, Channel}),
-            apply(Bhv, [Channel | Args])
-        end).
 
 
 
-def(PQ) ->
+def(Location, PQ) ->
   ?DEBUG("~p", [PQ]),
   % new names
-  A = get_id(act),
-  X = get_id(fwX),
-  Y = get_id(fwY),
+  A = join_util:get_id(act),
+  X = join_util:get_id(fwX),
+  Y = join_util:get_id(fwY),
   Lx = queue:new(),
   Ly = queue:new(),
   % get user-supplied processes
   {P, Q} = PQ(X, Y),
   % spawn in parallel (no need to spawn lists)
-  behavior(actor(P), A, [X, Y, Lx, Ly]),  % P passed at runtime only in implementation
-  behavior(fun forward/2, X, [A]),
-  behavior(fun forward/2, Y, [A]),
+  join_actor:spawn_at(Location, actor(P), A, [X, Y, Lx, Ly]),  % P passed at runtime only in implementation
+  join_actor:spawn_at(Location, fun forward/2, X, [A]),
+  join_actor:spawn_at(Location, fun forward/2, Y, [A]),
   spawn(Q),
   % return actor name just for debugging
   A.
@@ -92,17 +79,11 @@ forward(X, A) ->
 
 
 
+% TODO: split to location and actor
 wrap_up(Pid) ->
   Ref = make_ref(),
   Pid ! {wrap_up, self(), Ref},
   receive
     {Ref, ProcData} -> ProcData
-  end.
-
-location(Pids) ->
-  receive
-    {register, Pid} ->
-      location([Pid | Pids]);
-    {wrap_up, Pid, Ref} ->
-      Pid ! {Ref, erlang:map(fun wrap_up/1, Pids)} % TODO: concurrency
+  after 3000 -> timeout
   end.
