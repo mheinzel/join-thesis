@@ -32,20 +32,6 @@ behavior(Bhv, Channel, Args) ->
         end).
 
 
-% temporary, just to make it easier to define continuations
-% (could also be overloaded with regular def)
-def_single(PQ) ->
-  A = get_id(sng),
-  {P, Q} = PQ(A),
-  Actor = fun Single(_) ->
-      receive
-        U -> spawn(fun() -> P(U) end),
-             Single
-      end
-    end,
-  behavior(Actor, A, []),
-  spawn(Q),
-  A.
 
 def(PQ) ->
   ?DEBUG("~p", [PQ]),
