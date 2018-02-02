@@ -56,6 +56,8 @@ def(PQ) ->
 actor(P) ->
   fun Actor(A, X, Y, Us, Vs) ->
     receive
+      {wrap_up, Pid, Ref} ->  % Pid or Channel?
+        Pid ! {Ref, {Actor, A, [X, Y, Us, Vs]}};
       {X, U} ->
         case queue:out(Vs) of
           {empty, _} -> Actor(A, X, Y, queue:in(U, Us), Vs);
@@ -82,6 +84,25 @@ actor(P) ->
 % B_{c}
 forward(X, A) ->
   receive
+    {wrap_up, Pid, Ref} ->
+      Pid ! {Ref, {forward, X, [A]}};
     I -> send(A, {X, I}),
          forward(X, A)
+  end.
+
+
+
+wrap_up(Pid) ->
+  Ref = make_ref(),
+  Pid ! {wrap_up, self(), Ref},
+  receive
+    {Ref, ProcData} -> ProcData
+  end.
+
+location(Pids) ->
+  receive
+    {register, Pid} ->
+      location([Pid | Pids]);
+    {wrap_up, Pid, Ref} ->
+      Pid ! {Ref, erlang:map(fun wrap_up/1, Pids)} % TODO: concurrency
   end.
