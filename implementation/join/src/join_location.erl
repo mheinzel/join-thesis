@@ -36,14 +36,15 @@ location(Channel, Super, Subs, Actors) ->
     {unregister_location, Pid} ->
       location(Channel, Super, lists:delete(Pid, Subs), Actors);
     {wrap_up, Pid, Ref} ->
-      Ss = lists:map(fun wrap_up/1, Subs), % TODO: concurrency
-      As = lists:map(fun join_actor:wrap_up/1, Actors),
-      % only non-root locations need to unregister at superlocation
       case Super of
-        none -> ok;
-        _ -> Super ! {unregister_location, self()}
-      end,
-      Pid ! {Ref, {Channel, Ss, As}};
+        none ->
+          Pid ! {Ref, is_root}; % cannot migrate a root location
+        _ ->
+          Super ! {unregister_location, self()},
+          Ss = lists:map(fun wrap_up/1, Subs), % TODO: concurrency
+          As = lists:map(fun join_actor:wrap_up/1, Actors),
+          Pid ! {Ref, {ok, {Channel, Ss, As}}}
+      end;
     status ->
       io:format("Super: ~p,~n", [Super]),
       io:format("Subs: ~p,~n", [Subs]),
@@ -57,8 +58,14 @@ wrap_up(Pid) ->
   Ref = make_ref(),
   Pid ! {wrap_up, self(), Ref},
   receive
-    {Ref, Data} -> Data
-  after 3000 -> timeout
+    {Ref, {ok, Data}} ->
+      Data;
+    {Ref, Error} ->
+      io:format("could not wrap up location at ~p: ~p~n", [Pid, Error]),
+      {error, Error}
+  after 3000 ->
+          io:format("timeout when wrapping up location at ~p~n", [Pid]),
+          timeout
   end.
 
 respawn_at(Super, Data) ->
