@@ -9,8 +9,13 @@
 % spawn and register a behavior on a given channel, in a given location
 % based on behavior syntax in ActorPi
 spawn_at(Location, Bhv, Channel, Args) ->
-  ?DEBUG("starting ~p at ~p", [Channel, Location]),
+  ?DEBUG("at ~p", [Location]),
+  % TODO: synchronously, so we're not forgotten?
   join_location:register_self(Location),
+  join_actor:spawn(Bhv, Channel, Args).
+
+spawn(Bhv, Channel, Args) ->
+  ?DEBUG("starting ~p", [Channel]),
   spawn(fun() ->
             gproc:reg({n, l, Channel}),
             apply(Bhv, [Channel | Args])
@@ -40,6 +45,8 @@ get_pid(Channel) ->
 
 
 
+% TODO:
+% after wrapping up, stay as a forwarder for a while
 % B_a
 actor(P) ->
   fun Actor(A, X, Y, Us, Vs) ->

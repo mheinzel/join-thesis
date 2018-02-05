@@ -23,7 +23,7 @@
 % TODO: we can probably detect end of execution using somthing like a monitor.
 %
 % TODO:
-% top location? (should be automatically created, managed and restarted)
+% top location? (not movable, should be automatically created, managed and restarted)
 % joining the network?
 
 
@@ -61,32 +61,30 @@ wrap_up(Pid) ->
   after 3000 -> timeout
   end.
 
-% race condition?
-% sublocations and actors need to be registered before receive messages
+respawn_at(Super, Data) ->
+  % TODO: synchronously?
+  NewPid = respawn(Super, Data),
+  Super ! {register_location, NewPid}.
+
+% does not register at a superlocation!
 respawn(Super, {Channel, Subs, Actors}) ->
   spawn(fun() ->
-            OwnPid = self(),
-            % register at super location
-            join:send(Super, {register_location, OwnPid}),
             % register in gproc
             gproc:reg({n, l, Channel}),
             % register actors
-            lists:foreach(fun({Actor, A, Args}) -> join_actor:spawn_at(Channel, Actor, A, Args) end, Actors),
+            As = lists:map(fun({Actor, A, Args}) -> join_actor:spawn(Channel, Actor, A, Args) end, Actors),
             % register sub processes
-            lists:foreach(fun(Sub) -> respawn(OwnPid, Sub) end, Subs),
-            location(Channel, Super
+            Ss = lists:map(fun(Sub) -> respawn(self(), Sub) end, Subs),
+            location(Channel, Super, Ss, As)
         end).
 
 create(Super, Name) ->
   Channel = join_util:get_id(Name),
-  respawn(Super, {Channel, [], []}),
+  respawn_at(Super, {Channel, [], []}),
   Channel.
 
 create_root() ->
   Channel = {root, node()},
-  spawn(fun() ->
-            gproc:reg({n, l, Channel}),
-            location(Channel, none, [], [])
-        end),
+  respawn(none, {Channel, [], []}),
   Channel.
 

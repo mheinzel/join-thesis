@@ -45,8 +45,8 @@ distribution
                 ??? how to find out when a module is missing?
                 !!! distribute own module, ignore rest (for now)
             ??? what about local state/context
-                !!! will lose process dictionary (DOCUMENT!)
-                !!! should be mostly expected that ETS tables etc. don't move with process
+                !!! will lose process dictionary etc., but that is lost anyways,
+                    since each join pattern firing spawns a new process
             XXX
     ??? how to migrate a location?
         !!! represent location as an actor knowing its sublocations and defs,
@@ -55,6 +55,17 @@ distribution
             !!! just let them run (but DOCUMENT that fact)!
             --- they can do stuff here after the actor started somewhere else already,
             --- violating some reasonable assumptions
+        ??? but what about persistent processes that take too long wrapping up?
+            !!! the only persistent actors are `actor` and `forward`.
+                everything else just sends messages and might be respawned (at new location)
+        ??? also, what happens with messages still in the mailbox?
+            ??? can we access them and take them with us?
+        ??? how do we make sure no messages reach the old Pid?
+            !!! keep everything as forwarder until Pid change is propagated
+                --- even makes wrapping up mailbox unnecessary
+                --- needs to be killed later, otherwise we leak processes
+                ??? when to kill it? after n seconds?
+                XXX
         ??? how do we find out which location to move when using `go`? (implicit in calculus)
             --- explicit parameter for now? (more flexible, but not true to calculus)
             --- could probably be done using parse_transform (if really necessary)
