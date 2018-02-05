@@ -30,9 +30,14 @@ spawn_at(Location, Bhv, Channel, Args) ->
 send(Channel, Payload) ->
   ?DEBUG("sending ~p to ~p", [Payload, Channel]),
   spawn(fun() ->
-            {Pid, _} = gproc:await({n, l, Channel}),  % might not be registered yet
+            Pid = get_pid(Channel),  % might not be registered yet
             Pid ! Payload
         end).
+
+get_pid(Channel) ->
+  {Pid, _} = gproc:await({n, l, Channel}),  % might not be registered yet
+  Pid.
+
 
 
 % B_a

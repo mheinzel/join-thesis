@@ -6,7 +6,7 @@
 %   - its superlocation (by pid)
 %   - its sublocations (by pid)
 %   - its processes (by pid)
-%   - TODO: own channel name?
+%   - its own channel name
 %
 % knowing the pids is enough, since the tree will be rebuilt on migration anyways.
 % so we can just store the new pids then.
@@ -23,24 +23,32 @@
 % TODO: we can probably detect end of execution using somthing like a monitor.
 %
 % TODO:
-% top location?
+% top location? (should be automatically created, managed and restarted)
 % joining the network?
 
-% a location knows its subprocesses by Pid, since they cannot move without it
-location(Name, Super, Subs, Actors) ->
+
+location(Channel, Super, Subs, Actors) ->
   receive
     {register_process, Pid} ->
-      location(Name, Super, Subs, [Pid | Actors]);
+      location(Channel, Super, Subs, [Pid | Actors]);
+    {register_location, Pid} ->
+      location(Channel, Super, [Pid | Subs], Actors);
+    {unregister_location, Pid} ->
+      location(Channel, Super, lists:delete(Pid, Subs), Actors);
     {wrap_up, Pid, Ref} ->
-      Ss = erlang:map(fun wrap_up/1, Subs), % TODO: concurrency
-      As = erlang:map(fun join_actor:wrap_up/1, Actors),
-      Super ! {unregister_location, self()},
-      Pid ! {Ref, {Name, Ss, As}};
+      Ss = lists:map(fun wrap_up/1, Subs), % TODO: concurrency
+      As = lists:map(fun join_actor:wrap_up/1, Actors),
+      % only non-root locations need to unregister at superlocation
+      case Super of
+        none -> ok;
+        _ -> Super ! {unregister_location, self()}
+      end,
+      Pid ! {Ref, {Channel, Ss, As}};
     status ->
       io:format("Super: ~p,~n", [Super]),
       io:format("Subs: ~p,~n", [Subs]),
       io:format("Actors: ~p~n", [Actors]),
-      location(Name, Super, Subs, Actors);
+      location(Channel, Super, Subs, Actors);
     Other ->
       io:format("location ~p received invalid message: ~p~n", [self(), Other])
   end.
@@ -53,12 +61,21 @@ wrap_up(Pid) ->
   after 3000 -> timeout
   end.
 
-respawn(Super, Data) ->
-  % register at super location
-  % register in gproc
-  % register actors
-  % register sub processes
-  not_implemented.
+% race condition?
+% sublocations and actors need to be registered before receive messages
+respawn(Super, {Channel, Subs, Actors}) ->
+  spawn(fun() ->
+            OwnPid = self(),
+            % register at super location
+            join:send(Super, {register_location, OwnPid}),
+            % register in gproc
+            gproc:reg({n, l, Channel}),
+            % register actors
+            lists:foreach(fun({Actor, A, Args}) -> join_actor:spawn_at(Channel, Actor, A, Args) end, Actors),
+            % register sub processes
+            lists:foreach(fun(Sub) -> respawn(OwnPid, Sub) end, Subs),
+            location(Channel, Super
+        end).
 
 create(Super, Name) ->
   Channel = join_util:get_id(Name),
@@ -66,5 +83,10 @@ create(Super, Name) ->
   Channel.
 
 create_root() ->
-  not_implemented.
+  Channel = {root, node()},
+  spawn(fun() ->
+            gproc:reg({n, l, Channel}),
+            location(Channel, none, [], [])
+        end),
+  Channel.
 
