@@ -8,20 +8,19 @@
         ]).
 
 % a location knows:
+%   - its own channel name
 %   - its superlocation (by pid)
 %   - its sublocations (by pid)
 %   - its processes (by pid)
-%   - its own channel name
 %
 % knowing the pids is enough, since the tree will be rebuilt on migration anyways.
 % so we can just store the new pids then.
 %
 % supported operations:
-%   - wrapping it up into a data structure (ending execution)
+%   - registering a process
+%   - wrapping itself up into a data structure (ending execution)
 %   - re-spawning such a data structure
-%   - adding a sublocation
 %   - removing a sublocation (when it moves)
-%   - adding a process
 %   - (printing its status)
 %
 % it's not possible to remove a process, since it cannot move on its own.
@@ -32,14 +31,11 @@
 % joining the network?
 
 
-% TODO: leave forwared behind after migrating?
+% TODO: leave forwarder behind after migrating?
 location(Channel, Super, Subs, Actors) ->
   receive
     {register_process, Pid} ->
       location(Channel, Super, Subs, [Pid | Actors]);
-    % TODO: remove?
-    {register_location, Pid} ->
-      location(Channel, Super, [Pid | Subs], Actors);
     {spawn_location, Data, Continuation} ->
       SubPid = respawn_here(Data),
       case Continuation of
@@ -54,14 +50,15 @@ location(Channel, Super, Subs, Actors) ->
         none ->
           Pid ! {Ref, is_root}; % cannot migrate a root location
         _ ->
-          Super ! {unregister_location, self()},
+          Super ! {unregister_location, self()}, % TODO: sync?
           Ss = lists:map(fun wrap_up/1, Subs), % TODO: concurrency
           As = lists:map(fun join_actor:wrap_up/1, Actors),
-          Pid ! {Ref, {ok, {Channel, Ss, As}}}
-          % TODO: use unregister_self() ?
+          join_reg:unregister_self(),
+          Pid ! {Ref, {ok, {Channel, Ss, As}}},
+          forward_location(Channel)
       end;
     {print_status, Pid, Ref, IndentLevel} ->
-      io:format(indent(IndentLevel) ++ "|-- location ~p (Super: ~p, ~p actors):~n",
+      io:format(join_util:indentation(IndentLevel) ++ "|-- location ~p (Super: ~p, ~p actors):~n",
                 [Channel, Super, length(Actors)]),
       lists:foreach(fun(S) -> print_status(S, IndentLevel+1) end, Subs),
       Pid ! {Ref, ok},
@@ -70,8 +67,6 @@ location(Channel, Super, Subs, Actors) ->
       io:format("location ~p received invalid message: ~p~n", [self(), Other])
   end.
 
-indent(Level) ->
-  lists:append(lists:duplicate(Level, "    ")).
 
 % synchronous
 print_status(Loc) ->
@@ -87,9 +82,21 @@ print_status(Loc, IndentLevel) ->
   try join_reg:get_pid(Loc) of
     Pid -> print_status(Pid, IndentLevel)
   catch
-    throw:timeout -> io:format(indent(IndentLevel) ++ "|- timeout~n")
+    throw:timeout -> io:format(join_util:indentation(IndentLevel) ++ "|- timeout~n")
   end.
 
+
+forward_location(Channel) ->
+  timer:sleep(100), % so we don't spam ourself
+  receive
+    Message ->
+      io:format("WARNING: location forwarding message to ~p:~n  ~p~n",
+                [Channel, Message]),
+      join_reg:send(Channel, Message),
+      forward_location(Channel)
+  after 5000 ->
+          ok
+  end.
 
 
 
@@ -97,9 +104,15 @@ print_status(Loc, IndentLevel) ->
 % Continuation can be none
 go(Source, Destination, Continuation) ->
   spawn(fun() ->
-            SourcePid = join_reg:get_pid(Source),
-            Data = wrap_up(SourcePid),
-            join_reg:send(Destination, {spawn_location, Data, Continuation})
+            % race condition?
+            try join_reg:get_pid(Source) of
+              SourcePid ->
+                Data = wrap_up(SourcePid),
+                join_reg:send(Destination, {spawn_location, Data, Continuation})
+            catch
+              throw:timeout -> io:format("WARNING: ~p cannot find location ~p to go to~n",
+                                         [Source, Destination])
+            end
         end).
 
 

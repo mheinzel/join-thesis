@@ -1,13 +1,24 @@
 -module(join_actor).
 -include("debug.hrl").
 -export([
-         actor/1,
-         forward/2
+         definition/1,
+         forward/2,
+         wrap_up/1
          ]).
 
-% a process needs to do some things when it is spawned:
-%   - register itself in registry
-%   - register itself in the location
+% a general actor is process registered at a location and knows:
+%   - TODO: its location? forward doesn't need it
+%   - its own channel name
+%   - some arguments (usually to keep state)
+%
+% supported operations:
+%   - wrapping itself up into a data structure (ending execution)
+%   - (printing its status)
+%
+% it is based on the concept of a behavior in the actor pi calculus.
+%
+% actors can be spawned, which will automatically register them
+% at their location and in the global registry.
 
 % spawn and register a behavior on a given channel, in a given location
 % based on behavior syntax in ActorPi
@@ -15,17 +26,17 @@ spawn_at(Location, Bhv, Channel, Args) ->
   ?DEBUG("at ~p", [Location]),
   % TODO: synchronously, so we're not forgotten?
   join_location:register_self(Location),
-  join_actor:spawn(Bhv, Channel, Args).
+  join_actor:spawn_(Bhv, Channel, Args).
 
-spawn(Bhv, Channel, Args) ->
+spawn_(Bhv, Channel, Args) ->
   ?DEBUG("starting ~p", [Channel]),
   spawn(fun() ->
             join_reg:register_self(Channel),
             apply(Bhv, [Channel | Args])
         end).
 
-
-% wrap_up(Pid) ->
+wrap_up(Pid) ->
+  not_implemented.
 %   Ref = make_ref(),
 %   Pid ! {wrap_up, self(), Ref},
 %   receive
@@ -35,11 +46,15 @@ spawn(Bhv, Channel, Args) ->
 %
 
 
+% a definition actor is parametrized over a process P and additionally knows:
+%   - the two channels it needs to join
+%   - the payloads of received, but unjoined messages on these channels
+%
 
 % TODO:
 % after wrapping up, stay as a forwarder for a while
 % B_a
-actor(P) ->
+definition(P) ->
   fun Actor(A, X, Y, Us, Vs) ->
     receive
       {wrap_up, Pid, Ref} ->  % Pid or Channel?
@@ -58,20 +73,31 @@ actor(P) ->
             spawn(fun() -> P(U, V) end),
             Actor(A, X, Y, T, Vs)
         end;
-      status ->
-        io:format("Us: ~p~nVs: ~p~n", [Us, Vs]),
+      {print_status, Pid, Ref, IndentLevel} ->
+        io:format(join_util:indentation(IndentLevel) ++ "|- definition ~p (Us: ~p, Vs: ~p)~n",
+                  [A, Us, Vs]),
+        Pid ! {Ref, ok},
         Actor(A, X, Y, Us, Vs);
       Other ->
-        io:format("warning: actor received invalid message: ~p~n", [Other]),
+        io:format("WARNING: definition received invalid message: ~p~n", [Other]),
         Actor(A, X, Y, Us, Vs)
     end
   end.
+
+
+% a forward actor ... TODO
 
 % B_{c}
 forward(X, A) ->
   receive
     {wrap_up, Pid, Ref} ->
       Pid ! {Ref, {forward, X, [A]}};
+    {print_status, Pid, Ref, IndentLevel} ->
+      io:format(join_util:indentation(IndentLevel) ++ "|- forward ~p to ~p~n",
+                [X, A]),
+      Pid ! {Ref, ok},
+      forward(X, A);
     I -> join_reg:send(A, {X, I}),
          forward(X, A)
   end.
+

@@ -30,7 +30,7 @@ send(Channel, Payload) ->
             try join_reg:get_pid(Channel) of  % might not be registered yet
               Pid -> Pid ! Payload
             catch
-              throw:timeout -> io:format("ERROR: failed sending ~p to ~p~n",
+              throw:timeout -> io:format("WARNING: failed sending ~p to ~p~n",
                                          [Payload, Channel])
             end
         end),
