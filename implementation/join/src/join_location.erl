@@ -4,6 +4,7 @@
          create_root/0,
          create/2,
          go/3,
+         spawn_actor_at/2,
          print_status/1
         ]).
 
@@ -17,7 +18,7 @@
 % so we can just store the new pids then.
 %
 % supported operations:
-%   - registering a process
+%   - spawning a process
 %   - wrapping itself up into a data structure (ending execution)
 %   - re-spawning such a data structure
 %   - removing a sublocation (when it moves)
@@ -32,19 +33,20 @@
 
 
 % TODO: leave forwarder behind after migrating?
-location(Channel, Super, Subs, Actors) ->
+location(Name, Super, Subs, Actors) ->
   receive
-    {register_process, Pid} ->
-      location(Channel, Super, Subs, [Pid | Actors]);
+    {spawn_actor, Actor} ->
+      Pid = spawn_actor_here(Name, Actor),
+      location(Name, Super, Subs, [Pid | Actors]);
     {spawn_location, Data, Continuation} ->
       SubPid = respawn_here(Data),
       case Continuation of
         none -> ok;
         _ -> join_reg:send(Continuation, ok)
       end,
-      location(Channel, Super, [SubPid | Subs], Actors);
+      location(Name, Super, [SubPid | Subs], Actors);
     {unregister_location, Pid} ->
-      location(Channel, Super, lists:delete(Pid, Subs), Actors);
+      location(Name, Super, lists:delete(Pid, Subs), Actors);
     {wrap_up, Pid, Ref} ->
       case Super of
         none ->
@@ -54,18 +56,30 @@ location(Channel, Super, Subs, Actors) ->
           Ss = lists:map(fun wrap_up/1, Subs), % TODO: concurrency
           As = lists:map(fun join_actor:wrap_up/1, Actors),
           join_reg:unregister_self(),
-          Pid ! {Ref, {ok, {Channel, Ss, As}}},
-          forward_location(Channel)
+          Pid ! {Ref, {ok, {Name, Ss, As}}},
+          forward_location(Name)
       end;
     {print_status, Pid, Ref, IndentLevel} ->
       io:format(join_util:indentation(IndentLevel) ++ "|-- location ~p (Super: ~p, ~p actors):~n",
-                [Channel, Super, length(Actors)]),
+                [Name, Super, length(Actors)]),
       lists:foreach(fun(S) -> print_status(S, IndentLevel+1) end, Subs),
       Pid ! {Ref, ok},
-      location(Channel, Super, Subs, Actors);
+      location(Name, Super, Subs, Actors);
     Other ->
-      io:format("location ~p received invalid message: ~p~n", [self(), Other])
+      io:format("WARNING: location ~p received invalid message: ~p~n", [self(), Other]),
+      location(Name, Super, Subs, Actors)
   end.
+
+% returns Pid
+spawn_actor_here(Location, {Actor, Channel, Args}) ->
+  ?DEBUG("spawning actor on ~p at ~p", [Channel, Location]),
+  spawn(fun() ->
+            join_reg:register_self(Channel),
+            apply(Actor, [Location, Channel | Args])
+        end).
+
+spawn_actor_at(Location, Actor) ->
+  join_reg:send(Location, {spawn_actor, Actor}).
 
 
 % synchronous
@@ -90,7 +104,7 @@ forward_location(Channel) ->
   timer:sleep(100), % so we don't spam ourself
   receive
     Message ->
-      io:format("WARNING: location forwarding message to ~p:~n  ~p~n",
+      io:format("WARNING: forwarding message after moving to ~p:~n  ~p~n",
                 [Channel, Message]),
       join_reg:send(Channel, Message),
       forward_location(Channel)
@@ -126,7 +140,7 @@ wrap_up(Pid) ->
       io:format("could not wrap up location at ~p: ~p~n", [Pid, Error]),
       {error, Error}
   after 3000 ->
-          io:format("timeout when wrapping up location at ~p~n", [Pid]),
+          io:format("WARNING: timeout when wrapping up location at ~p~n", [Pid]),
           timeout
   end.
 
@@ -140,7 +154,7 @@ respawn_at(Super, {Channel, Subs, Actors}) ->
             % register in registry
             join_reg:register_self(Channel),
             % register actors
-            As = lists:map(fun({Actor, A, Args}) -> join_reg:spawn(Channel, Actor, A, Args) end, Actors),
+            As = lists:map(fun(Actor) -> spawn_actor_here(Channel, Actor) end, Actors),
             % register sub processes
             Ss = lists:map(fun(Sub) -> respawn_here(Sub) end, Subs),
             location(Channel, Super, Ss, As)

@@ -20,9 +20,9 @@ def(Location, PQ) ->
   % get user-supplied processes
   {P, Q} = PQ(X, Y),
   % spawn in parallel (no need to spawn lists)
-  join_actor:spawn_at(Location, join_actor:actor(P), A, [X, Y, Lx, Ly]),  % P passed at runtime only in implementation
-  join_actor:spawn_at(Location, fun join_actor:forward/2, X, [A]),
-  join_actor:spawn_at(Location, fun join_actor:forward/2, Y, [A]),
+  join_location:spawn_actor_at(Location, join_actor:actor(P), A, [X, Y, Lx, Ly]),  % P passed at runtime only in implementation
+  join_location:spawn_actor_at(Location, fun join_actor:forward/2, X, [A]),
+  join_location:spawn_actor_at(Location, fun join_actor:forward/2, Y, [A]),
   spawn(Q),
   % return actor name just for debugging
   A.

@@ -7,7 +7,7 @@
          ]).
 
 % a general actor is process registered at a location and knows:
-%   - TODO: its location? forward doesn't need it
+%   - TODO: its location? forward doesn't need it.
 %   - its own channel name
 %   - some arguments (usually to keep state)
 %
@@ -17,34 +17,17 @@
 %
 % it is based on the concept of a behavior in the actor pi calculus.
 %
-% actors can be spawned, which will automatically register them
-% at their location and in the global registry.
+% actors can be spawned at a location (see join_location.erl), TODO: move back here?
+% which will automatically register them there and in the global registry.
 
-% spawn and register a behavior on a given channel, in a given location
-% based on behavior syntax in ActorPi
-spawn_at(Location, Bhv, Channel, Args) ->
-  ?DEBUG("at ~p", [Location]),
-  % TODO: synchronously, so we're not forgotten?
-  join_location:register_self(Location),
-  join_actor:spawn_(Bhv, Channel, Args).
-
-spawn_(Bhv, Channel, Args) ->
-  ?DEBUG("starting ~p", [Channel]),
-  spawn(fun() ->
-            join_reg:register_self(Channel),
-            apply(Bhv, [Channel | Args])
-        end).
-
+% almost as for locations, but actors don't return errors
 wrap_up(Pid) ->
-  not_implemented.
-%   Ref = make_ref(),
-%   Pid ! {wrap_up, self(), Ref},
-%   receive
-%     {Ref, ProcData} -> ProcData
-%   after 3000 -> timeout
-%   end.
-%
-
+  Ref = make_ref(),
+  Pid ! {wrap_up, self(), Ref},
+  receive
+    {Ref, Data} -> Data
+   after 3000 -> timeout
+  end.
 
 % a definition actor is parametrized over a process P and additionally knows:
 %   - the two channels it needs to join
@@ -57,8 +40,10 @@ wrap_up(Pid) ->
 definition(P) ->
   fun Actor(A, X, Y, Us, Vs) ->
     receive
-      {wrap_up, Pid, Ref} ->  % Pid or Channel?
-        Pid ! {Ref, {Actor, A, [X, Y, Us, Vs]}};
+      {wrap_up, Pid, Ref} ->
+        join_reg:unregister_self(),
+        Pid ! {Ref, {Actor, A, [X, Y, Us, Vs]}},
+        join_location:forward_location(A); % TODO: where to move it?
       {X, U} ->
         case queue:out(Vs) of
           {empty, _} -> Actor(A, X, Y, queue:in(U, Us), Vs);
@@ -91,7 +76,7 @@ definition(P) ->
 forward(X, A) ->
   receive
     {wrap_up, Pid, Ref} ->
-      Pid ! {Ref, {forward, X, [A]}};
+      Pid ! {Ref, {fun forward/2, X, [A]}};
     {print_status, Pid, Ref, IndentLevel} ->
       io:format(join_util:indentation(IndentLevel) ++ "|- forward ~p to ~p~n",
                 [X, A]),
