@@ -1,10 +1,13 @@
 -module(join).
 -include("debug.hrl").
--compile(export_all).
+-export([
+         send/2,
+         def/2
+        ]).
 
 % re-export
 send(Channel, Payload) ->
-  join_actor:send(Channel, Payload).
+  join_reg:send(Channel, Payload).
 
 def(Location, PQ) ->
   ?DEBUG("~p", [PQ]),

@@ -22,12 +22,14 @@ fundamentals
         !!! ignore for now
     ??? how to implement parallel operator?
         --- probably using spawn
+        --- new processes need to be registered at location
         --- no binary operators, but function taking list of functions (so not evaluated immediately)
         --- syntax could be very noisy, but we could have macros later
 
 distribution
     ??? how to connect nodes initially?
         (add physical locations to level 1 of tree)
+        ??? nameserver?
         XXX
     ??? how to send a message to a remote receiver?
         !!! lookup node
@@ -69,6 +71,9 @@ distribution
         ??? how do we find out which location to move when using `go`? (implicit in calculus)
             --- explicit parameter for now? (more flexible, but not true to calculus)
             --- could probably be done using parse_transform (if really necessary)
+            --- register location with each actor (cannot change), `go` looks it up
+                ??? does that also work for `def`?
+                XXX
     ??? which infrastructure is needed?
         !!! global registry (e.g. gproc) with mappings:
             name -> pid of forwarder (or def actor)
@@ -81,6 +86,9 @@ distribution
         XXX
     ??? does migration to a different machine require anything else?
         --- e.g. over TCP?
+    ??? how to manage the first level locations (physical locations)?
+        ??? automatically create and restart?
+        XXX
 
 syntax
     ??? how to get it to look nice?

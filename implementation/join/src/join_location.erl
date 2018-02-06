@@ -1,6 +1,11 @@
 -module(join_location).
 -include("debug.hrl").
--compile(export_all).
+-export([
+         create_root/0,
+         create/2,
+         go/3,
+         print_status/1
+        ]).
 
 % a location knows:
 %   - its superlocation (by pid)
@@ -27,12 +32,21 @@
 % joining the network?
 
 
+% TODO: leave forwared behind after migrating?
 location(Channel, Super, Subs, Actors) ->
   receive
     {register_process, Pid} ->
       location(Channel, Super, Subs, [Pid | Actors]);
+    % TODO: remove?
     {register_location, Pid} ->
       location(Channel, Super, [Pid | Subs], Actors);
+    {spawn_location, Data, Continuation} ->
+      SubPid = respawn_here(Data),
+      case Continuation of
+        none -> ok;
+        _ -> join_reg:send(Continuation, ok)
+      end,
+      location(Channel, Super, [SubPid | Subs], Actors);
     {unregister_location, Pid} ->
       location(Channel, Super, lists:delete(Pid, Subs), Actors);
     {wrap_up, Pid, Ref} ->
@@ -44,15 +58,50 @@ location(Channel, Super, Subs, Actors) ->
           Ss = lists:map(fun wrap_up/1, Subs), % TODO: concurrency
           As = lists:map(fun join_actor:wrap_up/1, Actors),
           Pid ! {Ref, {ok, {Channel, Ss, As}}}
+          % TODO: use unregister_self() ?
       end;
-    status ->
-      io:format("Super: ~p,~n", [Super]),
-      io:format("Subs: ~p,~n", [Subs]),
-      io:format("Actors: ~p~n", [Actors]),
+    {print_status, Pid, Ref, IndentLevel} ->
+      io:format(indent(IndentLevel) ++ "|-- location ~p (Super: ~p, ~p actors):~n",
+                [Channel, Super, length(Actors)]),
+      lists:foreach(fun(S) -> print_status(S, IndentLevel+1) end, Subs),
+      Pid ! {Ref, ok},
       location(Channel, Super, Subs, Actors);
     Other ->
       io:format("location ~p received invalid message: ~p~n", [self(), Other])
   end.
+
+indent(Level) ->
+  lists:append(lists:duplicate(Level, "    ")).
+
+% synchronous
+print_status(Loc) ->
+  print_status(Loc, 0).
+
+print_status(Loc, IndentLevel) when is_pid(Loc) ->
+  Ref = make_ref(),
+  Loc ! {print_status, self(), Ref, IndentLevel},
+  receive
+    {Ref, ok} -> ok
+  end;
+print_status(Loc, IndentLevel) ->
+  try join_reg:get_pid(Loc) of
+    Pid -> print_status(Pid, IndentLevel)
+  catch
+    throw:timeout -> io:format(indent(IndentLevel) ++ "|- timeout~n")
+  end.
+
+
+
+
+% Source might be ommited in the future
+% Continuation can be none
+go(Source, Destination, Continuation) ->
+  spawn(fun() ->
+            SourcePid = join_reg:get_pid(Source),
+            Data = wrap_up(SourcePid),
+            join_reg:send(Destination, {spawn_location, Data, Continuation})
+        end).
+
 
 wrap_up(Pid) ->
   Ref = make_ref(),
@@ -68,30 +117,31 @@ wrap_up(Pid) ->
           timeout
   end.
 
-respawn_at(Super, Data) ->
-  % TODO: synchronously?
-  NewPid = respawn(Super, Data),
-  Super ! {register_location, NewPid}.
-
 % does not register at a superlocation!
-respawn(Super, {Channel, Subs, Actors}) ->
+respawn_here(Data) ->
+  Super = self(),
+  respawn_at(Super, Data).
+
+respawn_at(Super, {Channel, Subs, Actors}) ->
   spawn(fun() ->
-            % register in gproc
-            gproc:reg({n, l, Channel}),
+            % register in registry
+            join_reg:register_self(Channel),
             % register actors
-            As = lists:map(fun({Actor, A, Args}) -> join_actor:spawn(Channel, Actor, A, Args) end, Actors),
+            As = lists:map(fun({Actor, A, Args}) -> join_reg:spawn(Channel, Actor, A, Args) end, Actors),
             % register sub processes
-            Ss = lists:map(fun(Sub) -> respawn(self(), Sub) end, Subs),
+            Ss = lists:map(fun(Sub) -> respawn_here(Sub) end, Subs),
             location(Channel, Super, Ss, As)
         end).
 
+
 create(Super, Name) ->
-  Channel = join_util:get_id(Name),
-  respawn_at(Super, {Channel, [], []}),
+  Channel = join_util:get_id({loc, Name}),
+  Data = {Channel, [], []},
+  join_reg:send(Super, {spawn_location, Data, none}),
   Channel.
 
 create_root() ->
   Channel = {root, node()},
-  respawn(none, {Channel, [], []}),
+  respawn_at(none, {Channel, [], []}),
   Channel.
 

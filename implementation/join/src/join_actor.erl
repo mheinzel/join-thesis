@@ -1,9 +1,12 @@
 -module(join_actor).
 -include("debug.hrl").
--compile(export_all).
+-export([
+         actor/1,
+         forward/2
+         ]).
 
 % a process needs to do some things when it is spawned:
-%   - register itself in gproc
+%   - register itself in registry
 %   - register itself in the location
 
 % spawn and register a behavior on a given channel, in a given location
@@ -17,7 +20,7 @@ spawn_at(Location, Bhv, Channel, Args) ->
 spawn(Bhv, Channel, Args) ->
   ?DEBUG("starting ~p", [Channel]),
   spawn(fun() ->
-            gproc:reg({n, l, Channel}),
+            join_reg:register_self(Channel),
             apply(Bhv, [Channel | Args])
         end).
 
@@ -30,18 +33,6 @@ spawn(Bhv, Channel, Args) ->
 %   after 3000 -> timeout
 %   end.
 %
-
-
-send(Channel, Payload) ->
-  ?DEBUG("sending ~p to ~p", [Payload, Channel]),
-  spawn(fun() ->
-            Pid = get_pid(Channel),  % might not be registered yet
-            Pid ! Payload
-        end).
-
-get_pid(Channel) ->
-  {Pid, _} = gproc:await({n, l, Channel}),  % might not be registered yet
-  Pid.
 
 
 
@@ -81,6 +72,6 @@ forward(X, A) ->
   receive
     {wrap_up, Pid, Ref} ->
       Pid ! {Ref, {forward, X, [A]}};
-    I -> send(A, {X, I}),
+    I -> join_reg:send(A, {X, I}),
          forward(X, A)
   end.
