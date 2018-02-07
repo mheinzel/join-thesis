@@ -4,6 +4,7 @@
         register_self/1,
         unregister_self/0,
         get_pid/1,
+        get_pid/2,
         send/2
         ]).
 
@@ -14,14 +15,22 @@
 % requires gproc application to be running
 
 register_self(Channel) ->
-  gproc:reg({n, g, Channel}).
+  try gproc:reg({n, g, Channel})
+  catch
+    error:Error ->
+      ?WARNING("registering on ~p failed with message:~n  ~p", [Channel, Error]),
+      ?WARNING("~p is registered at: ~p", [gproc:where({n, g, Channel})])
+  end.
 
 unregister_self() ->
+  ?DEBUG("self() = ~p", [self()]),
   gproc:goodbye().
 
 % throws
 get_pid(Channel) ->
-  {Pid, _} = gproc:await({n, g, Channel}, 5000),  % might not be registered yet
+  get_pid(Channel, 8000).
+get_pid(Channel, Timeout) ->
+  {Pid, _} = gproc:await({n, g, Channel}, Timeout),  % might not be registered yet
   Pid.
 
 send(Channel, Payload) ->
@@ -30,8 +39,8 @@ send(Channel, Payload) ->
             try join_reg:get_pid(Channel) of  % might not be registered yet
               Pid -> Pid ! Payload
             catch
-              throw:timeout -> io:format("WARNING: failed sending ~p to ~p~n",
-                                         [Payload, Channel])
+              error:timeout -> ?WARNING("failed sending to ~p:~n  ~p",
+                                         [Channel, Payload])
             end
         end),
   ok.

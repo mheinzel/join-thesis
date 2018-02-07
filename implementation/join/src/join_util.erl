@@ -6,8 +6,7 @@
 
 % node() makes it globally unique
 get_id(Who) ->
-  {Who, node(), erlang:unique_integer()}.
-
+  {Who, node(), erlang:unique_integer([positive, monotonic])}.
 
 indentation(Level) ->
   lists:append(lists:duplicate(Level, "    ")).

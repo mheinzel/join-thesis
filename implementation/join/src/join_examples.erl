@@ -43,3 +43,16 @@ pi_channel(L) ->
       } end)
     end
   } end).
+
+beeper(L) ->
+  def_single(L, fun(Token) -> {
+                        fun(_) ->
+                            io:format("beep!~n"),
+                            timer:sleep(2000),
+                            join:send(Token, ok)
+                        end,
+                        fun() ->
+                            join:send(Token, ok)
+                        end
+                       }
+              end).

@@ -4,9 +4,10 @@
          create_root/0,
          create/2,
          go/3,
-         spawn_actor_at/2,
+         spawn_actor_at/4,
          print_status/1
         ]).
+-export([forward_location/1]).
 
 % a location knows:
 %   - its own channel name
@@ -36,7 +37,7 @@
 location(Name, Super, Subs, Actors) ->
   receive
     {spawn_actor, Actor} ->
-      Pid = spawn_actor_here(Name, Actor),
+      Pid = join_actor:spawn_actor_here(Actor),
       location(Name, Super, Subs, [Pid | Actors]);
     {spawn_location, Data, Continuation} ->
       SubPid = respawn_here(Data),
@@ -56,30 +57,23 @@ location(Name, Super, Subs, Actors) ->
           Ss = lists:map(fun wrap_up/1, Subs), % TODO: concurrency
           As = lists:map(fun join_actor:wrap_up/1, Actors),
           join_reg:unregister_self(),
-          Pid ! {Ref, {ok, {Name, Ss, As}}},
-          forward_location(Name)
+          Pid ! {Ref, {ok, {Name, Ss, As}}}
+          %forward_location(Name)
       end;
     {print_status, Pid, Ref, IndentLevel} ->
-      io:format(join_util:indentation(IndentLevel) ++ "|-- location ~p (Super: ~p, ~p actors):~n",
-                [Name, Super, length(Actors)]),
+      io:format(join_util:indentation(IndentLevel) ++ "|-- location ~p (Pid: ~p, Super: ~p):~n",
+                [Name, self(), Super]),
+      lists:foreach(fun(A) -> print_status(A, IndentLevel+1) end, Actors),
       lists:foreach(fun(S) -> print_status(S, IndentLevel+1) end, Subs),
       Pid ! {Ref, ok},
       location(Name, Super, Subs, Actors);
     Other ->
-      io:format("WARNING: location ~p received invalid message: ~p~n", [self(), Other]),
+      ?WARNING("location ~p received invalid message: ~p~n", [self(), Other]),
       location(Name, Super, Subs, Actors)
   end.
 
-% returns Pid
-spawn_actor_here(Location, {Actor, Channel, Args}) ->
-  ?DEBUG("spawning actor on ~p at ~p", [Channel, Location]),
-  spawn(fun() ->
-            join_reg:register_self(Channel),
-            apply(Actor, [Location, Channel | Args])
-        end).
-
-spawn_actor_at(Location, Actor) ->
-  join_reg:send(Location, {spawn_actor, Actor}).
+spawn_actor_at(Location, Actor, Channel, Args) ->
+  join_reg:send(Location, {spawn_actor, {Actor, Channel, Args}}).
 
 
 % synchronous
@@ -91,24 +85,44 @@ print_status(Loc, IndentLevel) when is_pid(Loc) ->
   Loc ! {print_status, self(), Ref, IndentLevel},
   receive
     {Ref, ok} -> ok
+  after 500 ->
+          io:format(join_util:indentation(IndentLevel) ++ "|- timeout~n")
   end;
 print_status(Loc, IndentLevel) ->
-  try join_reg:get_pid(Loc) of
+  try join_reg:get_pid(Loc, 100) of
     Pid -> print_status(Pid, IndentLevel)
   catch
-    throw:timeout -> io:format(join_util:indentation(IndentLevel) ++ "|- timeout~n")
+    error:timeout -> io:format(join_util:indentation(IndentLevel) ++ "|- timeout~n")
   end.
 
 
 forward_location(Channel) ->
-  timer:sleep(100), % so we don't spam ourself
+  timer:sleep(1000), % so we don't spam ourself
+
+  try join_reg:get_pid(Channel, 200) of
+    Pid when Pid=:=self() ->
+      ?WARNING("(~p) still registered on ~p",
+               [self(), Channel]),
+      forward_location(Channel);
+    _ ->
+      % some-one else register, forward everything!
+      forward_location_start(Channel)
+  catch
+    error:timeout ->
+      ?WARNING("still no-one registered on ~p",
+               [Channel]),
+      forward_location(Channel)
+  end.
+
+forward_location_start(Channel) ->
   receive
     Message ->
-      io:format("WARNING: forwarding message after moving to ~p:~n  ~p~n",
+      ?DEBUG("after moving to ~p:~n  ~p~n",
                 [Channel, Message]),
       join_reg:send(Channel, Message),
-      forward_location(Channel)
+      forward_location_start(Channel)
   after 5000 ->
+          ?DEBUG("retiring...", []),
           ok
   end.
 
@@ -124,7 +138,7 @@ go(Source, Destination, Continuation) ->
                 Data = wrap_up(SourcePid),
                 join_reg:send(Destination, {spawn_location, Data, Continuation})
             catch
-              throw:timeout -> io:format("WARNING: ~p cannot find location ~p to go to~n",
+              throw:timeout -> ?WARNING("~p cannot find location ~p to go to~n",
                                          [Source, Destination])
             end
         end).
@@ -140,7 +154,7 @@ wrap_up(Pid) ->
       io:format("could not wrap up location at ~p: ~p~n", [Pid, Error]),
       {error, Error}
   after 3000 ->
-          io:format("WARNING: timeout when wrapping up location at ~p~n", [Pid]),
+          ?WARNING("timeout when wrapping up location at ~p~n", [Pid]),
           timeout
   end.
 
@@ -154,7 +168,7 @@ respawn_at(Super, {Channel, Subs, Actors}) ->
             % register in registry
             join_reg:register_self(Channel),
             % register actors
-            As = lists:map(fun(Actor) -> spawn_actor_here(Channel, Actor) end, Actors),
+            As = lists:map(fun(Actor) -> join_actor:spawn_actor_here(Actor) end, Actors),
             % register sub processes
             Ss = lists:map(fun(Sub) -> respawn_here(Sub) end, Subs),
             location(Channel, Super, Ss, As)

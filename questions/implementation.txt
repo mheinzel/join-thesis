@@ -1,6 +1,8 @@
 development process
     ??? what to implement first: full join patterns or locations?
     !!! locations!
+    ??? how to test
+        XXX
 
 erlang
     ??? what is possible regarding cross-node communication?
@@ -9,6 +11,23 @@ erlang
         ??? can you move the "current process" to another node?
             !!! not a running process, but function with state, respawn
         XXX
+    --- problems with gproc
+        --- unregistering self fails
+        --- there seem to be problems with nodes joining after gproc application already started???
+    --- same version of module needs to be loaded on destination when sending code
+
+process registries
+    global
+        generally created for few, but long-running processes
+        locking to ensure atomic registration -> bottleneck
+        conflict resolution features
+    pg2
+        created for process groups
+        locking to ensure atomic registration -> bottleneck
+    gproc
+        much better performance
+        each process can only register itself
+
 
 fundamentals
     ??? how to represent a channel/name?
@@ -25,6 +44,13 @@ fundamentals
         --- new processes need to be registered at location
         --- no binary operators, but function taking list of functions (so not evaluated immediately)
         --- syntax could be very noisy, but we could have macros later
+    ??? how to do initial exhange of channel names? (e.g. for applets example)
+        ??? nameserver of some kind
+        XXX
+    ??? how parallel is the implementation actually?
+        --- all messages on a channel go through the same actor,
+            but thath shouldn't be too bad, since you can easily create your own actor
+        --- apart from that, everything is pretty independent
 
 distribution
     ??? how to connect nodes initially?
@@ -67,7 +93,11 @@ distribution
                 --- even makes wrapping up mailbox unnecessary
                 --- needs to be killed later, otherwise we leak processes
                 ??? when to kill it? after n seconds?
-                XXX
+                --- problem: when the old process is still alive, the new one cannot register
+                    even after calling gproc:goodbye()
+                    ??? can we somehow change the registered pid before killing the old actor?
+                        otherwise, messages are lost
+                    XXX
         ??? how do we find out which location to move when using `go`? (implicit in calculus)
             --- explicit parameter for now? (more flexible, but not true to calculus)
             --- could probably be done using parse_transform (if really necessary)

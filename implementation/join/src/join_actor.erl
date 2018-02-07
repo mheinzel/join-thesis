@@ -3,6 +3,7 @@
 -export([
          definition/1,
          forward/2,
+         spawn_actor_here/1,
          wrap_up/1
          ]).
 
@@ -19,6 +20,14 @@
 %
 % actors can be spawned at a location (see join_location.erl), TODO: move back here?
 % which will automatically register them there and in the global registry.
+
+% returns Pid
+spawn_actor_here({Actor, Channel, Args}) ->
+  ?DEBUG("spawning actor on ~p", [Channel]),
+  spawn(fun() ->
+            join_reg:register_self(Channel),
+            apply(Actor, [Channel | Args])
+        end).
 
 % almost as for locations, but actors don't return errors
 wrap_up(Pid) ->
@@ -42,8 +51,8 @@ definition(P) ->
     receive
       {wrap_up, Pid, Ref} ->
         join_reg:unregister_self(),
-        Pid ! {Ref, {Actor, A, [X, Y, Us, Vs]}},
-        join_location:forward_location(A); % TODO: where to move it?
+        Pid ! {Ref, {Actor, A, [X, Y, Us, Vs]}};
+        %join_location:forward_location(A);
       {X, U} ->
         case queue:out(Vs) of
           {empty, _} -> Actor(A, X, Y, queue:in(U, Us), Vs);
@@ -59,12 +68,13 @@ definition(P) ->
             Actor(A, X, Y, T, Vs)
         end;
       {print_status, Pid, Ref, IndentLevel} ->
-        io:format(join_util:indentation(IndentLevel) ++ "|- definition ~p (Us: ~p, Vs: ~p)~n",
-                  [A, Us, Vs]),
+        io:format(join_util:indentation(IndentLevel) ++ "|-- definition ~p (Pid: ~p):~n", [A, self()]),
+        io:format(join_util:indentation(IndentLevel+1) ++ "|-- Us: ~p~n", [Us]),
+        io:format(join_util:indentation(IndentLevel+1) ++ "|-- Vs: ~p~n", [Vs]),
         Pid ! {Ref, ok},
         Actor(A, X, Y, Us, Vs);
       Other ->
-        io:format("WARNING: definition received invalid message: ~p~n", [Other]),
+        ?WARNING("definition received invalid message: ~p~n", [Other]),
         Actor(A, X, Y, Us, Vs)
     end
   end.
@@ -76,6 +86,7 @@ definition(P) ->
 forward(X, A) ->
   receive
     {wrap_up, Pid, Ref} ->
+      join_reg:unregister_self(),
       Pid ! {Ref, {fun forward/2, X, [A]}};
     {print_status, Pid, Ref, IndentLevel} ->
       io:format(join_util:indentation(IndentLevel) ++ "|- forward ~p to ~p~n",
