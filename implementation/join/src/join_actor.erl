@@ -51,8 +51,8 @@ definition(P) ->
     receive
       {wrap_up, Pid, Ref} ->
         join_reg:unregister_self(),
-        Pid ! {Ref, {Actor, A, [X, Y, Us, Vs]}};
-        %join_location:forward_location(A);
+        Pid ! {Ref, {Actor, A, [X, Y, Us, Vs]}},
+        join_location:forward_location(A);
       {X, U} ->
         case queue:out(Vs) of
           {empty, _} -> Actor(A, X, Y, queue:in(U, Us), Vs);
@@ -68,9 +68,9 @@ definition(P) ->
             Actor(A, X, Y, T, Vs)
         end;
       {print_status, Pid, Ref, IndentLevel} ->
-        io:format(join_util:indentation(IndentLevel) ++ "|-- definition ~p (Pid: ~p):~n", [A, self()]),
-        io:format(join_util:indentation(IndentLevel+1) ++ "|-- Us: ~p~n", [Us]),
-        io:format(join_util:indentation(IndentLevel+1) ++ "|-- Vs: ~p~n", [Vs]),
+        io:format(join_util:indentation(IndentLevel+1) ++ "definition ~p (Pid: ~p):~n", [A, self()]),
+        io:format(join_util:indentation(IndentLevel+1) ++ "  Us: ~p~n", [Us]),
+        io:format(join_util:indentation(IndentLevel+1) ++ "  Vs: ~p~n", [Vs]),
         Pid ! {Ref, ok},
         Actor(A, X, Y, Us, Vs);
       Other ->
@@ -87,9 +87,10 @@ forward(X, A) ->
   receive
     {wrap_up, Pid, Ref} ->
       join_reg:unregister_self(),
-      Pid ! {Ref, {fun forward/2, X, [A]}};
+      Pid ! {Ref, {fun forward/2, X, [A]}},
+      join_location:forward_location(X);
     {print_status, Pid, Ref, IndentLevel} ->
-      io:format(join_util:indentation(IndentLevel) ++ "|- forward ~p to ~p~n",
+      io:format(join_util:indentation(IndentLevel+1) ++ "forward ~p to ~p~n",
                 [X, A]),
       Pid ! {Ref, ok},
       forward(X, A);

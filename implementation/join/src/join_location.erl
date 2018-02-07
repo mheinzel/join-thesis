@@ -57,10 +57,11 @@ location(Name, Super, Subs, Actors) ->
           Ss = lists:map(fun wrap_up/1, Subs), % TODO: concurrency
           As = lists:map(fun join_actor:wrap_up/1, Actors),
           join_reg:unregister_self(),
-          Pid ! {Ref, {ok, {Name, Ss, As}}}
-          %forward_location(Name)
+          Pid ! {Ref, {ok, {Name, Ss, As}}},
+          forward_location(Name)
       end;
     {print_status, Pid, Ref, IndentLevel} ->
+      io:format(join_util:indentation(IndentLevel) ++ "|~n"),
       io:format(join_util:indentation(IndentLevel) ++ "|-- location ~p (Pid: ~p, Super: ~p):~n",
                 [Name, self(), Super]),
       lists:foreach(fun(A) -> print_status(A, IndentLevel+1) end, Actors),
@@ -86,13 +87,13 @@ print_status(Loc, IndentLevel) when is_pid(Loc) ->
   receive
     {Ref, ok} -> ok
   after 500 ->
-          io:format(join_util:indentation(IndentLevel) ++ "|- timeout~n")
+          io:format(join_util:indentation(IndentLevel) ++ "XXX timeout~n")
   end;
 print_status(Loc, IndentLevel) ->
   try join_reg:get_pid(Loc, 100) of
     Pid -> print_status(Pid, IndentLevel)
   catch
-    error:timeout -> io:format(join_util:indentation(IndentLevel) ++ "|- timeout~n")
+    error:timeout -> io:format(join_util:indentation(IndentLevel) ++ "XXX timeout~n")
   end.
 
 
@@ -122,7 +123,7 @@ forward_location_start(Channel) ->
       join_reg:send(Channel, Message),
       forward_location_start(Channel)
   after 5000 ->
-          ?DEBUG("retiring...", []),
+          ?DEBUG("retiring ~p...", [Channel]),
           ok
   end.
 

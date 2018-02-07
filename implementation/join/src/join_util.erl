@@ -9,4 +9,4 @@ get_id(Who) ->
   {Who, node(), erlang:unique_integer([positive, monotonic])}.
 
 indentation(Level) ->
-  lists:append(lists:duplicate(Level, "    ")).
+  lists:append(lists:duplicate(Level, "|   ")).
