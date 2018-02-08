@@ -78,13 +78,13 @@ location and then move it to another node.
 There is also a distributed example. After setting two nodes up, run
 
 ```erlang
-join_examples:applet_server(Root)
+join_examples:applet_server(Root).
 ```
 
 just once on one node (it registers the global channel `cell`) and
 
 ```erlang
-join_examples:applet_client(Root)
+join_examples:applet_client(Root).
 ```
 
 on the other.

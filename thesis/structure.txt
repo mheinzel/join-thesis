@@ -27,9 +27,13 @@
 
 - implementation
     - basic encoding from theory
+        examples
     - optimizations
         queue for fairness
         (removing forwarders)
     - distributed implementation
+        wrapping up and respawning
+        locations
+        distributed examples
 
 - applications ?
