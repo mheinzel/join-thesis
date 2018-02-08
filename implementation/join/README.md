@@ -37,7 +37,7 @@ Child2 = join_location:create(Parent, child2).
 join:go(Child1, Child2, none).
 ```
 
-You can check the status of a location.
+You can check the status of a location tree.
 
 ```erlang
 join_debug:print_status(Root).
@@ -72,10 +72,19 @@ $ rebar3 shell --sname two
 ```
 
 You can now move locations to the other root (and sublocations, if you
-have their name). You for example create the beeper on a local child location
-and then move it to another node.
+have their name). You could, for example, create the beeper on a local child
+location and then move it to another node.
 
 There is also a distributed example. After setting two nodes up, run
-`join_examples:applet_server(Root)` just once on one node (it registers the
-global channel `cell`) and
-`join_examples:applet_client(Root)` on the other.
+
+```erlang
+join_examples:applet_server(Root)
+```
+
+just once on one node (it registers the global channel `cell`) and
+
+```erlang
+join_examples:applet_client(Root)
+```
+
+on the other.

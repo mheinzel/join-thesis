@@ -95,8 +95,10 @@ applet_server(Location) ->
     end
   } end).
 
-applet_client(User, NumGet, ToPrint) ->
+applet_client(User) ->
+  applet_client(User, 2, [hello, world]).
 
+applet_client(User, NumGet, ToPrint) ->
   % get, put = cell(User) in
   % put("world");
   % put("hello");
