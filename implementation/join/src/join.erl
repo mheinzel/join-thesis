@@ -8,40 +8,55 @@
          def_globally/4
         ]).
 
+% the primitives for building join definitions.
+%
+% NOTE:
+% wherever a Location parameter occurs, the innermost enclosing location must
+% be supplied!
+
+
 % re-export
 send(Channel, Payload) ->
   join_reg:send(Channel, Payload).
 
-% must use the current (innermost) location as source!!!
-go(Source, Destination, Continuation) ->
-  join_location:go(Source, Destination, Continuation).
+go(Location, Destination, Continuation) ->
+  join_location:go(Location, Destination, Continuation).
 
 
-
+% binary join pattern:
+%   def X(U) | Y(V) > P
+%   in Q
+% PQ receives the channel names of X and Y
+% and must return two functions {P, Q}.
+% P receives the payloads U and V.
+% Q has no parameters.
+%
 def(Location, PQ) ->
   ?DEBUG("~p", [PQ]),
   % new names
-  A = join_util:get_id(act),
-  X = join_util:get_id(fwX),
-  Y = join_util:get_id(fwY),
+  A = join_util:create_id(act),
+  X = join_util:create_id(fwX),
+  Y = join_util:create_id(fwY),
   Lx = queue:new(),
   Ly = queue:new(),
   % get user-supplied processes
   {P, Q} = PQ(X, Y),
   % spawn in parallel (no need to spawn lists)
-  join_location:spawn_actor_at(Location, join_actor:definition(P), A, [X, Y, Lx, Ly]),  % P passed at runtime only in implementation
+  join_location:spawn_actor_at(Location, join_actor:definition(P), A, [X, Y, Lx, Ly]),
   join_location:spawn_actor_at(Location, fun join_actor:forward/2, X, [A]),
   join_location:spawn_actor_at(Location, fun join_actor:forward/2, Y, [A]),
   spawn(Q),
   % return actor name just for debugging
   A.
 
+% takes an additional location identifier (just for debugging).
+% PQ now also receives a location name (as first parameter).
 def_location(Location, NewLocName, PQ) ->
   ?DEBUG("~p", [PQ]),
   % new names
-  A = join_util:get_id(act),
-  X = join_util:get_id(fwX),
-  Y = join_util:get_id(fwY),
+  A = join_util:create_id(act),
+  X = join_util:create_id(fwX),
+  Y = join_util:create_id(fwY),
   Lx = queue:new(),
   Ly = queue:new(),
   % create location
@@ -53,19 +68,19 @@ def_location(Location, NewLocName, PQ) ->
   join_location:spawn_actor_at(NewLocation, join_actor:definition(P), A, [X, Y, Lx, Ly]),  % P passed at runtime only in implementation
   join_location:spawn_actor_at(NewLocation, fun join_actor:forward/2, X, [A]),
   join_location:spawn_actor_at(NewLocation, fun join_actor:forward/2, Y, [A]),
-  % TODO: spawn at the new location? should be on this node actually, so doesn't matter
   spawn(R),
   spawn(Q),
   % return actor name just for debugging
   A.
 
-
-% global names have to be globally unique
-% TODO: should they always be registered at root location?
+% define two channels X and Y globally.
+% X and Y must be globally unique and can be used on connected nodes as well.
+%
+% global names should be registered at the nodes' root location.
 def_globally(Location, X, Y, PQ) ->
   ?DEBUG("~p", [PQ]),
   % new names
-  A = join_util:get_id(act),
+  A = join_util:create_id(act),
   Lx = queue:new(),
   Ly = queue:new(),
   % get user-supplied processes

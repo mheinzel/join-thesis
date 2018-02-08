@@ -29,7 +29,7 @@ def_single(Location, PQ) ->
 
 % just to make it easier to define continuations
 def_single_globally(Location, GlobalName, PQ) ->
-  UnusedName = join_util:get_id(unused),
+  UnusedName = join_util:create_id(unused),
   join:def_globally(Location, GlobalName, UnusedName, fun(X, Unused) ->
     {P, Q} = PQ(X),
     { fun(U, _) -> join:send(Unused, unused), P(U) end,

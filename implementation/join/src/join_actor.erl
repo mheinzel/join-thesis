@@ -7,21 +7,28 @@
          wrap_up/1
          ]).
 
-% a general actor is process registered at a location and knows:
-%   - TODO: its location? forward doesn't need it.
+% an actor is a process that is receiving messages and is registered under
+% a channel name in the registry and at a location.
+% the concept is based on a behavior in the actor pi calculus.
+%
+% generally, it knows:
 %   - its own channel name
 %   - some arguments (usually to keep state)
+%
+% it can be represented and sent in the form:
+%   {Actor, Channel, Args}
+% where
+%   Actor is a function taking the two arguments Channel and Args.
 %
 % supported operations:
 %   - wrapping itself up into a data structure (ending execution)
 %   - (printing its status)
 %
-% it is based on the concept of a behavior in the actor pi calculus.
-%
-% actors can be spawned at a location (see join_location.erl), TODO: move back here?
+% actors can be spawned at a location (see join_location:spawn_actor_at/4),
 % which will automatically register them there and in the global registry.
 
-% returns Pid
+% spawn an actor (as data) and register it in the registry.
+% returns pid of spawned process.
 spawn_actor_here({Actor, Channel, Args}) ->
   ?DEBUG("spawning actor on ~p", [Channel]),
   spawn(fun() ->
@@ -30,6 +37,7 @@ spawn_actor_here({Actor, Channel, Args}) ->
         end).
 
 % almost as for locations, but actors don't return errors
+% TODO: unify?
 wrap_up(Pid) ->
   Ref = make_ref(),
   Pid ! {wrap_up, self(), Ref},
@@ -38,62 +46,81 @@ wrap_up(Pid) ->
    after 3000 -> timeout
   end.
 
+
 % a definition actor is parametrized over a process P and additionally knows:
-%   - the two channels it needs to join
+%   - the two channels it joins
 %   - the payloads of received, but unjoined messages on these channels
 %
+% corresponds to B_a in the encoding
 
-% TODO:
-% after wrapping up, stay as a forwarder for a while
-% B_a
 definition(P) ->
   fun Actor(A, X, Y, Us, Vs) ->
     receive
-      {wrap_up, Pid, Ref} ->
-        join_reg:unregister_self(),
-        Pid ! {Ref, {Actor, A, [X, Y, Us, Vs]}},
-        join_location:forward_location(A);
       {X, U} ->
         case queue:out(Vs) of
-          {empty, _} -> Actor(A, X, Y, queue:in(U, Us), Vs);
+          {empty, _} ->
+            % no Vs, store the U
+            Actor(A, X, Y, queue:in(U, Us), Vs);
           {{value, V}, T} ->
+            % join pattern fires with contents U and V
             spawn(fun() -> P(U, V) end),
             Actor(A, X, Y, Us, T)
         end;
+
       {Y, V} ->
         case queue:out(Us) of
-          {empty, _} -> Actor(A, X, Y, Us, queue:in(V, Vs));
+          {empty, _} ->
+            % no Us, store the V
+            Actor(A, X, Y, Us, queue:in(V, Vs));
           {{value, U}, T} ->
+            % join pattern fires with contents U and V
             spawn(fun() -> P(U, V) end),
             Actor(A, X, Y, T, Vs)
         end;
-      {print_status, Pid, Ref, IndentLevel} ->
-        io:format(join_util:indentation(IndentLevel+1) ++ "definition ~p (Pid: ~p):~n", [A, self()]),
-        io:format(join_util:indentation(IndentLevel+1) ++ "  Us: ~p~n", [Us]),
-        io:format(join_util:indentation(IndentLevel+1) ++ "  Vs: ~p~n", [Vs]),
+
+      {wrap_up, Pid, Ref} ->
+        % unregister and send itself back as data
+        join_reg:unregister_self(),
+        Pid ! {Ref, {Actor, A, [X, Y, Us, Vs]}},
+        % forward all messages to the new location
+        join_forward:forward_on(A);
+
+      {print_status, Pid, Ref, Level} ->
+        io:format(join_util:indentation(Level+1) ++ "definition ~p (Pid: ~p):~n",
+                  [A, self()]),
+        io:format(join_util:indentation(Level+1) ++ "  Us: ~p~n", [Us]),
+        io:format(join_util:indentation(Level+1) ++ "  Vs: ~p~n", [Vs]),
         Pid ! {Ref, ok},
         Actor(A, X, Y, Us, Vs);
+
       Other ->
-        ?WARNING("definition received invalid message: ~p~n", [Other]),
+        ?WARNING("definition ~p received invalid message: ~p~n",
+                 [self(), Other]),
         Actor(A, X, Y, Us, Vs)
     end
   end.
 
 
-% a forward actor ... TODO
+% a forward actor additionally knows:
+%   - the channel it has to forward to
+%
+% corresponds to B_c in the encoding.
 
-% B_{c}
 forward(X, A) ->
   receive
     {wrap_up, Pid, Ref} ->
+      % unregister and send itself back as data
       join_reg:unregister_self(),
       Pid ! {Ref, {fun forward/2, X, [A]}},
-      join_location:forward_location(X);
+      % forward all messages to the new location
+      join_forward:forward_on(X);
+
     {print_status, Pid, Ref, IndentLevel} ->
       io:format(join_util:indentation(IndentLevel+1) ++ "forward ~p to ~p~n",
                 [X, A]),
       Pid ! {Ref, ok},
       forward(X, A);
+
     I -> join_reg:send(A, {X, I}),
          forward(X, A)
   end.

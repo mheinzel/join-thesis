@@ -1,12 +1,14 @@
 -module(join_util).
 -export([
-         get_id/1,
+         create_id/1,
          indentation/1]).
 
 
-% node() makes it globally unique
-get_id(Who) ->
+% globally unique identifier
+% uses a given tag to help with debugging
+create_id(Who) ->
   {Who, node(), erlang:unique_integer([positive, monotonic])}.
 
+% for pretty printing
 indentation(Level) ->
   lists:append(lists:duplicate(Level, "|   ")).

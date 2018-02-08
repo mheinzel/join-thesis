@@ -8,9 +8,28 @@
         send/2
         ]).
 
+% process registry.
+% can be backed by either `gproc` or `global`.
+%
+% generally, gproc is the registry we want to use, since registration only
+% happens at the local registry at first and is immediately available locally.
+% later it is synced to the other nodes.
+% its approach of allowing processes to only register themselves fits our use
+% case well.
+% also, it supports waiting for a name to be registered, which is useful to us.
+%
+% one problem with gproc is that a process unregistering itself seems to have
+% no effect unless it dies. this makes it impossible to stay around for a while
+% and forward everything to the newly registered process.
+% it's also impossible to just overwrite the registration in the new process.
+% currently, messages in the inbox will be lost when moving (when using gproc),
+% but this could be fixed.
+%
+% unfortunately, gproc is currently not working, so we haveto use the `global`
+% module, which takes hundreds of milliseconds to perform a registration.
 
-% gproc not working
 %-define(use_gproc, 1).
+
 
 -ifdef(use_gproc).
 % requires gproc application to be running
@@ -19,19 +38,30 @@ register_self(Channel) ->
   try gproc:reg({n, g, Channel})
   catch
     error:Error ->
-      ?WARNING("registering on ~p failed with message:~n  ~p", [Channel, Error]),
-      ?WARNING("~p is registered at: ~p", [gproc:where({n, g, Channel})])
+      % TODO: retry? rethrow?
+      ?WARNING("registering on ~p failed with message:~n  ~p",
+               [Channel, Error]),
+      % maybe the channel is still registered somewhere else?
+      try gproc:where({n, g, Channel}) of
+        Pid ->
+          ?WARNING("~p is registered at: ~p", [Channel, Pid])
+      catch
+        error:badarg ->
+          ?WARNING("~p is probably not registered", [Channel])
+      end
   end.
 
 unregister_self() ->
   ?DEBUG("self() = ~p", [self()]),
+  % seems to have no effect
   gproc:goodbye().
 
-% throws
+% waits for a registration to appear
+% throws error:timeout
 get_pid(Channel) ->
   get_pid(Channel, 8000).
 get_pid(Channel, Timeout) ->
-  {Pid, _} = gproc:await({n, g, Channel}, Timeout),  % might not be registered yet
+  {Pid, _} = gproc:await({n, g, Channel}, Timeout),
   Pid.
 
 
@@ -41,16 +71,21 @@ register_self(Channel) ->
   % overwrite in case the old one is still around
   case global:re_register_name(Channel, self()) of
     yes -> ok;
+    % TODO: retry? throw?
     _ -> ?WARNING("registering on ~p failed~p", [Channel])
   end.
 
 unregister_self() ->
+  % needs channel name, but we can just not explicitly unregister for now,
+  % since a new registration overwrites old ones.
   ok.
-  % needs channel name, so just don't explicitly unregister for now
-  % global:unregister_name(Channel).
 
-% does not wait, which currently leads to errors
-% TODO
+% no builtin waiting for registration, so we use an improvised retry mechanism
+% throws error:timeout
+get_pid(Channel) ->
+  get_pid(Channel, [100, 500, 2000]).
+
+% Timeout can be a single time or list of times (in ms) after which we retry
 get_pid(Channel, Timeout) when is_number(Timeout) ->
   get_pid(Channel, [Timeout]);
 get_pid(Channel, []) ->
@@ -69,20 +104,20 @@ get_pid(Channel, [Timeout | Rest]) ->
     Pid -> Pid
   end.
 
-get_pid(Channel) ->
-  get_pid(Channel, [100, 500, 2000]).
-
 -endif.
 
 
+% asynchronously looks up channel name and sends message
 send(Channel, Payload) ->
   From = self(),
   spawn(fun() ->
-            try get_pid(Channel) of  % might not be registered yet
+            try get_pid(Channel) of
               Pid ->
-                ?DEBUG("~p sending to ~p (~p):~n  ~p", [From, Channel, Pid, Payload]),
+                ?DEBUG("~p sending to ~p (~p):~n  ~p",
+                       [From, Channel, Pid, Payload]),
                 Pid ! Payload
             catch
+              % just ignore, messages can be lost anyways
               error:timeout -> ?WARNING("failed sending to ~p:~n  ~p",
                                          [Channel, Payload])
             end
