@@ -37,6 +37,16 @@
 register_self(Channel) ->
   try gproc:reg({n, g, Channel})
   catch
+    error:_ ->
+      ?DEBUG("registering on ~p failed, retrying...p",
+               [Channel]),
+      timer:sleep(500),
+      register_self_again(Channel)
+  end.
+
+register_self_again(Channel) ->
+  try gproc:reg({n, g, Channel})
+  catch
     error:Error ->
       % TODO: retry? rethrow?
       ?WARNING("registering on ~p failed with message:~n  ~p",
