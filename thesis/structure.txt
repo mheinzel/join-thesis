@@ -1,10 +1,9 @@
+- abstract
 
 - introduction
 
-- related work ?
-
 - preliminaries
-    - pi calculus ?
+    - pi calculus ? (only if good flow)
     - join calculus
         - "normal"
             CHAM
@@ -16,24 +15,32 @@
             extra syntax and rules
             syntactical rules in definitions
     - actor model
+        agha
     - actor pi
         typing rules enforce actor properties
-    - distributality ?
+    - distributality ? (only in the end)
+        based on "on distributality..."
         M
 
 - encoding
     - core join to polyadic actor pi
-        no firewall necessary
+        naive encoding is not type correct
+        list encoding
+        no firewall necessary (argument, not proof)
 
 - implementation
     - basic encoding from theory
-        examples
-    - optimizations
         queue for fairness
-        (removing forwarders)
+        examples
     - distributed implementation
         wrapping up and respawning
         locations
         distributed examples
 
-- applications ?
+- related work (short)
+
+- evaluation/comparison
+
+- future work
+
+- conclusion
