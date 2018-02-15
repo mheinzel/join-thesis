@@ -13,20 +13,20 @@ Using polyadic communication:
     \encMJtoAP{P \jpar Q}
     &= \encMJtoAP{P} \apar \encMJtoAP{Q} \\
     \encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{Q}}
-    &= \anew{a}{\anew{x}{\anew*{y}{ \ains{B}{a}{x,y} \apar \ains{B_c}{x}{a} \apar \ains{B_c}{y}{a} \apar \encMJtoAP{Q}}}} \\
+    &= \anew{a}{\anew{x}{\anew*{y}{ \ains{B^P}{a}{x,y} \apar \ains{B_c}{x}{a} \apar \ains{B_c}{y}{a} \apar \encMJtoAP{Q}}}} \\
   \end{split}
 \end{align}
 \begin{align}
-  \adef*{B}{a}{x,y}{
+  \adef*{B^P}{a}{x,y}{
     \arcv{a}{c,i} . \acse{c}{
-       \aalt{x}{\ains{B_x}{a}{x,y,i}},\ 
-       \aalt{y}{\ains{B}{a}{x,y} \apar \asnd{a}{y,i}}
+       \aalt{x}{\ains{B_x^P}{a}{x,y,i}},\ 
+       \aalt{y}{\ains{B^P}{a}{x,y} \apar \asnd{a}{y,i}}
      }
   } \\
-  \adef*{B_x}{a}{x,y,u}{
+  \adef*{B_x^P}{a}{x,y,u}{
     \arcv{a}{c,v} . \acse{c}{
-      \aalt{x}{\ains{B_x}{a}{x,y,v} \apar \asnd{a}{x,u}},\ 
-      \aalt{y}{\ains{B}{a}{x,y} \apar \encMJtoAP{P}}
+      \aalt{x}{\ains{B_x^P}{a}{x,y,v} \apar \asnd{a}{x,u}},\ 
+      \aalt{y}{\ains{B^P}{a}{x,y} \apar \encMJtoAP{P}}
     } \\
   }
   \adef*{B_c}{x}{a}{
@@ -42,7 +42,7 @@ A more complex approach is to store available $x$ and $y$ payloads in a (church-
   \encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{Q}}
   =\
   \anew{a}{\anew{x}{\anew{y}{\anew{l_x}{\anew{l_y}{
-    &\big(\ \ains{B_a}{a}{x, y, l_x, l_y} \nonumber \\
+    &\big(\ \ains{B_a^P}{a}{x, y, l_x, l_y} \nonumber \\
     &\apar \ains{B_c}{x}{a} \apar \ains{B_c}{y}{a} \nonumber \\
     &\apar \ains{B_{nil}}{l_x}{} \apar \ains{B_{nil}}{l_y}{} \nonumber \\
     &\apar \encMJtoAP{Q}\ \big)
@@ -56,26 +56,26 @@ A more complex approach is to store available $x$ and $y$ payloads in a (church-
   \\
   \adef*{B_{cons}}{l}{h,t}{\arcv{l}{k_n,k_c} . \asnd{k_c}{h,t}}
   \\
-  \adef*{B_a}{a}{x,y,l_u,l_v}{
+  \adef*{B_a^P}{a}{x,y,l_u,l_v}{
     \arcv{a}{c,i} . \anew{k}{\anew{t}{
       \acse{c}{ \right. \nonumber \\
         & \hspace{1cm}
-          \aalt{x}{\ains{B_{insert}}{t}{i, l_u, l_v} \apar \asnd{t}{k} \apar \arcv{k}{l_{u,new},l_{v,new}} . \ains{B_a}{a}{x, y, l_{u,new}, l_{v,new}}}, \nonumber \\
+          \aalt{x}{\ains{B_{insert}^P}{t}{i, l_u, l_v} \apar \asnd{t}{k} \apar \arcv{k}{l_{u,new},l_{v,new}} . \ains{B_a^P}{a}{x, y, l_{u,new}, l_{v,new}}}, \nonumber \\
         & \hspace{1cm}
-          \aalt{y}{\ains{B_{insert}}{t}{i, l_v, l_u} \apar \asnd{t}{k} \apar \arcv{k}{l_{v,new},l_{u,new}} . \ains{B_a}{a}{x, y, l_{u,new}, l_{v,new}}}
+          \aalt{y}{\ains{B_{insert}^P}{t}{i, l_v, l_u} \apar \asnd{t}{k} \apar \arcv{k}{l_{v,new},l_{u,new}} . \ains{B_a^P}{a}{x, y, l_{u,new}, l_{v,new}}}
     \left.}}}
   } \\
-  \adef*{B_{insert}}{t}{u,l_u,l_v}{
+  \adef*{B_{insert}^P}{t}{u,l_u,l_v}{
     \arcv{t}{k} . \anew{k_c}{\anew{k_n}{ \nonumber \\
       & \hspace{1cm}
         \big(\ \asnd{l_v}{k_n,k_c} \nonumber \\
       & \hspace{1cm}
         \apar \arcv{k_n}{} . \anew{l_{u,new}}{\parens{\ains{B_{cons}}{l_{u,new}}{u, l_u} \apar \asnd{k}{l_{u,new},l_v}}} \nonumber \\
       & \hspace{1cm}
-        \apar \arcv{k_c}{h_v,t_v} . \anew{l_{v,new}}{\parens{\ains{B_{join}}{l_{v,new}}{u, h_v, t_v} \apar \asnd{k}{l_u,l_{v,new}}}} \big)
+        \apar \arcv{k_c}{h_v,t_v} . \anew{l_{v,new}}{\parens{\ains{B_{join}^P}{l_{v,new}}{u, h_v, t_v} \apar \asnd{k}{l_u,l_{v,new}}}} \big)
     }}
   } \\
-  \adef*{B_{join}}{l}{u,v,l_v}{
+  \adef*{B_{join}^P}{l}{u,v,l_v}{
     \arcv{l}{r_n,r_c} . \anew{k_n}{\anew{k_c}{ \nonumber \\
       & \hspace{1cm}
         \big(\ \asnd{l_v}{k_n,k_c} \nonumber \\
@@ -86,7 +86,7 @@ A more complex approach is to store available $x$ and $y$ payloads in a (church-
           & \hspace{2cm}
             \aalt{u}{\encMJtoAP{P} \apar \asnd{r_c}{h_v,t_v}}, \nonumber \\
           & \hspace{2cm}
-            \aalt{u}{\anew{l_{joined}}{\parens{\ains{B_{join}}{l_{joined}}{u, h_v, t_v} \apar \asnd{r_c}{v,l_{joined}}}}}
+            \aalt{u}{\anew{l_{joined}}{\parens{\ains{B_{join}^P}{l_{joined}}{u, h_v, t_v} \apar \asnd{r_c}{v,l_{joined}}}}}
         \left.}\big)
     }}
   }
