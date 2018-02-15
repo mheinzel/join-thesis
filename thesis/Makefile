@@ -3,10 +3,12 @@ BIB= bibtex
 
 TEXFILES= thesis.tex \
 		  titlepage/titlepage.tex \
-		  background/pi.tex \
-		  background/join.tex \
-		  background/actor-pi.tex \
+		  preliminaries/pi.tex \
+		  preliminaries/join.tex \
+		  preliminaries/actor.tex \
 		  encoding/encoding.tex \
+		  implementation/basic.tex \
+		  implementation/distributed.tex \
 		  bibliography/wrapper.tex
 BIBFILES= bibliography/thesis.bib
 STYFILES= style/thesis.sty \

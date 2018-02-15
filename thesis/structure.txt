@@ -14,9 +14,8 @@
             DRCHAM
             extra syntax and rules
             syntactical rules in definitions
-    - actor model
-        agha
     - actor pi
+        actor model (Agha)
         typing rules enforce actor properties
     - distributality ? (only in the end)
         based on "on distributality..."
