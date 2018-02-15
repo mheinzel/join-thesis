@@ -1,6 +1,8 @@
 - abstract
 
 - introduction
+    motivation
+        distributality
 
 - preliminaries
     - pi calculus ? (only if good flow)
@@ -14,17 +16,16 @@
             DRCHAM
             extra syntax and rules
             syntactical rules in definitions
-    - actor pi
-        actor model (Agha)
-        typing rules enforce actor properties
-    - distributality ? (only in the end)
-        based on "on distributality..."
-        M
+    - actor model
+        (Agha)
+        actor pi
+            typing rules enforce actor properties
 
 - encoding
     - core join to polyadic actor pi
         naive encoding is not type correct
         list encoding
+            type correct
         no firewall necessary (argument, not proof)
 
 - implementation
@@ -40,6 +41,7 @@
 
 - evaluation/comparison
 
-- future work
-
 - conclusion
+    future work
+        non-core calculus
+        failure
