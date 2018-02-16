@@ -5,22 +5,33 @@ $ \mathcal{N} = \{ x, y, z, u, v, \kappa, \ldots \} $
 
 $ \tilde{x}, \tilde{y}, \ldots $ for tuples of names
 
-\begin{JDef}{grammar of the \joincalc}
+% TODO:
+% turn into figure again?
+% left-align explanations?
+\begin{align}
+  \tag*{\textbf{processes}}
+  \\
   P, Q
-  \grmr \jsnd{x}{v_1, \dots, v_n}
-  \altn \jdef{D}{P}
-  \altn P \jpar Q
-  \altn \jnullproc
-  \\ \\
+  \grmr \jsnd{x}{\tilde{v}}   \tag*{emission of $\tilde{v}$ on $x$}
+  \altn \nonumber \jdef{D}{P} \tag*{definition of D in P}
+  \altn P \jpar Q             \tag*{parallel composition}
+  \altn \jnullproc            \tag*{empty process}
+  \\ \nonumber
+  \\
+  \tag*{\textbf{definitions}}
+  \\
   D, E
-  \grmr \jrct{J}{P}
-  \altn D \jcon E
-  \altn \jnulldef
-  \\ \\
+  \grmr \jrct{J}{P} \tag*{elementary clause}
+  \altn D \jcon E   \tag*{simultaneous definitions}
+  \altn \jnulldef   \tag*{empty definition}
+  \\ \nonumber
+  \\
+  \tag*{\textbf{join-patterns}}
+  \\
   J, K
-  \grmr \jrcv{x}{v_1, \dots, v_n}
-  \altn J \jpat K
-\end{JDef}
+  \grmr \jrcv{x}{\tilde{v}} \tag*{reception of $\tilde{v}$ on x}
+  \altn J \jpat K           \tag*{composed join-pattern}
+\end{align}
 
 received names in an elementary clause are all different
 
