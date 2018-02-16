@@ -2,3 +2,6 @@ locations
     go
         ??? which (implicit) location is migrated?
             the current/innermost one (including sublocations)
+    ??? how is the "top-level" managed?
+        ??? are there top-level location names or only channels?
+        XXX
