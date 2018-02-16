@@ -3,39 +3,67 @@
 - introduction
     motivation
         distributality
+            located channels
 
 - preliminaries
-    - pi calculus ? (only if good flow)
+    - (pi calculus? only if good flow)
     - join calculus
-        - "normal"
-            CHAM
-            pi<->join (firewall for full abstraction)
-        - core
-            can encode whole join
+        - "normal"?
+            grammar
+            semantics (CHAM)
+            (memory cell example?)
+        - core join
+            can encode normal join
+            (encoding example?)
         - locations
+            extra syntax
+                syntactical rules in definitions
             DRCHAM
-            extra syntax and rules
-            syntactical rules in definitions
+            applet example (same as in implementation?)
     - actor model
-        (Agha)
-        actor pi
-            typing rules enforce actor properties
+        definition (Agha)
+        properties
+        - actor pi
+            typing rules enforce properties
 
 - encoding
     - core join to polyadic actor pi
-        naive encoding is not type correct
-        list encoding
-            type correct
-        no firewall necessary (argument, not proof)
+        - a naive approach
+            translation as done in pi is not type correct (typing derivation)
+            explain problem
+        - a more complex approach
+            (encoding with divergence?)
+            we need to store payloads
+            encoding using lists
+                type correct (proof with simplified typing derivation)
+        - full abstraction
+            "join <-> pi" requires firewall context for full abstraction
+            (show by example?)
+            this is not necessary here (argument, not proof)
 
 - implementation
     - basic encoding from theory
-        queue for fairness
+        show correspondence to encoding (code listing)
+        no church-encoding necessary, queue for fairness
         examples
     - distributed implementation
-        wrapping up and respawning
-        locations
-        distributed examples
+        - migrating actors
+            cannot move processes directly
+            but we create all receiving processes
+            => wrapping up and respawning
+            how to send to migrated processes?
+                global nameserver (gproc/global)
+                (temporary forwarders to avoid losing messages)
+        - explicit locations
+            how are locations represented?
+            each node has a root/first-level location
+                cannot be moved (see calculus)
+            modified def
+        - connecting nodes
+            finding other locations
+            global registration
+                no explicit nameserver
+            simple distributed examples
 
 - related work (short)
 
@@ -43,5 +71,7 @@
 
 - conclusion
     future work
-        non-core calculus
+        full join patterns
+        synchronous calls
+        syntactic sugar
         failure
