@@ -47,9 +47,28 @@ invalid.
 
 % TODO: some explanations?
 
+% TODO: scopes, defined names?
 
-% TODO: scopes
-% rv, dv, fv
+\begin{alignat*}{2}
+  & \rv{\jrcv{x}{\tilde{v}}} & &= \{ u \in \tilde{v} \} \\
+  & \rv{J \jpat K}           & &= \rv{J} \uplus \rv{K} \\
+  \\
+  & \dv{\jrcv{x}{\tilde{v}}} & &= \{ x \} \\
+  & \dv{J \jpat K}           & &= \dv{J} \cup \dv{K} \\
+  \\
+  & \dv{\jrct{J}{P}}         & &= \dv{J} \\
+  & \dv{D \jcon E}           & &= \dv{D} \cup \dv{E} \\
+  & \dv{\jnulldef}           & &= \emptyset \\
+  \\
+  & \fv{\jrct{J}{P}}         & &= \dv{J} \cup (\fv{P} - \rv{J}) \\
+  & \fv{D \jcon E}           & &= \fv{D} \cup \fv{E} \\
+  & \fv{\jnulldef}           & &= \emptyset \\
+  \\
+  & \fv{\jsnd{x}{v}}         & &= \{ x \} \cup \{ u \in \tilde{v} \} \\
+  & \fv{\jdef{D}{P}}         & &= (\fv{P} \cup \fv{D}) - \dv{D} \\
+  & \fv{P \jpat Q}           & &= \fv{P} \cup \fv{Q} \\
+  & \fv{\jnullproc}          & &= \emptyset \\
+\end{alignat*}
 
 
 % semantics
