@@ -1,9 +1,15 @@
 \section{The \JoinCalc}
 
-infinite set of channel names
-$ \mathcal{N} = \{ x, y, z, u, v, \kappa, \ldots \} $
+% short introduction?
+% or in thesis introduction?
 
-$ \tilde{x}, \tilde{y}, \ldots $ for tuples of names
+% grammar
+
+Following the definition given by Lévy \cite{levy_results_1997},
+we assume an infinite set of channel names
+$ \mathcal{N} = \{ x, y, z, u, v, \kappa, \ldots \} $.
+For tuples of names, occurring in polyadic communication, we use
+$ \tilde{x}, \tilde{y}, \ldots $.
 
 % TODO:
 % turn into figure again?
@@ -33,8 +39,21 @@ $ \tilde{x}, \tilde{y}, \ldots $ for tuples of names
   \altn J \jpat K           \tag*{composed join-pattern}
 \end{align}
 
-received names in an elementary clause are all different
+Note that received names in a join-pattern must be all different,
+making both patterns
+$ \jrcv{x}{u,u} $ and
+$ \jrcv{x}{u} \jpat \jrcv{y}{u} $
+invalid.
 
+% TODO: some explanations?
+
+
+% TODO: scopes
+% rv, dv, fv
+
+
+% semantics
+%   (there is also a reduction based one)
 
 \subsection{The Core \JoinCalc}
 
@@ -50,6 +69,8 @@ which provides a simpler basis to work with.
 
 
 \subsection{The \JoinCalc with Locations}
+
+\cite{fournet_calculus_1996}
 
 infinite set of location names
 $ \mathcal{L} = \{ a, b, c, \ldots \} $
