@@ -89,12 +89,17 @@
 
 
 % CHAM
-\newcommand{\chamreduction}{\longrightarrow}
-\newcommand{\chamheating}{\rightleftharpoons}
-\newcommand{\chamequ}[4]{&(\text{#1}) & #3 &\ \ \chamheating &\ &#4 & #2&}
-\newcommand{\chamred}[4]{&(\text{#1}) & #3 &\ \chamreduction &\ &#4 & #2&}
-\newcommand{\chamcnf}[3]{#2 \vdash_{#1} #3}
-\newcommand{\champar}{\ \ ||\ \ }
+\newcommand{\rchamreduction}{\longrightarrow}
+\newcommand{\rchamheating}{\rightleftharpoons}
+
+\newcommand{\rchamequ}[3]{&(\text{#1}) & #2 & &\ \ \rchamheating &\ #3 & &}
+\newcommand{\rchamred}[3]{&(\text{#1}) & #2 & &\ \rchamreduction &\ #3 & &}
+\newcommand{\rchamcnf}[2]{#1 &\vdash #2}
+
+\newcommand{\drchamequ}[4]{&(\text{#1}) & #3 &\ \ \rchamheating &\ &#4 & #2&}
+\newcommand{\drchamred}[4]{&(\text{#1}) & #3 &\ \rchamreduction &\ &#4 & #2&}
+\newcommand{\drchamcnf}[3]{#2 \vdash_{#1} #3}
+\newcommand{\drchampar}{\ \ ||\ \ }
 
 
 % actor pi judgement

@@ -72,7 +72,70 @@ invalid.
 
 
 % semantics
-%   (there is also a reduction based one)
+
+% RCHAM
+% \cite{berry_chemical_1990}?
+The semantics of \joincalc is described using the reflexive chemical abstract
+machine (RCHAM) \cite{fournet_reflexive_1996}.
+A RCHAM configuration
+$ \mathcal{R} \vdash \mathcal{M} $
+consists of a multiset of active definitions $\mathcal{R}$,
+called ``reactions",
+and a multiset of active processes $\mathcal{M}$,
+called ``molecules".
+
+There are multiple reversible heating/cooling rules $\rchamheating$,
+corresponding to the structural equivalence between processes,
+and a single reduction rule $\rchamreduction$.
+In each of these rules, there is an implicit unchanged context of reactions and
+molecules which is omitted for brevity.
+
+\begin{align*}
+  \rchamequ{str-join}{
+    \rchamcnf{}{P \jpar Q}
+  }{
+    \rchamcnf{}{P, Q}
+  }
+  \\
+  \rchamequ{str-null}{
+    \rchamcnf{}{\jnullproc}
+  }{
+    \rchamcnf{}{}
+  }
+  \\
+  \rchamequ{str-and}{
+    \rchamcnf{D \jcon E}{}
+  }{
+    \rchamcnf{D, E}{}
+  }
+  \\
+  \rchamequ{str-nodef}{
+    \rchamcnf{\jnulldef}{}
+  }{
+    \rchamcnf{}{}
+  }
+  \\
+  \rchamequ{str-def}{
+    \rchamcnf{}{\jdef{D}{P}}
+  }{
+    \rchamcnf{D\sigma_{\opdv}}{P\sigma_{\opdv}}
+  }
+  \\
+  \\
+  \rchamred{red}{
+    \rchamcnf{\jrct{J}{P}}{J\sigma_{\oprv}}
+  }{
+    \rchamcnf{\jrct{J}{P}}{P\sigma_{\oprv}}
+  }
+\end{align*}
+
+In (str-dev), the substitution $\sigma_{\opdv}$ instantiates the defined
+variables $\dv{D}$ to distinct, fresh names that are not in the free variables
+of any reaction or molecule in the configuration.
+In (red), $\sigma_{\oprv}$ simply substitutes the received variables $\rv{J}$.
+Note that (red) makes use of the syntactic similarity between join-patterns
+and parallel emission of messages in processes.
+
 
 \subsection{The Core \JoinCalc}
 
@@ -124,31 +187,31 @@ Two syntactic restrictions:
 \end{itemize}
 
 \begin{align*}
-  \chamred{comm}{(x \in \dv{J})}{
-    \chamcnf{\phi}{}{\jsnd{x}{\tilde{v}}}
-    \champar
-    \chamcnf{}{\jrct{J}{P}}{}
+  \rchamred{comm}{(x \in \dv{J})}{
+    \drchamcnf{\phi}{}{\jsnd{x}{\tilde{v}}}
+    \drchampar
+    \drchamcnf{}{\jrct{J}{P}}{}
   }{
-    \chamcnf{\phi}{}{}
-    \champar
-    \chamcnf{}{\jrct{J}{P}}{\jsnd{x}{\tilde{v}}}
+    \drchamcnf{\phi}{}{}
+    \drchampar
+    \drchamcnf{}{\jrct{J}{P}}{\jsnd{x}{\tilde{v}}}
   }
   \\
-  \chamequ{str-loc}{(a \ \text{frozen)}}{
-    \chamcnf{\phi}{\jloc{a}{D}{P}}{}
+  \rchamequ{str-loc}{(a \ \text{frozen)}}{
+    \drchamcnf{\phi}{\jloc{a}{D}{P}}{}
   }{
-    \chamcnf{\phi}{}{}
-    \champar
-    \chamcnf{\phi a}{D}{P}
+    \drchamcnf{\phi}{}{}
+    \drchampar
+    \drchamcnf{\phi a}{D}{P}
   }
   \\
-  \chamred{move}{}{
-    \chamcnf{\phi}{\jloc{a}{D}{P \jpar \jgo{b}{\kappa}}}{}
-    \champar
-    \chamcnf{\psi b}{}{}
+  \rchamred{move}{}{
+    \drchamcnf{\phi}{\jloc{a}{D}{P \jpar \jgo{b}{\kappa}}}{}
+    \drchampar
+    \drchamcnf{\psi b}{}{}
   }{
-    \chamcnf{\phi}{}{}
-    \champar
-    \chamcnf{\psi b}{\jloc{a}{D}{P \jpar \jsnd{\kappa}{}}}{}
+    \drchamcnf{\phi}{}{}
+    \drchampar
+    \drchamcnf{\psi b}{\jloc{a}{D}{P \jpar \jsnd{\kappa}{}}}{}
   }
 \end{align*}
