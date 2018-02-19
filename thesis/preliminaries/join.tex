@@ -138,6 +138,7 @@ In (red), $\sigma_{\oprv}$ simply substitutes the received variables $\rv{J}$.
 Note that (red) makes use of the syntactic similarity between join-patterns
 and parallel emission of messages in processes.
 
+% examples?
 
 \subsection{The Core \JoinCalc}
 
@@ -156,6 +157,8 @@ which provides a simpler basis to work with.
 
 \cite{fournet_calculus_1996}
 
+% short explanation of idea
+
 infinite set of location names
 $ \mathcal{L} = \{ a, b, c, \ldots \} $
 
@@ -165,21 +168,12 @@ $ v \in \mathcal{N} \cup \mathcal{L} $
 
 \begin{JDef}{grammar of the \joincalc with locations}
   P, Q
-  \grmr \jsnd{x}{v_1, \dots, v_n}
-  \altn \jdef{D}{P}
-  \altn P \jpar Q
-  \altn \jnullproc
+  \grmr \dots
   \altn \jgo{b}{\kappa}
   \\ \\
   D, E
-  \grmr \jrct{J}{P}
-  \altn D \jcon E
-  \altn \jnulldef
+  \grmr \dots
   \altn \jloc{a}{D}{P}
-  \\ \\
-  J, K
-  \grmr \jrcv{x}{v_1, \dots, v_n}
-  \altn J \jpat K
 \end{JDef}
 
 Two syntactic restrictions:
