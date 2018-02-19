@@ -189,7 +189,7 @@ Two syntactic restrictions:
 \end{itemize}
 
 \begin{align*}
-  \rchamred{comm}{(x \in \dv{J})}{
+  \drchamred{comm}{(x \in \dv{J})}{
     \drchamcnf{\phi}{}{\jsnd{x}{\tilde{v}}}
     \drchampar
     \drchamcnf{}{\jrct{J}{P}}{}
@@ -199,7 +199,7 @@ Two syntactic restrictions:
     \drchamcnf{}{\jrct{J}{P}}{\jsnd{x}{\tilde{v}}}
   }
   \\
-  \rchamequ{str-loc}{(a \ \text{frozen)}}{
+  \drchamequ{str-loc}{(a \ \text{frozen)}}{
     \drchamcnf{\phi}{\jloc{a}{D}{P}}{}
   }{
     \drchamcnf{\phi}{}{}
@@ -207,7 +207,7 @@ Two syntactic restrictions:
     \drchamcnf{\phi a}{D}{P}
   }
   \\
-  \rchamred{move}{}{
+  \drchamred{move}{}{
     \drchamcnf{\phi}{\jloc{a}{D}{P \jpar \jgo{b}{\kappa}}}{}
     \drchampar
     \drchamcnf{\psi b}{}{}
