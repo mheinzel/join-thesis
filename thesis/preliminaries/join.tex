@@ -41,15 +41,22 @@ and define the syntax as follows.
   \altn J \jpat K           \tag*{composed join-pattern}
 \end{align}
 
-Note that received names in a join-pattern must be all different,
+Readers familiar with \asyncpicalc will recognize emission,
+parallel composition and the empty process, but miss the usual constructs for
+defining new channels, reception and replication.
+All these concerns are covered by a single primitive,
+$ \jdef{D}{P} $.
+
+% TODO: explanations?
+% TODO: scopes, defined names?
+% check literature
+
+Note that all received names in a join-pattern must be distinct,
 making both patterns
 $ \jrcv{x}{u,u} $ and
 $ \jrcv{x}{u} \jpat \jrcv{y}{u} $
 invalid.
 
-% TODO: some explanations?
-
-% TODO: scopes, defined names?
 
 \begin{alignat*}{2}
   & \rv{\jrcv{x}{\tilde{v}}} & &= \{ u \in \tilde{v} \} \\
