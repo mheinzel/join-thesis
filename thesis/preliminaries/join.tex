@@ -87,7 +87,7 @@ invalid.
 The semantics of \joincalc is described using the reflexive chemical abstract
 machine (RCHAM) \cite{fournet_reflexive_1996}.
 A RCHAM configuration
-$ \mathcal{R} \vdash \mathcal{M} $
+$ \rchamcnf{\mathcal{R}}{\mathcal{M}} $
 consists of a multiset of active definitions $\mathcal{R}$,
 called ``reactions",
 and a multiset of active processes $\mathcal{M}$,
@@ -101,40 +101,40 @@ molecules which we omit for brevity.
 
 \begin{align*}
   \rchamequ{str-join}{
-    \rchamcnf{}{P \jpar Q}
+    \rchamcnf*{}{P \jpar Q}
   }{
-    \rchamcnf{}{P, Q}
+    \rchamcnf*{}{P, Q}
   }
   \\
   \rchamequ{str-null}{
-    \rchamcnf{}{\jnullproc}
+    \rchamcnf*{}{\jnullproc}
   }{
-    \rchamcnf{}{}
+    \rchamcnf*{}{}
   }
   \\
   \rchamequ{str-and}{
-    \rchamcnf{D \jcon E}{}
+    \rchamcnf*{D \jcon E}{}
   }{
-    \rchamcnf{D, E}{}
+    \rchamcnf*{D, E}{}
   }
   \\
   \rchamequ{str-nodef}{
-    \rchamcnf{\jnulldef}{}
+    \rchamcnf*{\jnulldef}{}
   }{
-    \rchamcnf{}{}
+    \rchamcnf*{}{}
   }
   \\
   \rchamequ{str-def}{
-    \rchamcnf{}{\jdef{D}{P}}
+    \rchamcnf*{}{\jdef{D}{P}}
   }{
-    \rchamcnf{D\sigma_{\opdv}}{P\sigma_{\opdv}}
+    \rchamcnf*{D\sigma_{\opdv}}{P\sigma_{\opdv}}
   }
   \\
   \\
   \rchamred{red}{
-    \rchamcnf{\jrct{J}{P}}{J\sigma_{\oprv}}
+    \rchamcnf*{\jrct{J}{P}}{J\sigma_{\oprv}}
   }{
-    \rchamcnf{\jrct{J}{P}}{P\sigma_{\oprv}}
+    \rchamcnf*{\jrct{J}{P}}{P\sigma_{\oprv}}
   }
 \end{align*}
 
