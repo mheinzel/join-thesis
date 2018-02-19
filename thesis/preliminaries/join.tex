@@ -145,7 +145,71 @@ In (red), $\sigma_{\oprv}$ simply substitutes the received variables $\rv{J}$.
 Note that (red) makes use of the syntactic similarity between join-patterns
 and parallel emission of messages in processes.
 
-% examples?
+% explanations?
+% note replication etc?
+
+To obtain a reduction relation $\joinreduction$
+on processes (instead of RCHAM configurations),
+we can define for any two processes P and P':
+\begin{equation*}
+  P \joinreduction P'
+  \ \ \textbf{iff} \ \ 
+  \rchamcnf{\emptyset}{P}
+  \rchamheating^*\rchamreduction\rchamheating^*
+  \rchamcnf{\emptyset}{P'}
+\end{equation*}
+
+% macro for examples?
+Let us give an example:
+
+\begin{align*}
+  &&\rchamcnfset*
+    {}
+    {\jdef
+      {\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}
+      {\jsnd{x}{a} \jpar \jsnd{x}{b} \jpar \jsnd{y}{c}}}
+  \\
+  \rchamheating\ 
+  &&\rchamcnfset*
+    {\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}
+    {\jsnd{x}{a} \jpar \jsnd{x}{b} \jpar \jsnd{y}{c}}
+  \\
+  \rchamheating\ 
+  &&\rchamcnfset*
+    {\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}
+    {\jsnd{x}{a}, \jsnd{x}{b} \jpar \jsnd{y}{c}}
+  \\
+  \rchamreduction
+  &&\rchamcnfset*
+    {\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}
+    {\jsnd{x}{a}, P\{b/u, c/v\}}
+  \\
+  \rchamheating\ 
+  &&\rchamcnfset*
+    {}
+    {\jdef
+      {\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}
+      {\jsnd{x}{a}, P\{b/u, c/v\}}}
+\end{align*}
+
+and thus
+
+\begin{equation*}
+  \jdef
+    {\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}
+    {\jsnd{x}{a} \jpar \jsnd{x}{b} \jpar \jsnd{y}{c}}
+  \ \joinreduction\ 
+  \jdef
+    {\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}
+    {\jsnd{x}{a} \jpar P\{b/u, c/v\}}
+\end{equation*}
+
+Note the non-determinism in receiving $b$ instead of $a$ on $x$.
+Instead of
+$ \jsnd{x}{a} \jpar P\{b/u, c/v\} $
+we could also arrive at
+$ \jsnd{x}{b} \jpar P\{a/u, c/v\} $.
+
 
 \subsection{The Core \JoinCalc}
 

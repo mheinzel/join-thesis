@@ -97,11 +97,16 @@
 \newcommand{\rchamcnf}{\@ifstar{\@rchamcnfaligned}{\@rchamcnfunaligned}}
 \newcommand{\@rchamcnfaligned}[2]{#1 &\vdash #2}
 \newcommand{\@rchamcnfunaligned}[2]{#1 \vdash #2}
+\newcommand{\rchamcnfset}{\@ifstar{\@rchamcnfsetaligned}{\@rchamcnfsetunaligned}}
+\newcommand{\@rchamcnfsetaligned}[2]{\{#1\} &\vdash \{#2\}}
+\newcommand{\@rchamcnfsetunaligned}[2]{\{#1\} \vdash \{#2\}}
 
 \newcommand{\drchamequ}[4]{&(\text{#1}) & #3 &\ \ \rchamheating &\ &#4 & #2&}
 \newcommand{\drchamred}[4]{&(\text{#1}) & #3 &\ \rchamreduction &\ &#4 & #2&}
 \newcommand{\drchamcnf}[3]{#2 \vdash_{#1} #3}
 \newcommand{\drchampar}{\ \ ||\ \ }
+
+\newcommand{\joinreduction}{\longrightarrow_J}
 
 
 % actor pi judgement
