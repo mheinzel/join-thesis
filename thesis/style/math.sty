@@ -15,25 +15,6 @@
 
 \newcommand{\parens}[1]{\left(#1\right)}
 
-% TODO: one equation or multiple???
-\NewEnviron{JFig}[1]{%
-  \begin{figure}[H]
-    \BODY
-    \caption{#1}
-  \end{figure}
-}
-
-\NewEnviron{JDef}[1]{%
-  \begin{figure}[H]
-    \begin{equation}
-      \begin{split}
-        \BODY
-      \end{split}
-    \end{equation}
-    \caption{#1}
-  \end{figure}
-}
-
 \newcommand{\grmr}{\ ::=&\ \ }
 \newcommand{\altn}{\\ \big|&\ \ }
 \newcommand{\alt}{\ \big|\ }

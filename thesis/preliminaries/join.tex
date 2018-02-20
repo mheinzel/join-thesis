@@ -225,12 +225,12 @@ Since all of its processes are also valid processes in the full calculus,
 it suffices to describe its semantics using the RCHAM as shown above,
 only using the rules (str-join), (str-def) and (red).
 
-\begin{JDef}{grammar of \corejoincalc}
+\begin{align*}
   P, Q
   \grmr \jsnd{x}{u}
   \altn P \jpar Q
   \altn \jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{Q}
-\end{JDef}
+\end{align*}
 
 
 \subsection{The \DistJoinCalc}
@@ -245,8 +245,7 @@ These can also be sent and received, which means that values
 $ u, v, \ldots $ in $ \jsnd{x}{\tilde{v}} $
 can now be either channel or location names.
 
-% TODO: not a figure
-\begin{JDef}{grammar of \distjoincalc}
+\begin{align*}
   P, Q
   \grmr \dots
   \altn \jgo{b}{\kappa}
@@ -254,7 +253,7 @@ can now be either channel or location names.
   D, E
   \grmr \dots
   \altn \jloc{a}{D}{P}
-\end{JDef}
+\end{align*}
 
 % TODO: explain what new constructs mean?
 Also, we demand two additional syntactic restrictions:
