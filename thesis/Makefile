@@ -2,7 +2,8 @@ TEX= pdflatex -output-directory=tmp
 BIB= bibtex
 
 TEXFILES= thesis.tex \
-		  titlepage/titlepage.tex \
+		  prelude/titlepage.tex \
+		  prelude/authorship.tex \
 		  preliminaries/pi.tex \
 		  preliminaries/join.tex \
 		  preliminaries/actor.tex \
