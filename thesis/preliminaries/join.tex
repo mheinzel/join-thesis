@@ -216,7 +216,7 @@ we could also arrive at
 $ \jsnd{x}{b} \jpar P\substitution{\subst{a}{u}, \subst{c}{v}} $.
 
 
-\subsection{The Core \JoinCalc}
+\subsection{The \CoreJoinCalc}
 
 The full calculus can be encoded in a fragment of itself, called core calculus
 \cite{fournet_reflexive_1996}.
@@ -224,7 +224,7 @@ Since all of its processes are also valid processes in the full calculus,
 it suffices to describe its semantics using the RCHAM as shown above,
 only using the rules (str-join), (str-def) and (red).
 
-\begin{JDef}{grammar of \monadicjoincalc}
+\begin{JDef}{grammar of \corejoincalc}
   P, Q
   \grmr \jsnd{x}{u}
   \altn P \jpar Q
@@ -232,7 +232,7 @@ only using the rules (str-join), (str-def) and (red).
 \end{JDef}
 
 
-\subsection{The \JoinCalc with Locations}
+\subsection{The \DistJoinCalc}
 
 % TODO: short explanation of idea
 \cite{fournet_calculus_1996}
@@ -247,7 +247,7 @@ $ u, v, \ldots $ in $ \jsnd{x}{\tilde{v}} $
 can now be either channel or location names.
 
 % TODO: not a figure
-\begin{JDef}{grammar of the \joincalc with locations}
+\begin{JDef}{grammar of \distjoincalc}
   P, Q
   \grmr \dots
   \altn \jgo{b}{\kappa}
