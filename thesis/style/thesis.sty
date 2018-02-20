@@ -5,7 +5,17 @@
 
 \usepackage[l2tabu,orthodox]{nag}
 
+\usepackage{xcolor}
 \usepackage[german,english]{babel}
 \usepackage{cite}
 \usepackage{amsmath}
 \usepackage[pdfpagelabels]{hyperref}
+
+
+%\newcommand{\TODO}[2]{}
+\newcommand{\TODO}[2]{%
+  \vspace{0.5cm}
+  \begin{minipage}[l][#1]{\textwidth}%
+    \textcolor{gray}{#2}%
+  \end{minipage}%
+  }

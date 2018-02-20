@@ -3,8 +3,6 @@
 % short introduction?
 % or in thesis introduction?
 
-% grammar
-
 We use \joincalc as described by Fournet et al.
 \cite{fournet_calculus_1996}.
 Assuming an infinite set of channel names
@@ -47,8 +45,7 @@ defining new channels, reception and replication.
 All these concerns are covered by a single primitive,
 $ \jdef{D}{P} $.
 
-% TODO: explanations?
-% TODO: scopes, defined names?
+\TODO{3cm}{explain def (scopes)}
 % check literature
 
 Note that all received names in a join-pattern must be distinct,
@@ -138,6 +135,8 @@ molecules which we omit for brevity.
   }
 \end{align*}
 
+\pagebreak
+
 In (str-dev), the substitution $\sigma_{\opdv}$ instantiates the defined
 variables $\dv{D}$ to distinct, fresh names that are not free in any reaction
 or molecule in the configuration.
@@ -145,7 +144,7 @@ In (red), $\sigma_{\oprv}$ simply substitutes the received variables $\rv{J}$.
 Note that (red) makes use of the syntactic similarity between join-patterns
 and parallel emission of messages in processes.
 
-% explanations?
+\TODO{2cm}{explain rules?}
 % note replication etc?
 
 To obtain a reduction relation $\joinreduction$
@@ -159,7 +158,7 @@ we can define for any two processes P and P':
   \rchamcnf{\emptyset}{P'}
 \end{equation*}
 
-% macro for examples?
+% TODO: macro for examples?
 Let us give an example:
 
 \begin{align*}
@@ -234,9 +233,7 @@ only using the rules (str-join), (str-def) and (red).
 
 \subsection{The \DistJoinCalc}
 
-% TODO: short explanation of idea
-\cite{fournet_calculus_1996}
-
+\TODO{2cm}{short explanation of idea \cite{fournet_calculus_1996}}
 
 In addition to an infinite set of channel names
 $ \mathcal{N} = \{ x, y, z, \kappa, \ldots \} $,
@@ -278,7 +275,15 @@ These conditions make the following definitions invalid:
 
 The semantics of the new constructs are defined using a distributed version
 of the RCHAM, called DRCHAM.
-% TODO: explain DRCHAM
+We tag configurations with their location
+% location tree
+$ \mathcal{L} = \{ \phi, \psi, \ldots \} $
+
+$ \drchamcnf{\phi}{\mathcal{R}}{\mathcal{M}} $
+
+\TODO{3.5cm}{explain DRCHAM\\
+previous rules apply\\
+(str-def gives fresh location names, too)}
 
 Then we add three new rules for the two new syntactical constructs:
 % TODO: which \phi ?
@@ -313,10 +318,8 @@ Then we add three new rules for the two new syntactical constructs:
   }
 \end{align*}
 
-% TODO: explain new rules
+\TODO{0.5cm}{explain new rules}
 % can dissolve new kind of definition as with str-def
 % move emitted message to correct location
 % migrate the current location
-
-% conditions
-% location tree
+\TODO{2cm}{conditions\\location tree}
