@@ -218,9 +218,11 @@ $ \jsnd{x}{b} \jpar P\substitution{\subst{a}{u}, \subst{c}{v}} $.
 
 \subsection{The Core \JoinCalc}
 
-The full calculus can be encoded in the core calculus
-\cite{fournet_reflexive_1996},
-which provides a more minimal basis.
+The full calculus can be encoded in a fragment of itself, called core calculus
+\cite{fournet_reflexive_1996}.
+Since all of its processes are also valid processes in the full calculus,
+it suffices to describe its semantics using the RCHAM as shown above,
+only using the rules (str-join), (str-def) and (red).
 
 \begin{JDef}{grammar of \monadicjoincalc}
   P, Q
@@ -232,17 +234,19 @@ which provides a more minimal basis.
 
 \subsection{The \JoinCalc with Locations}
 
+% TODO: short explanation of idea
 \cite{fournet_calculus_1996}
 
-% TODO: short explanation of idea
 
-infinite set of location names
-$ \mathcal{L} = \{ a, b, c, \ldots \} $
+In addition to an infinite set of channel names
+$ \mathcal{N} = \{ x, y, z, \kappa, \ldots \} $,
+we now use an infinite set of location names
+$ \mathcal{L} = \{ a, b, c, \ldots \} $.
+These can also be sent and received, which means that values
+$ u, v, \ldots $ in $ \jsnd{x}{\tilde{v}} $
+can now be either channel or location names.
 
-These can also be sent and received:
-$ v \in \mathcal{N} \cup \mathcal{L} $
-
-
+% TODO: not a figure
 \begin{JDef}{grammar of the \joincalc with locations}
   P, Q
   \grmr \dots
@@ -253,14 +257,41 @@ $ v \in \mathcal{N} \cup \mathcal{L} $
   \altn \jloc{a}{D}{P}
 \end{JDef}
 
-% TODO: turn into proper sentences
-Two syntactic restrictions:
-\begin{itemize}
-  \item a location $a$ can only be defined once in any definition $D$
-  \item a defined channel $x$ may only appear in the join patterns of one location
-\end{itemize}
+% TODO: explain what new constructs mean?
+Also, we demand two additional syntactic restrictions:
+A location $a$ can only be defined once in any definition $D$.
+A defined channel $x$ may only appear in the join-patterns of one location.
+These conditions make the following definitions invalid:
 
 \begin{align*}
+  &\jdef
+    {\jloc{a}{D}{P} \jcon \jrct{\jloc{a}{E}{Q}}{R}}
+    {S}
+  \\
+  &\jdef
+    {\jloc{a}{\jrct{\jrcv{x}{u}}{P}}{Q}
+     \jcon
+     \jloc{b}{\jrct{\jrcv{x}{v}}{R}}{S}
+     }
+    {T}
+\end{align*}
+
+The semantics of the new constructs are defined using a distributed version
+of the RCHAM, called DRCHAM.
+% TODO: explain DRCHAM
+
+Then we add three new rules for the two new syntactical constructs:
+% TODO: which \phi ?
+
+\begin{align*}
+  \drchamequ{str-loc}{(a \ \text{frozen)}}{
+    \drchamcnf{\phi}{\jloc{a}{D}{P}}{}
+  }{
+    \drchamcnf{\phi}{}{}
+    \drchampar
+    \drchamcnf{\phi a}{D}{P}
+  }
+  \\
   \drchamred{comm}{(x \in \dv{J})}{
     \drchamcnf{\phi}{}{\jsnd{x}{\tilde{v}}}
     \drchampar
@@ -269,14 +300,6 @@ Two syntactic restrictions:
     \drchamcnf{\phi}{}{}
     \drchampar
     \drchamcnf{}{\jrct{J}{P}}{\jsnd{x}{\tilde{v}}}
-  }
-  \\
-  \drchamequ{str-loc}{(a \ \text{frozen)}}{
-    \drchamcnf{\phi}{\jloc{a}{D}{P}}{}
-  }{
-    \drchamcnf{\phi}{}{}
-    \drchampar
-    \drchamcnf{\phi a}{D}{P}
   }
   \\
   \drchamred{move}{}{
@@ -291,3 +314,9 @@ Two syntactic restrictions:
 \end{align*}
 
 % TODO: explain new rules
+% can dissolve new kind of definition as with str-def
+% move emitted message to correct location
+% migrate the current location
+
+% conditions
+% location tree
