@@ -182,14 +182,19 @@ Let us give an example:
   \rchamreduction
   &&\rchamcnfset*
     {\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}
-    {\jsnd{x}{a}, P\{b/u, c/v\}}
+    {\jsnd{x}{a}, P\substitution{\subst{b}{u}, \subst{c}{v}}}
+  \\
+  \rchamheating\ 
+  &&\rchamcnfset*
+    {\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}
+    {\jsnd{x}{a} \jpar P\substitution{\subst{b}{u}, \subst{c}{v}}}
   \\
   \rchamheating\ 
   &&\rchamcnfset*
     {}
     {\jdef
       {\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}
-      {\jsnd{x}{a}, P\{b/u, c/v\}}}
+      {\jsnd{x}{a} \jpar P\substitution{\subst{b}{u}, \subst{c}{v}}}}
 \end{align*}
 
 and thus
@@ -201,14 +206,14 @@ and thus
   \ \joinreduction\ 
   \jdef
     {\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}
-    {\jsnd{x}{a} \jpar P\{b/u, c/v\}}
+    {\jsnd{x}{a} \jpar P\substitution{\subst{b}{u}, \subst{c}{v}}}
 \end{equation*}
 
 Note the non-determinism in receiving $b$ instead of $a$ on $x$.
 Instead of
-$ \jsnd{x}{a} \jpar P\{b/u, c/v\} $
+$ \jsnd{x}{a} \jpar P\substitution{\subst{b}{u}, \subst{c}{v}} $
 we could also arrive at
-$ \jsnd{x}{b} \jpar P\{a/u, c/v\} $.
+$ \jsnd{x}{b} \jpar P\substitution{\subst{a}{u}, \subst{c}{v}} $.
 
 
 \subsection{The Core \JoinCalc}
