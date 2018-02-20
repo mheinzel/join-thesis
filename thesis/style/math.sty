@@ -10,6 +10,7 @@
 \usepackage{nccmath} %? decreases spacing around equations etc.
 \usepackage{mathtools}
 \usepackage{float}
+\usepackage{varwidth}
 \usepackage{bussproofs}
 
 
@@ -92,11 +93,13 @@
 
 
 % actor pi judgement
+\newcommand{\ch}[1]{ch(#1)}
+\newcommand{\restrict}[2]{#1 |_{#2}}
+
 \newcommand{\judgement}[3]{%
-  \ifthenelse{\isempty{#1}}{\emptyset}{\{#1\}}%
+  \ifthenelse{\isempty{#1}}{\emptyset}{#1}%
   ;\ifthenelse{\isempty{#2}}{\{\}}{#2}%
   \vdash #3}
-\newcommand{\ch}[1]{ch(#1)}
 
 
 \newcommand{\names}[1]{\operatorname{n}(#1)}
@@ -113,19 +116,43 @@
 \newcommand{\infII}[2]{\LeftLabel{\textsc{#1}:}\BinaryInfC{$#2$}}
 % TODO: number argument
 
-\newcommand{\infrule}[3]{%
+\newcommand{\infrulecondition}[1]{%
+  \ifthenelse{\isempty{#1}}{}{
+    \RightLabel{if \begin{varwidth}{6cm}{#1}\end{varwidth}}
+  }
+}
+
+\newcommand{\axiomrule}[3]{%
   \begin{prooftree}
-    \AxiomC{$#2$}
     \LeftLabel{\textsc{#1} : }
-    \UnaryInfC{$#3$}
+    \infrulecondition{#2}
+    \AxiomC{$#3$}
   \end{prooftree}
 }
-\newcommand{\infruleIII}[5]{
+\newcommand{\infrule}[4]{%
   \begin{prooftree}
-    \AxiomC{$#2$}
+    \AxiomC{$#3$}
+    \LeftLabel{\textsc{#1} : }
+    \infrulecondition{#2}
+    \UnaryInfC{$#4$}
+  \end{prooftree}
+}
+\newcommand{\infruleII}[5]{
+  \begin{prooftree}
     \AxiomC{$#3$}
     \AxiomC{$#4$}
     \LeftLabel{\textsc{#1} : }
-    \TrinaryInfC{$#5$}
+    \infrulecondition{#2}
+    \BinaryInfC{$#5$}
+  \end{prooftree}
+}
+\newcommand{\infruleIII}[6]{
+  \begin{prooftree}
+    \AxiomC{$#3$}
+    \AxiomC{$#4$}
+    \AxiomC{$#5$}
+    \LeftLabel{\textsc{#1} : }
+    \infrulecondition{#2}
+    \TrinaryInfC{$#6$}
   \end{prooftree}
 }

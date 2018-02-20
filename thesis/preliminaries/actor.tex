@@ -1,13 +1,14 @@
 \section{The Actor Model}
 
-% (Agha)
-
+\TODO{2cm}{definition, properties}
 % properties
 %   uniqueness
 %   freshness
 %   persistence
 
 \subsection{\ActorPiCalc}
+
+\cite{agha_algebraic_2004}
 
 \begin{align*}
   P, Q
@@ -20,3 +21,60 @@
   \altn \ains{B}{\tilde{x}}{\tilde{y}}
 \end{align*}
 
+
+\TODO{3cm}{ch, compatibility, ...}
+
+
+\infrule{nil}{}
+  {}
+  {\judgement{}{}{\anullproc}}
+
+\infrule{msg}{}
+  {}
+  {\judgement{}{}{\asnd{x}{y}}}
+
+\infrule{act}
+  {$ \rho - \{x\} = \tilde{z}, y \notin \rho,$ and \\
+   $ f =
+    \begin{cases}
+      \ch{x, \tilde{z}} \text{ if } x \in \rho \\
+      \ch{\epsilon, \tilde{z}} \text{ otherwise }
+    \end{cases} $}
+  {\judgement
+    {\rho}
+    {f}
+    {P}}
+  {\judgement
+    {\{x\} \cup \tilde{z}}
+    {\ch{x, \tilde{z}}}
+    {\arcv{x}{y} . P}}
+
+\infrule{case}{$f_i$ are mutually compatible}
+  {\forall\ 1 \leq i \leq n:
+    \judgement{\rho_i}{f_i}{P_i}}
+  {\judgement
+    {(\cup_i \rho_i)}
+    {(\oplus_i f_i)}
+    {\acse{x}
+      {\aalt{y_1}{P_1}
+      ,\ldots
+      ,\aalt{y_n}{P_n}}}}
+
+\infruleII{comp}{$ \rho_1 \cap \rho_2 = \emptyset $}
+  {\judgement{\rho_1}{f_1}{P_1}}
+  {\judgement{\rho_2}{f_2}{P_2}}
+  {\judgement{\rho_1 \cup \rho_2}{f_1 \oplus f_2}{P_1 \apar P_2}}
+
+\infrule{res}{}
+  {\judgement{\rho}{f}{P}}
+  {\judgement
+    {\rho - \{x\}}
+    {\restrict{f}{\rho - \{x\}}}
+    {\anew{x}{P}}}
+
+\infrule{inst}{$\operatorname{len}(\tilde{x}) = 2$ implies $x_1 \neq x_2$}
+  {}
+  {\judgement
+    {\{\tilde{x}\}}
+    {\ch{\tilde{x}}}
+    {\ains{B}{\tilde{x}}{\tilde{y}}}}
