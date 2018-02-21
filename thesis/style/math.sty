@@ -62,22 +62,6 @@
 \newcommand{\jloc}[3]{#1 \left[ #2 : #3 \right]}
 \newcommand{\jgo}[2]{\operatorname{go} \langle #1, #2 \rangle}
 
-% actor pi
-\newcommand{\anullproc}{\textbf{0}}
-\newcommand{\arcv}[2]{#1(#2)}
-\newcommand{\asnd}[2]{\overline{#1}\langle#2\rangle}
-\newcommand{\anew}{\@ifstar{\@anewp}{\@anewn}}
-\newcommand{\@anewp}[2]{(\nu #1)\parens{#2}}
-\newcommand{\@anewn}[2]{(\nu #1)#2}
-\newcommand{\apar}{\ |\ }
-\newcommand{\acse}[2]{\textbf{case} \ #1 \ \textbf{of} \ \parens{#2}}
-\newcommand{\aalt}[2]{#1 : #2}
-\newcommand{\ains}[3]{#1 \langle #2 ; #3 \rangle}
-\newcommand{\adef}{\@ifstar{\@adefa}{\@adefn}}
-\newcommand{\@adefa}[4]{#1 &\overset{\mathclap{\mathit{def}}}{=} \left( #2 ; #3 \right) #4}
-\newcommand{\@adefn}[4]{#1 \overset{\mathit{def}}{=} \left( #2 ; #3 \right) #4}
-
-
 % CHAM
 \newcommand{\rchamreduction}{\longrightarrow}
 \newcommand{\rchamheating}{\rightleftharpoons}
@@ -99,7 +83,22 @@
 \newcommand{\joinreduction}{\longrightarrow_J}
 
 
-% actor pi judgement
+% actor pi
+\newcommand{\anullproc}{\textbf{0}}
+\newcommand{\arcv}[2]{#1(#2)}
+\newcommand{\asnd}[2]{\overline{#1}\langle#2\rangle}
+\newcommand{\anew}{\@ifstar{\@anewp}{\@anewn}}
+\newcommand{\@anewp}[2]{(\nu #1)\parens{#2}}
+\newcommand{\@anewn}[2]{(\nu #1)#2}
+\newcommand{\apar}{\ |\ }
+\newcommand{\acse}[2]{\textbf{case} \ #1 \ \textbf{of} \ \parens{#2}}
+\newcommand{\aalt}[2]{#1 : #2}
+\newcommand{\ains}[3]{#1 \langle #2 ; #3 \rangle}
+\newcommand{\adef}{\@ifstar{\@adefa}{\@adefn}}
+\newcommand{\@adefa}[4]{#1 &\overset{\mathclap{\mathit{def}}}{=} \left( #2 ; #3 \right) #4}
+\newcommand{\@adefn}[4]{#1 \overset{\mathit{def}}{=} \left( #2 ; #3 \right) #4}
+
+% type judgement
 \newcommand{\ch}[1]{ch(#1)}
 \newcommand{\restrict}[2]{#1 |_{#2}}
 
@@ -121,9 +120,12 @@
 \newcommand{\substitution}[1]{[ #1 ]}
 \newcommand{\subst}[2]{#1 / #2}
 
+\newcommand{\abbreviation}[2]{#1 \ \ &\text{for} \ \ #2}
+
+
+% encoding
 \newcommand{\encMJtoAP}[1]{\llbracket #1 \rrbracket}
 
-\newcommand{\abbreviation}[2]{#1 \ \ &\text{for} \ \ #2}
 
 % bussproofs
 \newcommand{\axiom}[1]{\AxiomC{$#1$}}
