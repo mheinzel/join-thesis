@@ -40,7 +40,47 @@ listed.
 
 \subsubsection{Type System}
 
-\TODO{3cm}{substitution?, ch, compatibility, ...}
+Not all syntactically well-formed configurations are valid actor configurations,
+but we can enforce the actor properties by imposing a type system.
+
+\TODO{1cm}{why ch() etc.? relaxed persistence}
+
+% verbatim quote
+We assume $\bot, * \notin \mathcal{N}$
+and for $X \subset \mathcal{N}$
+we define
+$X^* = X \cup \{\bot, *\}$.
+For $f : X \rightarrow X^*$
+we define $f^* : X^* \rightarrow X^*$ as
+$f^*(x) = f(x) $ for $ x \in X$ and
+$f^*(\bot) = f^*(*) = \bot$.
+A typing judgement is of the form
+$\judgement{\rho}{f}{P}$,
+where $\rho$ is the receptionist set of P,
+and $f : \rho \rightarrow \rho^*$ is a temporary name mapping function
+that relates actors in $P$ to the temporary names they have currently assumed.
+\begin{itemize}
+  \item $f(x) = \bot$ \dots
+  \item $f(x) = *$ \dots
+  \item $f(x) = y \notin \{\bot, *\}$ \dots
+\end{itemize}
+
+Properties:
+\begin{itemize}
+  \item $f(x) \neq x$ \dots
+  \item \dots
+\end{itemize}
+
+% more or less typing work... do after hard tasks
+Define $\oplus$.
+
+Define function restriction.
+
+Define compatibility.
+
+Define $ch{}$.
+
+
 
 % TODO:
 % arrangement of rules?
