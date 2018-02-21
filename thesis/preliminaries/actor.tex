@@ -25,21 +25,24 @@
 \TODO{3cm}{ch, compatibility, ...}
 
 
-\infrule{nil}{}
-  {}
+% TODO:
+% arrangement of rules?
+% axioms as rules okay?
+\axiomrule{nil}{}
   {\judgement{}{}{\anullproc}}
 
-\infrule{msg}{}
-  {}
+\axiomrule{msg}{}
   {\judgement{}{}{\asnd{x}{y}}}
 
 \infrule{act}
-  {$ \rho - \{x\} = \tilde{z}, y \notin \rho,$ and \\
-   $ f =
-    \begin{cases}
-      \ch{x, \tilde{z}} \text{ if } x \in \rho \\
-      \ch{\epsilon, \tilde{z}} \text{ otherwise }
-    \end{cases} $}
+  {\begin{varwidth}{6cm}
+    $ \rho - \{x\} = \tilde{z}, y \notin \rho,$ and \\
+    $ f =
+      \begin{cases}
+        \ch{x, \tilde{z}} \text{ if } x \in \rho \\
+        \ch{\epsilon, \tilde{z}} \text{ otherwise }
+      \end{cases} $
+   \end{varwidth}}
   {\judgement
     {\rho}
     {f}
@@ -72,8 +75,7 @@
     {\restrict{f}{\rho - \{x\}}}
     {\anew{x}{P}}}
 
-\infrule{inst}{$\operatorname{len}(\tilde{x}) = 2$ implies $x_1 \neq x_2$}
-  {}
+\axiomrule{inst}{$\operatorname{len}(\tilde{x}) = 2$ implies $x_1 \neq x_2$}
   {\judgement
     {\{\tilde{x}\}}
     {\ch{\tilde{x}}}

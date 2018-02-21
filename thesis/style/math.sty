@@ -118,16 +118,12 @@
 
 \newcommand{\infrulecondition}[1]{%
   \ifthenelse{\isempty{#1}}{}{
-    \RightLabel{if \begin{varwidth}{6cm}{#1}\end{varwidth}}
+    \RightLabel{if #1}
   }
 }
 
 \newcommand{\axiomrule}[3]{%
-  \begin{prooftree}
-    \LeftLabel{\textsc{#1} : }
-    \infrulecondition{#2}
-    \AxiomC{$#3$}
-  \end{prooftree}
+  \infrule{#1}{#2}{}{#3}
 }
 \newcommand{\infrule}[4]{%
   \begin{prooftree}
