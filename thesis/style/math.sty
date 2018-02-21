@@ -28,6 +28,13 @@
 \newcommand{\rv}[1]{\oprv(#1)} % received
 \newcommand{\dv}[1]{\opdv(#1)} % defined
 \newcommand{\fv}[1]{\opfv(#1)} % free
+\newcommand{\oprn}{\operatorname{rn}}
+\newcommand{\opbn}{\operatorname{bn}}
+\newcommand{\opfn}{\operatorname{fn}}
+\newcommand{\rn}[1]{\oprn(#1)} % received
+\newcommand{\bn}[1]{\opbn(#1)} % bound
+\newcommand{\fn}[1]{\opfn(#1)} % free
+\newcommand{\names}[1]{\operatorname{n}(#1)}
 
 
 % pi calculus
@@ -101,8 +108,16 @@
   ;\ifthenelse{\isempty{#2}}{\{\}}{#2}%
   \vdash #3}
 
+% semantics
+\newcommand{\apireduction}[1]{\overset{#1}{\longrightarrow}}
 
-\newcommand{\names}[1]{\operatorname{n}(#1)}
+\newcommand{\actsilent}{\tau}
+\newcommand{\actoutfree}[2]{\overline{#1}#2}
+\newcommand{\actoutbound}[2]{\overline{#1}(#2)}
+\newcommand{\actinfree}[2]{#1#2}
+\newcommand{\actinbound}[2]{#1(#2)}
+
+
 \newcommand{\substitution}[1]{[ #1 ]}
 \newcommand{\subst}[2]{#1 / #2}
 

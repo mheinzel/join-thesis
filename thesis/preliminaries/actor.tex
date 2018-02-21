@@ -1,15 +1,23 @@
 \section{The Actor Model}
 
-\TODO{2cm}{definition, properties}
+\TODO{3cm}{definition, properties from \cite{agha_actors:_1986}}
 % properties
 %   uniqueness
 %   freshness
 %   persistence
 
+
 \subsection{\ActorPiCalc}
 
-\cite{agha_algebraic_2004}
+Taken directly from \cite{agha_algebraic_2004}.
 
+\subsubsection{Syntax}
+
+We assume an infinite set of channel names
+$ \mathcal{N} = \{u, v, w, x, y, z, \ldots\} $.
+The set of actor configurations is defined by the following grammar.
+
+% TODO: polyadic or not?
 \begin{align*}
   P, Q
   \grmr \anullproc
@@ -21,9 +29,18 @@
   \altn \ains{B}{\tilde{x}}{\tilde{y}}
 \end{align*}
 
+The order of precedence among the constructs is the order in which they are
+listed.
 
-\TODO{3cm}{ch, compatibility, ...}
+\TODO{3cm}{explain constructs\\
+  (every inst requires a bevahior definition of form...)}
 
+\TODO{2cm}{polyadic communication on temporary name\\
+  only possible for last reception on that name!}
+
+\subsubsection{Type System}
+
+\TODO{3cm}{substitution?, ch, compatibility, ...}
 
 % TODO:
 % arrangement of rules?
@@ -80,3 +97,62 @@
     {\{\tilde{x}\}}
     {\ch{\tilde{x}}}
     {\ains{B}{\tilde{x}}{\tilde{y}}}}
+
+\TODO{1cm}{behavior definitions need to be type correct}
+
+\TODO{3cm}{how are actor properties enforced?}
+
+
+\subsubsection{Semantics}
+
+Labelled transition system module alpha-equivalence.
+Symmetric versions of COM, CLOSE, PAR are not shown.
+Transition labels are called actions and can be of five forms:
+$\tau$ (silent action),
+$\actoutfree{x}{y}$ (free output of message with target $x$ and content $y$),
+$\actoutbound{x}{y}$ (bound output),
+$\actinfree{x}{y}$ (free input),
+and $\actinbound{x}{y}$ (bound input).
+We let $\alpha$ range over all visible (non-$\tau$) actions.
+
+\axiomrule{out}{}
+  {\asnd{x}{y} \apireduction{\actoutfree{x}{y}} \anullproc}
+
+\axiomrule{inp}{}
+  {\arcv{x}{y} . P \apireduction{\actinfree{x}{z}} P\substitution{\subst{z}{y}}}
+
+\infrule{binp}{$ y \notin \fn{P_2} $}
+  {P \apireduction{\actinfree{x}{y}} P'}
+  {P \apireduction{\actinbound{x}{y}} P'}
+
+\infrule{res}{$ y \notin \names{\alpha} $}
+  {P \apireduction{\alpha} P'}
+  {\anew{y}{P} \apireduction{\alpha} \anew{y}{P'}}
+
+\infrule{open}{$ x \neq y $}
+  {P \apireduction{\actoutfree{x}{y}} P'}
+  {\anew{y}{P} \apireduction{\actoutbound{x}{y}} P'}
+
+\infrule{par}{$ \bn{\alpha} \cap \fn{P_2} = \emptyset $}
+  {P_1 \apireduction{\alpha} P_1'}
+  {P_1 \apar P_2 \apireduction{\alpha} P_1' \apar P_2}
+
+\infruleII{com}{}
+  {P_1 \apireduction{\actoutfree{x}{y}} P_1'}
+  {P_2 \apireduction{\actinfree{x}{y}} P_2'}
+  {P_1 \apar P_2 \apireduction{\actsilent} P_1' \apar P_2}
+
+\infruleII{close}{$ y \notin \fn{P_2} $}
+  {P_1 \apireduction{\actoutbound{x}{y}} P_1'}
+  {P_2 \apireduction{\actinfree{x}{y}} P_2'}
+  {P_1 \apar P_2 \apireduction{\actsilent} \anew{y}{P_1' \apar P_2}}
+
+\axiomrule{brnch}{$ x = y_i $}
+  {\acse{x}{\aalt{y_1}{P_1}, \ldots, \aalt{y_n}{P_n}} \apireduction{\actsilent} P_i}
+
+\infrule{behv}{$ \adef{B}{\tilde{x}}{\tilde{y}}{\arcv{x_1}{z} . P} $}
+  {(\arcv{x_1}{z} . P)\substitution{\subst{(\tilde{u},\tilde{v})}{(\tilde{x},\tilde{y})}}
+    \apireduction{\alpha} P'}
+  {\ains{B}{\tilde{x}}{\tilde{y}} \apireduction{\alpha} P'}
+
+\TODO{1cm}{interpret rules?}
