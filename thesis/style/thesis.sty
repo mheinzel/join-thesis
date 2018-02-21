@@ -15,7 +15,10 @@
 %\newcommand{\TODO}[2]{}
 \newcommand{\TODO}[2]{%
   \vspace{0.5cm}
-  \begin{minipage}[l][#1]{\textwidth}%
+  \noindent
+  \fcolorbox{gray}{white}{%
+  \begin{minipage}[l][#1]{\linewidth - 2\fboxsep}%
     \textcolor{gray}{#2}%
   \end{minipage}%
+  }
   }
