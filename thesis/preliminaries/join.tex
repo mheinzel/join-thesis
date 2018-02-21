@@ -257,8 +257,8 @@ can now be either channel or location names.
 
 % TODO: explain what new constructs mean?
 Also, we demand two additional syntactic restrictions:
-A location $a$ can only be defined once in any definition $D$.
-A defined channel $x$ may only appear in the join-patterns of one location.
+Firstly, location $a$ can only be defined once in any definition $D$.
+Secondly, channel $x$ may only appear in the join-patterns of one location.
 These conditions make the following definitions invalid:
 
 \begin{align*}
@@ -277,12 +277,12 @@ These conditions make the following definitions invalid:
 The semantics of the new constructs are defined using a distributed version
 of the RCHAM, called DRCHAM.
 We tag configurations with their location
-% location tree
 $ \mathcal{L} = \{ \phi, \psi, \ldots \} $
 
 $ \drchamcnf{\phi}{\mathcal{R}}{\mathcal{M}} $
 
 \TODO{3.5cm}{explain DRCHAM\\
+location tree\\
 previous rules apply\\
 (str-def gives fresh location names, too)}
 
@@ -319,8 +319,7 @@ Then we add three new rules for the two new syntactical constructs:
   }
 \end{align*}
 
-\TODO{0.5cm}{explain new rules}
+\TODO{3cm}{conditions\\explain new rules}
 % can dissolve new kind of definition as with str-def
 % move emitted message to correct location
 % migrate the current location
-\TODO{2cm}{conditions\\location tree}
