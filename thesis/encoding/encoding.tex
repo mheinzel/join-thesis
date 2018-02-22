@@ -14,37 +14,6 @@ since it does not adhere to its typing rules.
 
 Using polyadic communication:
 
-\begin{align}
-  \begin{split}
-    \encMJtoAP{\jsnd{x}{y}}
-    &= \asnd{x}{y} \\
-    \encMJtoAP{P \jpar Q}
-    &= \encMJtoAP{P} \apar \encMJtoAP{Q} \\
-    \encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{Q}}
-    &= \anew{a}{\anew{x}{\anew*{y}{ \ains{B^P}{a}{x,y} \apar \ains{B_c}{x}{a} \apar \ains{B_c}{y}{a} \apar \encMJtoAP{Q}}}} \\
-  \end{split}
-\end{align}
-\begin{align}
-  \adef*{B^P}{a}{x,y}{
-    \arcv{a}{c,i} . \acse{c}{
-       \aalt{x}{\ains{B_x^P}{a}{x,y,i}},\ 
-       \aalt{y}{\ains{B^P}{a}{x,y} \apar \asnd{a}{y,i}}
-     }
-  } \\
-  \adef*{B_x^P}{a}{x,y,u}{
-    \arcv{a}{c,v} . \acse{c}{
-      \aalt{x}{\ains{B_x^P}{a}{x,y,v} \apar \asnd{a}{x,u}},\ 
-      \aalt{y}{\ains{B^P}{a}{x,y} \apar \encMJtoAP{P}}
-    } \\
-  }
-  \adef*{B_c}{x}{a}{
-    \arcv{x}{i} . \parens{\asnd{a}{x,i} \apar \ains{B_c}{x}{a}}
-  }
-\end{align}
-But this introduces divergence.
-% (scrap this approach???)
-
-
 A more complex approach is to store available $x$ and $y$ payloads in a (church-encoded) list, avoiding divergence.
 
 \begin{align}
