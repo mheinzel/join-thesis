@@ -73,10 +73,11 @@ encDefBc = either (error . show) id $
 
 encList =
   new ["a","x","y","l_u","l_v"] $ become "B_a" ["a"] ["x","y","l_u","l_v"]
-                   .| become "B_{fw}" ["x"] ["a"]
-                   .| become "B_{fw}" ["y"] ["a"]
-                   .| become "B_{nil}" ["l_u"] []
-                   .| become "B_{nil}" ["l_v"] []
+                               .| become "B_{fw}" ["x"] ["a"]
+                               .| become "B_{fw}" ["y"] ["a"]
+                               .| become "B_{nil}" ["l_u"] []
+                               .| become "B_{nil}" ["l_v"] []
+                               .| become "Q" [] ["x","y"]
 
 encDefBnil = either (error . show) id $
   define "B_{nil}" ["l"] [] $
@@ -134,6 +135,48 @@ listenc =
     , encDefBcons
     , encDefBa
     , encDefBinsert
+    , encDefBjoin
+    ]
+  )
+
+encNew =
+  new ["a","x","y","l"] $ become "B_a" ["a"] ["x","y","x","l"]
+                       .| become "B_{fw}" ["x"] ["a"]
+                       .| become "B_{fw}" ["y"] ["a"]
+                       .| become "B_{nil}" ["l"] []
+                       .| become "Q" [] ["x","y"]
+
+encNewDefBa = either (error . show) id $
+  define "B_a" ["a"] ["x","y","f","l"] $
+    recv "a" ["c","p"] .- new ["k_n","k_c"]
+      ( send "l" ["k_n","k_c"]
+     .| recv "k_n" [] .- new ["l'"]
+          ( become "B_{cons}" ["l'"] ["p","l"]
+         .| become "B_a" [] ["x","y","c","l'"] -- TODO: a
+          )
+     .| recv "k_c" ["h","t"] .- caseof "c"
+          [ "f" ~: new ["l'"]  -- store
+              ( become "B_{cons}" ["l'"] ["p","l"]
+             .| become "B_a" ["a"] ["x","y","f","l'"]
+              )
+          , "x" ~: new ["l'"]  -- join
+              ( become "B_{join}" ["l'"] ["p","h","t"]
+             .| become "B_a" ["a"] ["x","y","f","l'"]
+              )
+          , "y" ~: new ["l'"]  -- join
+              ( become "B_{join}" ["l'"] ["p","h","t"]
+             .| become "B_a" ["a"] ["x","y","f","l'"]
+              )
+          ]
+      )
+
+newenc =
+  ( "newenc.tex"
+  , encNew
+  , [ encDefBc
+    , encDefBnil
+    , encDefBcons
+    , encNewDefBa
     , encDefBjoin
     ]
   )
