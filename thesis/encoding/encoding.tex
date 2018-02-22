@@ -5,9 +5,22 @@
 The simple translation of \joincalc into \asyncpicalc \cite{fournet_reflexive_1996} cannot be re-used for the translation to \actorpicalc,
 since it does not adhere to its typing rules.
 
-% show typing derivation
+\begin{align*}
+  \encMJtoAP{P \jpar Q}
+  &= \encMJtoAP{P} \apar \encMJtoAP{Q}
+  \\
+  \encMJtoAP{\jsnd{x}{y}}
+  &= \asnd{x}{y}
+  \\
+  \encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{Q}}
+  &= \anew{x}{\anew{y}{\parens{\ains{B}{x, y}{} \apar Q}}}
+  \\
+  \text{with }
+  \adef*{B}{x,y}{}{\arcv{x}{u} . \arcv{y}{v} . \parens{\ains{B}{x, y}{} \apar \ains{P}{}{}}} \\
+\end{align*}
 
-% explain problem
+\TODO{5cm}{typing derivation\\
+  explain problem}
 
 
 \subsection{A More Complex Approach}

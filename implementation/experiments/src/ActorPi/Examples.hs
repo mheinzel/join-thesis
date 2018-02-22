@@ -34,10 +34,22 @@ usesEverything =
     ]
 
 
+naiveEncoding =
+  new ["x","y"] $ become "B" ["x","y"] []
+               .| become "Q" [] ["x","y"]
+
+naiveDef = either (error . show) id $
+  define "B" ["x","y"] [] $
+    recv "x" ["u"] .- recv "y" ["v"] .-
+      ( become "B" ["x","y"] []
+     .| become "P" [] ["x","y","u","v"]
+      )
+
+
 encDef =
   new ["a","x","y"] $ become "B" ["a"] ["x","y"]
-                   .| become "B_c" ["x"] ["a"]
-                   .| become "B_c" ["y"] ["a"]
+                   .| become "B_{fw}" ["x"] ["a"]
+                   .| become "B_{fw}" ["y"] ["a"]
 
 encDefB = either (error . show) id $
   define "B" ["a"] ["x","y"] $
@@ -54,15 +66,15 @@ encDefBx = either (error . show) id $
       ]
 
 encDefBc = either (error . show) id $
-  define "B_c" ["x"] ["a"] $
-    recv "x" ["i"] .- (send "a" ["x","i"] .| become "B_c" ["x"] ["a"])
+  define "B_{fw}" ["x"] ["a"] $
+    recv "x" ["i"] .- (send "a" ["x","i"] .| become "B_{fw}" ["x"] ["a"])
 
 
 
 encList =
   new ["a","x","y","l_u","l_v"] $ become "B_a" ["a"] ["x","y","l_u","l_v"]
-                   .| become "B_c" ["x"] ["a"]
-                   .| become "B_c" ["y"] ["a"]
+                   .| become "B_{fw}" ["x"] ["a"]
+                   .| become "B_{fw}" ["y"] ["a"]
                    .| become "B_{nil}" ["l_u"] []
                    .| become "B_{nil}" ["l_v"] []
 
