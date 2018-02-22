@@ -123,7 +123,7 @@ Simpler encoding? (TODO: $a$ not unique)
 \begin{align*}
   \encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{Q}}
   = \anew{a}{\anew{x}{\anew{y}{\anew{l}{
-    &\big(\ \ains{B_a}{a}{x, y, x, l} \\
+    &\big(\ \ains{B_a^P}{a}{x, y, x, l} \\
     &\apar \ains{B_{fw}}{x}{a} \apar \ains{B_{fw}}{y}{a} \\
     &\apar \ains{B_{nil}}{l}{} \\
     &\apar \encMJtoAP{Q}
@@ -131,19 +131,19 @@ Simpler encoding? (TODO: $a$ not unique)
 \end{align*}
 
 \begin{align*}
-  \adef*{B_a}{a}{x,y,f,l}{\arcv{a}{c,p} . \anew{k_n}{\anew{k_c}{
+  \adef*{B_a^P}{a}{x,y,f,l}{\arcv{a}{c,p} . \anew{k_n}{\anew{k_c}{
   \\ & \hspace{1cm}
     \big(\ \asnd{l}{k_n,k_c}
   \\ & \hspace{1cm}
-    \apar \arcv{k_n}{} . \anew{l'}{\parens{\ains{B_{cons}}{l'}{p, l} \apar \ains{B_a}{a}{x, y, c, l'}}}
+    \apar \arcv{k_n}{} . \anew{l'}{\parens{\ains{B_{cons}}{l'}{p, l} \apar \ains{B_a^P}{a}{x, y, c, l'}}}
   \\ & \hspace{1cm}
     \apar \arcv{k_c}{h,t} . \acse{c}{\right.
   \\ & \hspace{3cm}
-    \aalt{f}{\anew{l'}{\parens{\ains{B_{cons}}{l'}{p, l} \apar \ains{B_a}{a}{x, y, f, l'}}}},
+    \aalt{f}{\anew{l'}{\parens{\ains{B_{cons}}{l'}{p, l} \apar \ains{B_a^P}{a}{x, y, f, l'}}}},
   \\ & \hspace{3cm}
-    \aalt{x}{\anew{l'}{\parens{\ains{B_{join}}{l'}{p, h, t} \apar \ains{B_a}{a}{x, y, f, l'}}}}
+    \aalt{x}{\anew{l'}{\parens{\ains{B_{join}^P}{l'}{p, h, t} \apar \ains{B_a^P}{a}{x, y, f, l'}}}}
   \\ & \hspace{3cm}
-    \aalt{y}{\anew{l'}{\parens{\ains{B_{join}}{l'}{p, h, t} \apar \ains{B_a}{a}{x, y, f, l'}}}}
+    \aalt{y}{\anew{l'}{\parens{\ains{B_{join}^P}{l'}{p, h, t} \apar \ains{B_a^P}{a}{x, y, f, l'}}}}
     \left.}\big)
   }}} \\
 \end{align*}
