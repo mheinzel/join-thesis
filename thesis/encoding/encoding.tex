@@ -25,29 +25,41 @@ since it does not adhere to its typing rules.
 
 \subsection{A More Complex Approach}
 
-Using polyadic communication:
+\TODO{3cm}{idea: sending both $x$ and $y$ to same actor}
 
-A more complex approach is to store available $x$ and $y$ payloads in a (church-encoded) list, avoiding divergence.
+\begin{align*}
+  \adef*{B_{fw}}{x}{a}{\arcv{x}{i} . \parens{\asnd{a}{x,i} \apar \ains{B_{fw}}{x}{a}}}
+\end{align*}
 
-\begin{align}
-  \encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{Q}}
-  =\
-  \anew{a}{\anew{x}{\anew{y}{\anew{l_x}{\anew{l_y}{
-    &\big(\ \ains{B_a^P}{a}{x, y, l_x, l_y} \nonumber \\
-    &\apar \ains{B_c}{x}{a} \apar \ains{B_c}{y}{a} \nonumber \\
-    &\apar \ains{B_{nil}}{l_x}{} \apar \ains{B_{nil}}{l_y}{} \nonumber \\
-    &\apar \encMJtoAP{Q}\ \big)
-  }}}}}
-\end{align}
+\TODO{3cm}{problem: can receive $x$ and $y$ in arbitrary order}
 
-% TODO: polyadic receive on temporary name not covered by Thati!
-\begin{align}
-  \adef*{B_c}{x}{a}{\arcv{x}{i} . \parens{\asnd{a}{x,i} \apar \ains{B_c}{x}{a}}}
-  \\
+\TODO{1cm}{(approach with divergence?)}
+
+A more complex approach is to store available $x$ and $y$ payloads
+in (church-encoded) lists, avoiding divergence.
+
+\TODO{2cm}{explain church-encoding}
+
+\begin{align*}
   \adef*{B_{nil}}{l}{}{\arcv{l}{k_n,k_c} . \asnd{k_n}{}}
   \\
   \adef*{B_{cons}}{l}{h,t}{\arcv{l}{k_n,k_c} . \asnd{k_c}{h,t}}
-  \\
+\end{align*}
+
+Then we can we need an actor
+which receives forwarded messages from both channels $x$ and $y$
+and keeps their respective payloads in two separate lists.
+
+\TODO{3cm}{$B_{join}$ joins $u$ with random $v$\\
+  \textbf{case} for non-deterministic choice}
+
+\TODO{3cm}{$B_{insert}$}
+
+\TODO{3cm}{$B_a$ handles either $x$ or $y$ messages}
+
+\TODO{1cm}{polyadic receive on temporary name}
+
+\begin{align*}
   \adef*{B_a^P}{a}{x,y,l_u,l_v}{
     \arcv{a}{c,i} . \anew{k}{\anew{t}{
       \acse{c}{ \right. \nonumber \\
@@ -82,9 +94,29 @@ A more complex approach is to store available $x$ and $y$ payloads in a (church-
         \left.}\big)
     }}
   }
-\end{align}
+\end{align*}
 
-% show type correctness
+And assemble:
+
+\begin{align*}
+  \encMJtoAP{P \jpar Q}
+  &= \encMJtoAP{P} \apar \encMJtoAP{Q}
+  \\
+  \encMJtoAP{\jsnd{x}{y}}
+  &= \asnd{x}{y}
+  \\
+  \encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{Q}}
+  &=
+  \anew{a}{\anew{x}{\anew{y}{\anew{l_x}{\anew{l_y}{
+    \hspace{-1cm}&&\big(\ \ains{B_a^P}{a}{x, y, l_x, l_y} \\ % hacky
+    &&&\apar \ains{B_{fw}}{x}{a} \apar \ains{B_{fw}}{y}{a} \\
+    &&&\apar \ains{B_{nil}}{l_x}{} \apar \ains{B_{nil}}{l_y}{} \\
+    &&&\apar \encMJtoAP{Q}\ \big)
+  }}}}}
+\end{align*}
+
+
+\TODO{4cm}{type correctness}
 
 
 \subsection{Full Abstraction}
