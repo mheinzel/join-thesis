@@ -17,12 +17,11 @@ We assume an infinite set of channel names
 $ \mathcal{N} = \{u, v, w, x, y, z, \ldots\} $.
 The set of actor configurations is defined by the following grammar.
 
-% TODO: polyadic or not?
 \begin{align*}
   P, Q
   \grmr \anullproc
-  \altn \arcv{x}{y} . P
-  \altn \asnd{x}{y}
+  \altn \amrcv{x}{y} . P
+  \altn \amsnd{x}{y}
   \altn \anew{x}{P}
   \altn P \apar Q
   \altn \acse{x}{\aalt{y_1}{P_1}, \dots, \aalt{y_n}{P_n}}
@@ -89,7 +88,7 @@ Define $ch{}$.
   {\judgement{}{}{\anullproc}}
 
 \axiomrule{msg}{}
-  {\judgement{}{}{\asnd{x}{y}}}
+  {\judgement{}{}{\amsnd{x}{y}}}
 
 \infrule{act}
   {\begin{varwidth}{6cm}
@@ -107,7 +106,7 @@ Define $ch{}$.
   {\judgement
     {\{x\} \cup \tilde{z}}
     {\ch{x, \tilde{z}}}
-    {\arcv{x}{y} . P}}
+    {\amrcv{x}{y} . P}}
 
 \infrule{case}{$f_i$ are mutually compatible}
   {\forall\ 1 \leq i \leq n:
@@ -156,10 +155,10 @@ and $\actinbound{x}{y}$ (bound input).
 We let $\alpha$ range over all visible (non-$\tau$) actions.
 
 \axiomrule{out}{}
-  {\asnd{x}{y} \apireduction{\actoutfree{x}{y}} \anullproc}
+  {\amsnd{x}{y} \apireduction{\actoutfree{x}{y}} \anullproc}
 
 \axiomrule{inp}{}
-  {\arcv{x}{y} . P \apireduction{\actinfree{x}{z}} P\substitution{\subst{z}{y}}}
+  {\amrcv{x}{y} . P \apireduction{\actinfree{x}{z}} P\substitution{\subst{z}{y}}}
 
 \infrule{binp}{$ y \notin \fn{P_2} $}
   {P \apireduction{\actinfree{x}{y}} P'}

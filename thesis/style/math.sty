@@ -87,6 +87,8 @@
 \newcommand{\anullproc}{\textbf{0}}
 \newcommand{\arcv}[2]{#1(#2)}
 \newcommand{\asnd}[2]{\overline{#1}\langle#2\rangle}
+\newcommand{\amrcv}[2]{#1 #2}  % monadic receive
+\newcommand{\amsnd}[2]{\overline{#1} #2}  % monadic send
 \newcommand{\anew}{\@ifstar{\@anewp}{\@anewn}}
 \newcommand{\@anewp}[2]{(\nu #1)\parens{#2}}
 \newcommand{\@anewn}[2]{(\nu #1)#2}
