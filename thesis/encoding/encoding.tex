@@ -61,9 +61,14 @@ The actor now receives forwarded messages from both channels $x$ and $y$.
 If it receives more messages from one of these channels than from the other,
 it stores the excess payloads in a list and remembers from which channel
 these came (as there can only be excessive messages on one of these channels).
+We again make sure the free names in $P$ do not conflict with any of the names
+$a$, $x$, $y$, $f$, $l$, $c$, $p$, $k_n$, $k_c$, $k_P$ and $k_a$,
+and define $\tilde{z}$
+as the tuple of names in $\fn{P} \setminus {\{u, v\}}$
+to give following behavior for the actor.
 
 \begin{align*}
-  \adef*{B_a^P}{a}{x,y,f,l}{\arcv{a}{c,p} . \anew{k_n}{\anew{k_c}{\anew{k_P}{\anew{k_a}{
+  \adef*{B_a^P}{a}{x,y,f,l,\tilde{z}}{\arcv{a}{c,p} . \anew{k_n}{\anew{k_c}{\anew{k_P}{\anew{k_a}{
   \\ & \hspace{1cm}
     \big(\ \asnd{l}{k_n,k_c}
   \\ & \hspace{1cm}
@@ -80,7 +85,7 @@ these came (as there can only be excessive messages on one of these channels).
   \\ & \hspace{1cm}
     \apar \arcv{k_P}{u,v} . \encMJtoAP{P}
   \\ & \hspace{1cm}
-    \apar \arcv{k_a}{f',l'} . \ains{B_a^P}{a}{x, y, f', l'}
+    \apar \arcv{k_a}{f',l'} . \ains{B_a^P}{a}{x, y, f', l',\tilde{z}}
   \ \big)
   }}}}} \\
 \end{align*}
@@ -92,13 +97,19 @@ and the encoded subprocess in which the definition is available.
 
 % TODO: free variables of P in parameters
 \begin{align*}
+  \encMJtoAP{P \jpar Q}
+  &= \encMJtoAP{P} \apar \encMJtoAP{Q}
+  \\
+  \encMJtoAP{\jsnd{x}{y}}
+  &= \asnd{x}{y}
+  \\
   \encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{Q}}
-  = \anew{a}{\anew{x}{\anew{y}{\anew{l}{
-    &\big(\ \ains{B_a^P}{a}{x, y, x, l} \\
-    &\apar \ains{B_{fw}}{x}{a} \apar \ains{B_{fw}}{y}{a} \\
-    &\apar \ains{B_{nil}}{l}{} \\
-    &\apar \encMJtoAP{Q}
-  \ \big)}}}} \\
+  &= \anew{a}{\anew{x}{\anew{y}{\anew{l}{\\
+    &\hspace{1cm}\big(\ \ains{B_a^P}{a}{x, y, x, l} \\
+    &\hspace{1cm}\apar \ains{B_{fw}}{x}{a} \apar \ains{B_{fw}}{y}{a} \\
+    &\hspace{1cm}\apar \ains{B_{nil}}{l}{} \\
+    &\hspace{1cm}\apar \encMJtoAP{Q}
+  \ \big)}}}}
 \end{align*}
 
 \TODO{4cm}{type correctness\\
