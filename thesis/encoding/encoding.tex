@@ -51,90 +51,10 @@ We can use church-encoding to build lists from actors and avoid divergence.
   \adef*{B_{cons}}{l}{h,t}{\arcv{l}{k_n,k_c} . \asnd{k_c}{h,t}}
 \end{align*}
 
-% TODO: one list?
-The actor now receives forwarded messages from both channels $x$ and $y$
-and keeps their respective payloads in two separate lists.
-
-% TODO: remove `join` and `insert`?
-\TODO{3cm}{$B_{join}$ joins $u$ with random $v$\\
-  \textbf{case} for non-deterministic choice}
-
-\TODO{3cm}{$B_{insert}$}
-
-\TODO{3cm}{$B_a$ handles either $x$ or $y$ messages}
-
-% TODO: new encoding?
-\begin{align*}
-  \adef*{B_a^P}{a}{x,y,l_u,l_v}{
-    \arcv{a}{c,i} . \anew{k}{\anew{t}{
-      \acse{c}{ \right. \nonumber \\
-        & \hspace{1cm}
-          \aalt{x}{\ains{B_{insert}^P}{t}{i, l_u, l_v} \apar \asnd{t}{k} \apar \arcv{k}{l_{u,new},l_{v,new}} . \ains{B_a^P}{a}{x, y, l_{u,new}, l_{v,new}}}, \nonumber \\
-        & \hspace{1cm}
-          \aalt{y}{\ains{B_{insert}^P}{t}{i, l_v, l_u} \apar \asnd{t}{k} \apar \arcv{k}{l_{v,new},l_{u,new}} . \ains{B_a^P}{a}{x, y, l_{u,new}, l_{v,new}}}
-    \left.}}}
-  } \\
-  \adef*{B_{insert}^P}{t}{u,l_u,l_v}{
-    \arcv{t}{k} . \anew{k_c}{\anew{k_n}{ \nonumber \\
-      & \hspace{1cm}
-        \big(\ \asnd{l_v}{k_n,k_c} \nonumber \\
-      & \hspace{1cm}
-        \apar \arcv{k_n}{} . \anew{l_{u,new}}{\parens{\ains{B_{cons}}{l_{u,new}}{u, l_u} \apar \asnd{k}{l_{u,new},l_v}}} \nonumber \\
-      & \hspace{1cm}
-        \apar \arcv{k_c}{h_v,t_v} . \anew{l_{v,new}}{\parens{\ains{B_{join}^P}{l_{v,new}}{u, h_v, t_v} \apar \asnd{k}{l_u,l_{v,new}}}} \big)
-    }}
-  } \\
-  \adef*{B_{join}^P}{l}{u,v,l_v}{
-    \arcv{l}{r_n,r_c} . \anew{k_n}{\anew{k_c}{ \nonumber \\
-      & \hspace{1cm}
-        \big(\ \asnd{l_v}{k_n,k_c} \nonumber \\
-      & \hspace{1cm}
-        \apar \arcv{k_n}{} . \parens{\encMJtoAP{P} \apar \asnd{r_n}{}} \nonumber \\
-      & \hspace{1cm}
-        \apar \arcv{k_c}{h_v,t_v} . \acse{u}{ \right. \nonumber \\
-          & \hspace{2cm}
-            \aalt{u}{\encMJtoAP{P} \apar \asnd{r_c}{h_v,t_v}}, \nonumber \\
-          & \hspace{2cm}
-            \aalt{u}{\anew{l_{joined}}{\parens{\ains{B_{join}^P}{l_{joined}}{u, h_v, t_v} \apar \asnd{r_c}{v,l_{joined}}}}}
-        \left.}\big)
-    }}
-  }
-\end{align*}
-
-\TODO{1cm}{does $P$ get correct $u$ and $v$???}
-
-And assemble:
-
-\begin{align*}
-  \encMJtoAP{P \jpar Q}
-  &= \encMJtoAP{P} \apar \encMJtoAP{Q}
-  \\
-  \encMJtoAP{\jsnd{x}{y}}
-  &= \asnd{x}{y}
-  \\
-  \encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{Q}}
-  &=
-  \anew{a}{\anew{x}{\anew{y}{\anew{l_x}{\anew{l_y}{
-    \hspace{-1cm}&&\big(\ \ains{B_a^P}{a}{x, y, l_x, l_y} \\ % hacky
-    &&&\apar \ains{B_{fw}}{x}{a} \apar \ains{B_{fw}}{y}{a} \\
-    &&&\apar \ains{B_{nil}}{l_x}{} \apar \ains{B_{nil}}{l_y}{} \\
-    &&&\apar \encMJtoAP{Q}\ \big)
-  }}}}}
-\end{align*}
-
-
-% TODO: continuation to make type correct
-% TODO: free variables of P in parameters
-Simpler encoding? (TODO: $a$ not unique)
-\begin{align*}
-  \encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{Q}}
-  = \anew{a}{\anew{x}{\anew{y}{\anew{l}{
-    &\big(\ \ains{B_a^P}{a}{x, y, x, l} \\
-    &\apar \ains{B_{fw}}{x}{a} \apar \ains{B_{fw}}{y}{a} \\
-    &\apar \ains{B_{nil}}{l}{} \\
-    &\apar \encMJtoAP{Q}
-  \ \big)}}}} \\
-\end{align*}
+The actor now receives forwarded messages from both channels $x$ and $y$.
+If it receives more messages from one of these channels than from the other,
+it stores the excess payloads in a list and remembers from which channel
+these came (as there can only be excessive messages on one of these channels).
 
 \begin{align*}
   \adef*{B_a^P}{a}{x,y,f,l}{\arcv{a}{c,p} . \anew{k_n}{\anew{k_c}{
@@ -154,10 +74,28 @@ Simpler encoding? (TODO: $a$ not unique)
   }}} \\
 \end{align*}
 
+To encode a \joincalc definition,
+we now start one such joining actor (with initially no excess payloads),
+a forwarder for each channel
+and the encoded subprocess in which the definition is available.
+
+% TODO: continuation to make type correct
+% TODO: free variables of P in parameters
+\begin{align*}
+  \encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{Q}}
+  = \anew{a}{\anew{x}{\anew{y}{\anew{l}{
+    &\big(\ \ains{B_a^P}{a}{x, y, x, l} \\
+    &\apar \ains{B_{fw}}{x}{a} \apar \ains{B_{fw}}{y}{a} \\
+    &\apar \ains{B_{nil}}{l}{} \\
+    &\apar \encMJtoAP{Q}
+  \ \big)}}}} \\
+\end{align*}
 
 \TODO{4cm}{type correctness\\
   $\judgement{}{}{\encMJtoAP{P}}$ for all core join terms $P$ (by structural induction)\\
   then check type correctness of definitions}
+
+\TODO{4cm}{"operational correspondence"}
 
 
 \subsection{Full Abstraction}
