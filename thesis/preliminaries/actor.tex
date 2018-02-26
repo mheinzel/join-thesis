@@ -189,9 +189,61 @@ We let $\alpha$ range over all visible (non-$\tau$) actions.
 \axiomrule{brnch}{$ x = y_i $}
   {\acse{x}{\aalt{y_1}{P_1}, \ldots, \aalt{y_n}{P_n}} \apireduction{\actsilent} P_i}
 
-\infrule{behv}{$ \adef{B}{\tilde{x}}{\tilde{y}}{\arcv{x_1}{z} . P} $}
-  {(\arcv{x_1}{z} . P)\substitution{\subst{(\tilde{u},\tilde{v})}{(\tilde{x},\tilde{y})}}
+\infrule{behv}{$ \adef{B}{\tilde{x}}{\tilde{y}}{\amrcv{x_1}{z} . P} $}
+  {(\amrcv{x_1}{z} . P)\substitution{\subst{(\tilde{u},\tilde{v})}{(\tilde{x},\tilde{y})}}
     \apireduction{\alpha} P'}
   {\ains{B}{\tilde{x}}{\tilde{y}} \apireduction{\alpha} P'}
 
 \TODO{1cm}{interpret rules?}
+
+
+\subsubsection{Polyadic Communication}
+
+According to \cite{agha_algebraic_2004},
+polyadic communication can be encoded in monadic \actorpicalc.
+
+% TODO: complete
+\begin{align*}
+  \encPolyAP{\asnd{x}{y_1, \ldots, y_n}}
+  &= \anew*{u}{\amsnd{x}{u} \apar \ains{S_1}{u}{y_1, \ldots, y_n}}
+  \\
+  \adef*{S_i}{u}{y_1, \ldots, y_n}
+    {\amrcv{u}{z} . \parens{\amsnd{z}{y_i} \apar \ains{S_{i+1}}{u}{y_{i+1}, \ldots, y_n}}}
+    && 1 \leq i \leq n
+  \\
+  \adef*{S_n}{}{}{...}
+  \\
+  \encPolyAP{\arcv{x}{y_1, \ldots, y_n}}
+  &= ...
+  \\
+  \adef*{R_i}{}{}{...}
+  \\
+  \adef*{R_n}{}{}{...}
+\end{align*}
+
+\TODO{3cm}{they restrict to non-temporary names\\
+  actually more general}
+
+We adapt the \textsc{msg} and \textsc{act} rules of the type system
+to accomodate polyadic communication.
+In \textsc{act}, we now not only need to prevent the creation of actors
+with a single name received in a message, but for all of them.
+Apart from that, the rules remain unchanged.
+
+\infrule{act}
+  {\begin{varwidth}{8cm}
+    $\rho - \{x\} = \tilde{z}$, $y_i \notin \rho$ for all $1 \leq i \leq n$, and \\
+    $ f =
+      \begin{cases}
+        \ch{x, \tilde{z}} \text{ if } x \in \rho \\
+        \ch{\epsilon, \tilde{z}} \text{ otherwise }
+      \end{cases} $
+   \end{varwidth}}
+  {\judgement
+    {\rho}
+    {f}
+    {P}}
+  {\judgement
+    {\{x\} \cup \tilde{z}}
+    {\ch{x, \tilde{z}}}
+    {\arcv{x}{y_1, \ldots, y_n} . P}}
