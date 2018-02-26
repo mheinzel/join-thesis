@@ -147,27 +147,29 @@ encNew =
                        .| become "Q" [] ["x","y"]
 
 encNewDefBa = either (error . show) id $
-  define "B_a" ["a"] ["x","y","f","l"] $
-    recv "a" ["c","p"] .- new ["k_n","k_c"]
+  define "B_a^P" ["a"] ["x","y","f","l"] $
+    recv "a" ["c","p"] .- new ["k_n","k_c","k_P","k_a"]
       ( send "l" ["k_n","k_c"]
      .| recv "k_n" [] .- new ["l'"]
           ( become "B_{cons}" ["l'"] ["p","l"]
-         .| become "B_a" [] ["x","y","c","l'"] -- TODO: a
+         .| send "k_a" ["c","l'"]
           )
      .| recv "k_c" ["h","t"] .- caseof "c"
           [ "f" ~: new ["l'"]  -- store
               ( become "B_{cons}" ["l'"] ["p","l"]
-             .| become "B_a" ["a"] ["x","y","f","l'"]
+             .| send "k_a" ["f","l'"]
               )
           , "x" ~: new ["l'"]  -- join
-              ( become "B_{join}" ["l'"] ["p","h","t"]
-             .| become "B_a" ["a"] ["x","y","f","l'"]
+              ( send "k_P" ["p","h"]
+             .| send "k_a" ["f","t"]
               )
           , "y" ~: new ["l'"]  -- join
-              ( become "B_{join}" ["l'"] ["p","h","t"]
-             .| become "B_a" ["a"] ["x","y","f","l'"]
+              ( send "k_P" ["h","p"]
+             .| send "k_a" ["f","t"]
               )
           ]
+     .| recv "k_P" ["u","v"] .- become "P" [] []
+     .| recv "k_a" ["f'","l'"] .- become "B_a^P" ["a"] ["x","y","f'","l'"]
       )
 
 newenc =
@@ -177,6 +179,5 @@ newenc =
     , encDefBnil
     , encDefBcons
     , encNewDefBa
-    , encDefBjoin
     ]
   )

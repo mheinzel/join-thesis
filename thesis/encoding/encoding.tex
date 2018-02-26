@@ -57,21 +57,26 @@ it stores the excess payloads in a list and remembers from which channel
 these came (as there can only be excessive messages on one of these channels).
 
 \begin{align*}
-  \adef*{B_a^P}{a}{x,y,f,l}{\arcv{a}{c,p} . \anew{k_n}{\anew{k_c}{
+  \adef*{B_a^P}{a}{x,y,f,l}{\arcv{a}{c,p} . \anew{k_n}{\anew{k_c}{\anew{k_P}{\anew{k_a}{
   \\ & \hspace{1cm}
     \big(\ \asnd{l}{k_n,k_c}
   \\ & \hspace{1cm}
-    \apar \arcv{k_n}{} . \anew{l'}{\parens{\ains{B_{cons}}{l'}{p, l} \apar \ains{B_a^P}{a}{x, y, c, l'}}}
+    \apar \arcv{k_n}{} . \anew{l'}{\parens{\ains{B_{cons}}{l'}{p, l} \apar \asnd{k_a}{c, l'}}}
   \\ & \hspace{1cm}
-    \apar \arcv{k_c}{h,t} . \acse{c}{\right.
-  \\ & \hspace{3cm}
-    \aalt{f}{\anew{l'}{\parens{\ains{B_{cons}}{l'}{p, l} \apar \ains{B_a^P}{a}{x, y, f, l'}}}},
-  \\ & \hspace{3cm}
-    \aalt{x}{\anew{l'}{\parens{\ains{B_{join}^P}{l'}{p, h, t} \apar \ains{B_a^P}{a}{x, y, f, l'}}}}
-  \\ & \hspace{3cm}
-    \aalt{y}{\anew{l'}{\parens{\ains{B_{join}^P}{l'}{p, h, t} \apar \ains{B_a^P}{a}{x, y, f, l'}}}}
-    \left.}\big)
-  }}} \\
+    \apar \arcv{k_c}{h,t} . \acse*{c}{
+    \\ & \hspace{3cm}
+      \aalt{f}{\anew{l'}{\parens{\ains{B_{cons}}{l'}{p, l} \apar \asnd{k_a}{f, l'}}}},
+    \\ & \hspace{3cm}
+      \aalt{x}{\asnd{k_P}{p,h} \apar \asnd{k_a}{f,t}},
+    \\ & \hspace{3cm}
+      \aalt{y}{\asnd{k_P}{h,p} \apar \asnd{k_a}{f,t}}
+    \ }
+  \\ & \hspace{1cm}
+    \apar \arcv{k_P}{u,v} . \encMJtoAP{P}
+  \\ & \hspace{1cm}
+    \apar \arcv{k_a}{f',l'} . \ains{B_a^P}{a}{x, y, f', l'}
+  \ \big)
+  }}}}} \\
 \end{align*}
 
 To encode a \joincalc definition,
@@ -79,7 +84,6 @@ we now start one such joining actor (with initially no excess payloads),
 a forwarder for each channel
 and the encoded subprocess in which the definition is available.
 
-% TODO: continuation to make type correct
 % TODO: free variables of P in parameters
 \begin{align*}
   \encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{Q}}

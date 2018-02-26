@@ -93,7 +93,9 @@
 \newcommand{\@anewp}[2]{(\nu #1)\parens{#2}}
 \newcommand{\@anewn}[2]{(\nu #1)#2}
 \newcommand{\apar}{\ |\ }
-\newcommand{\acse}[2]{\textbf{case} \ #1 \ \textbf{of} \ \parens{#2}}
+\newcommand{\acse}{\@ifstar{\@acseb}{\@acse}}
+\newcommand{\@acse}[2]{\textbf{case} \ #1 \ \textbf{of} \ \parens{#2}}
+\newcommand{\@acseb}[2]{\textbf{case} \ #1 \ \textbf{of} \ \big( #2 \big)}
 \newcommand{\aalt}[2]{#1 : #2}
 \newcommand{\ains}[3]{#1 \langle #2 ; #3 \rangle}
 \newcommand{\adef}{\@ifstar{\@adefa}{\@adefn}}
