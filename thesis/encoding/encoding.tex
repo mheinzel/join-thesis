@@ -15,20 +15,26 @@ since it does not adhere to its typing rules.
   &= \asnd{x}{y}
   \\
   \encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{Q}}
-  &= \anew{x}{\anew{y}{\parens{\ains{B}{x, y}{} \apar Q}}}
+  &= \anew{x}{\anew{y}{\parens{\ains{B}{x, y}{\tilde{z}} \apar \encMJtoAP{Q}}}}
   \\
   \text{with }
-  \adef*{B}{x,y}{}{\arcv{x}{u} . \arcv{y}{v} . \parens{\ains{B}{x, y}{} \apar \ains{P}{}{}}} \\
+  \adef*{B}{x,y}{\tilde{z}}{\arcv{x}{u} . \arcv{y}{v} . \parens{\ains{B}{x, y}{\tilde{z}} \apar \encMJtoAP{P}}}
+  \\
+  \tilde{z}
+  &= \fn{P} \setminus {\{u, v\}}
 \end{align*}
 
-\TODO{3cm}{typing derivation?}
+Note that if $\fn{P}$ contains $x$ or $y$,
+we have to prevent conflicts by applying a renaming to $P$.
 
-\TODO{2cm}{reason: actor cannot receive on two channels interchangeably}
+\TODO{3cm}{typing derivation?}
 
 
 \subsection{Forwarding}
 
-\TODO{3cm}{idea: sending both $x$ and $y$ to same actor}
+\TODO{2cm}{reason: actor cannot receive on two channels interchangeably}
+
+\TODO{2cm}{idea: sending both $x$ and $y$ to same actor}
 
 \begin{align*}
   \adef*{B_{fw}}{x}{a}{\arcv{x}{i} . \parens{\asnd{a}{x,i} \apar \ains{B_{fw}}{x}{a}}}
