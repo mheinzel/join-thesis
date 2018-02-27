@@ -197,6 +197,29 @@ We let $\alpha$ range over all visible (non-$\tau$) actions.
 \TODO{1cm}{interpret rules?}
 
 
+\subsubsection{Structural Equivalence}
+
+% from Thati dissertation
+\begin{align*}
+  P \apar \anullproc
+    &\astructequ P \\
+  P \apar Q
+    &\astructequ Q \apar P \\
+  P \apar (Q \apar R)
+    &\astructequ (P \apar Q) \apar R \\
+  \\
+  \anew{x}{\anullproc}
+    &\astructequ \anullproc \\
+  \anew{x}{\anew{y}{\anullproc}}
+    &\astructequ \anew{y}{\anew{x}{\anullproc}} \\
+  P \apar \anew{x}{Q}
+    &\astructequ \anew*{x}{P \apar Q} \text{ if } x \notin \fn{P} \\
+  \\
+  \ains{B}{\tilde{u}}{\tilde{v}}
+    &\astructequ \ldots \text{ if } \ldots % TODO
+\end{align*}
+
+
 \subsubsection{Polyadic Communication}
 
 According to \cite{agha_algebraic_2004},
