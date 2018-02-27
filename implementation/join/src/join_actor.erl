@@ -54,49 +54,44 @@ wrap_up(Pid) ->
 % corresponds to B_a in the encoding
 
 definition(P) ->
-  fun Actor(A, X, Y, Us, Vs) ->
+  fun Actor(A, X, Y, Flag, Payloads) ->
     receive
-      {X, U} ->
-        case queue:out(Vs) of
+      {Channel, Payload} ->
+        case queue:out(Payloads) of
           {empty, _} ->
-            % no Vs, store the U
-            Actor(A, X, Y, queue:in(U, Us), Vs);
-          {{value, V}, T} ->
-            % join pattern fires with contents U and V
-            spawn(fun() -> P(U, V) end),
-            Actor(A, X, Y, Us, T)
-        end;
-
-      {Y, V} ->
-        case queue:out(Us) of
-          {empty, _} ->
-            % no Us, store the V
-            Actor(A, X, Y, Us, queue:in(V, Vs));
-          {{value, U}, T} ->
-            % join pattern fires with contents U and V
-            spawn(fun() -> P(U, V) end),
-            Actor(A, X, Y, T, Vs)
+            Actor(A, X, Y, Channel, queue:in(Payload, Payloads));
+          {{value, H}, T} ->
+            case Channel of
+              Flag ->
+                Actor(A, X, Y, Flag, queue:in(Payload, Payloads));
+              X ->
+                spawn(fun() -> P(Payload, H) end),
+                Actor(A, X, Y, Flag, T);
+              Y ->
+                spawn(fun() -> P(H, Payload) end),
+                Actor(A, X, Y, Flag, T)
+            end
         end;
 
       {wrap_up, Pid, Ref} ->
         % unregister and send itself back as data
         join_reg:unregister_self(),
-        Pid ! {Ref, {Actor, A, [X, Y, Us, Vs]}},
+        Pid ! {Ref, {Actor, A, [X, Y, Flag, Payloads]}},
         % forward all messages to the new location
         join_forward:forward_on(A);
 
       {print_status, Pid, Ref, Level} ->
         io:format(join_util:indentation(Level+1) ++ "definition ~p (Pid: ~p):~n",
                   [A, self()]),
-        io:format(join_util:indentation(Level+1) ++ "  Us: ~p~n", [Us]),
-        io:format(join_util:indentation(Level+1) ++ "  Vs: ~p~n", [Vs]),
+        io:format(join_util:indentation(Level+1) ++ "  Flag: ~p~n", [Flag]),
+        io:format(join_util:indentation(Level+1) ++ "  Payloads: ~p~n", [Payloads]),
         Pid ! {Ref, ok},
-        Actor(A, X, Y, Us, Vs);
+        Actor(A, X, Y, Flag, Payloads);
 
       Other ->
         ?WARNING("definition ~p received invalid message: ~p~n",
                  [self(), Other]),
-        Actor(A, X, Y, Us, Vs)
+        Actor(A, X, Y, Flag, Payloads)
     end
   end.
 

@@ -37,12 +37,11 @@ def(Location, PQ) ->
   A = join_util:create_id(act),
   X = join_util:create_id(fwX),
   Y = join_util:create_id(fwY),
-  Lx = queue:new(),
-  Ly = queue:new(),
+  Payloads = queue:new(),
   % get user-supplied processes
   {P, Q} = PQ(X, Y),
   % spawn in parallel (no need to spawn lists)
-  join_location:spawn_actor_at(Location, join_actor:definition(P), A, [X, Y, Lx, Ly]),
+  join_location:spawn_actor_at(Location, join_actor:definition(P), A, [X, Y, X, Payloads]),
   join_location:spawn_actor_at(Location, fun join_actor:forward/2, X, [A]),
   join_location:spawn_actor_at(Location, fun join_actor:forward/2, Y, [A]),
   spawn(Q),

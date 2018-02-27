@@ -113,7 +113,7 @@ applet_client(User, NumGet, ToPrint) ->
         end,
         % in
         fun() ->
-          lists:foreach(fun(X) -> join:send(Put, X) end, ToPrint),
+          lists:foreach(fun(V) -> join:send(Put, V) end, ToPrint),
           lists:foreach(fun(K) -> join:send(Get, K) end, lists:duplicate(NumGet, Print))
         end
       } end)
