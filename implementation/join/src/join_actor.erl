@@ -61,15 +61,23 @@ definition(P) ->
           {empty, _} ->
             Actor(A, X, Y, Channel, queue:in(Payload, Payloads));
           {{value, H}, T} ->
-            case Channel of
-              Flag ->
-                Actor(A, X, Y, Flag, queue:in(Payload, Payloads));
+            case Flag of
               X ->
-                spawn(fun() -> P(Payload, H) end),
-                Actor(A, X, Y, Flag, T);
+                case Channel of
+                  X ->
+                    Actor(A, X, Y, Flag, queue:in(Payload, Payloads));
+                  Y ->
+                    spawn(fun() -> P(H, Payload) end),
+                    Actor(A, X, Y, Flag, T)
+                end;
               Y ->
-                spawn(fun() -> P(H, Payload) end),
-                Actor(A, X, Y, Flag, T)
+                case Channel of
+                  Y ->
+                    Actor(A, X, Y, Flag, queue:in(Payload, Payloads));
+                  X ->
+                    spawn(fun() -> P(Payload, H) end),
+                    Actor(A, X, Y, Flag, T)
+                end
             end
         end;
 
