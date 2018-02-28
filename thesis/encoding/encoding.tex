@@ -144,12 +144,20 @@ and the encoded subprocess in which the definition is available.
   then check type correctness of definitions}
 
 \vspace{1cm}
+
+In \joincalc:
+
+\begin{align*}
+  \jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{\jsnd{x}{b} \jpar \jsnd{y}{c} \jpar Q}
+  \joinreduction
+  \jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{P\substitution{\subst{b}{u},\subst{c}{v}} \jpar Q}
+\end{align*}
+
 Looking at a series of reductions:
 
-%TODO: reorder parallel terms?
 \begin{align*}
   \encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{\jsnd{x}{b} \jpar \jsnd{y}{c} \jpar Q}}
-  = &\anew{a}{\anew{x}{\anew{y}{\anew{l}{ \\
+  =\ &\anew{a}{\anew{x}{\anew{y}{\anew{l}{ \\
       &\hspace{0.5cm}
       \begin{aligned}[t]
         \big(\ &\ains{B_{fw}}{x}{a}
@@ -301,27 +309,223 @@ Looking at a series of reductions:
 \end{align*}
 
 \TODO{1cm}{same situation as before, but $\asnd{a}{x,b}$ gone, $b$ stored in list $l'$, garbage\\
-  now receive the $y$}
+  now receive the $y$ (alpha-renaming $l'$)}
 
-% TODO
 \begin{align*}
-  &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{l'}{ \\
+  &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{l'}{\anew{k_n}{\anew{k_c}{\anew{k_P}{\anew{k_a}{ \\
     &\hspace{0.5cm}
     \begin{aligned}[t]
       \big(\ &\ains{B_{fw}}{x}{a}
-      \apar   \asnd{a}{y,c}
       \apar   \ains{B_{fw}}{y}{a}
       \apar   \encMJtoAP{Q}
       \apar   \ains{B_{nil}}{l}{}
       \apar   \ains{B_{cons}}{l'}{b, l}
       \\
-      \apar  &\ains{B_a^P}{a}{x, y, x, l',\tilde{z}}
+      \apar  &\asnd{l'}{k_n,k_c}
+      \\
+      \apar  &\arcv{k_n}{} . \anew{l''}{\parens{\ains{B_{cons}}{l''}{c, l'} \apar \asnd{k_a}{y, l''}}}
+      \\
+      \apar  &\arcv{k_c}{h,t} .
+        \begin{aligned}[t]
+          \acse*{x}{\ 
+            &\aalt{x}{
+              \begin{aligned}[t]
+                \acse*{y}{\ 
+                  &\aalt{x}{\anew*{l''}{
+                    \ains{B_{cons}}{l''}{c,l'} \apar \asnd{k_a}{x,l''}
+                  }}\\
+                  &\aalt{y}{
+                    \asnd{k_P}{h,c} \apar \asnd{k_a}{x,t}
+                  }\ 
+                }
+              \end{aligned}
+            }\\
+            &\aalt{y}{
+              \begin{aligned}[t]
+                \acse*{y}{\ 
+                  &\aalt{y}{\anew*{l''}{
+                    \ains{B_{cons}}{l''}{c,l'} \apar \asnd{k_a}{x,l''}
+                  }}\\
+                  &\aalt{x}{
+                    \asnd{k_P}{c,h} \apar \asnd{k_a}{x,t}
+                  }\ 
+                }
+              \end{aligned}
+            }\ 
+          }
+        \end{aligned}
+      \\
+      \apar  &\arcv{k_P}{u,v} . \encMJtoAP{P}
+      \\
+      \apar  &\arcv{k_a}{f',l''} . \ains{B_a^P}{a}{x, y, f', l'',\tilde{z}}
+      \\
+      \apar  &R_{garbage}
+      \ \big)
+    \end{aligned}
+  }}}}}}}}}
+\end{align*}
+
+\TODO{1cm}{$B_{cons}$ receives continuations, $k_c$ received, $k_c, k_n$ to garbage}
+
+\begin{align*}
+  &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{l'}{\anew{k_P}{\anew{k_a}{ \\
+    &\hspace{0.5cm}
+    \begin{aligned}[t]
+      \big(\ &\ains{B_{fw}}{x}{a}
+      \apar   \ains{B_{fw}}{y}{a}
+      \apar   \encMJtoAP{Q}
+      \apar   \ains{B_{nil}}{l}{}
+      \apar   \ains{B_{cons}}{l'}{b, l}
+      \\
+      \apar
+        &\begin{aligned}[t]
+          \acse*{x}{\ 
+            &\aalt{x}{
+              \begin{aligned}[t]
+                \acse*{y}{\ 
+                  &\aalt{x}{\anew*{l''}{
+                    \ains{B_{cons}}{l''}{c,l'} \apar \asnd{k_a}{x,l''}
+                  }}\\
+                  &\aalt{y}{
+                    \asnd{k_P}{b,c} \apar \asnd{k_a}{x,l}
+                  }\ 
+                }
+              \end{aligned}
+            }\\
+            &\aalt{y}{
+              \begin{aligned}[t]
+                \acse*{y}{\ 
+                  &\aalt{y}{\anew*{l''}{
+                    \ains{B_{cons}}{l''}{c,l'} \apar \asnd{k_a}{x,l''}
+                  }}\\
+                  &\aalt{x}{
+                    \asnd{k_P}{c,b} \apar \asnd{k_a}{x,l}
+                  }\ 
+                }
+              \end{aligned}
+            }\ 
+          }
+        \end{aligned}
+      \\
+      \apar  &\arcv{k_P}{u,v} . \encMJtoAP{P}
+      \\
+      \apar  &\arcv{k_a}{f',l''} . \ains{B_a^P}{a}{x, y, f', l'',\tilde{z}}
+      \\
+      \apar  &R_{garbage}
+      \ \big)
+    \end{aligned}
+  }}}}}}}
+\end{align*}
+
+\TODO{1cm}{cases}
+
+\begin{align*}
+  &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{l'}{\anew{k_P}{\anew{k_a}{ \\
+    &\hspace{0.5cm}
+    \begin{aligned}[t]
+      \big(\ &\ains{B_{fw}}{x}{a}
+      \apar   \ains{B_{fw}}{y}{a}
+      \apar   \encMJtoAP{Q}
+      \apar   \ains{B_{nil}}{l}{}
+      \apar   \ains{B_{cons}}{l'}{b, l}
+      \\
+      \apar  &\asnd{k_P}{b,c}
+      \apar   \asnd{k_a}{x,l}
+      \\
+      \apar  &\arcv{k_P}{u,v} . \encMJtoAP{P}
+      \\
+      \apar  &\arcv{k_a}{f',l''} . \ains{B_a^P}{a}{x, y, f', l'',\tilde{z}}
+      \\
+      \apar  &R_{garbage}
+      \ \big)
+    \end{aligned}
+  }}}}}}}
+\end{align*}
+
+\TODO{1cm}{$k_P$}
+
+\begin{align*}
+  &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{l'}{\anew{k_a}{ \\
+    &\hspace{0.5cm}
+    \begin{aligned}[t]
+      \big(\ &\ains{B_{fw}}{x}{a}
+      \apar   \ains{B_{fw}}{y}{a}
+      \apar   \encMJtoAP{Q}
+      \apar   \ains{B_{nil}}{l}{}
+      \apar   \ains{B_{cons}}{l'}{b, l}
+      \\
+      \apar  &\asnd{k_a}{x,l}
+      \\
+      \apar  &\encMJtoAP{P}\substitution{\subst{b}{u},\subst{c}{v}}
+      \\
+      \apar  &\arcv{k_a}{f',l''} . \ains{B_a^P}{a}{x, y, f', l'',\tilde{z}}
+      \\
+      \apar  &R_{garbage}
+      \ \big)
+    \end{aligned}
+  }}}}}}
+\end{align*}
+
+\TODO{1cm}{$k_a$}
+
+\begin{align*}
+  &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{l'}{ \\
+    &\hspace{0.5cm}
+    \begin{aligned}[t]
+      \big(\ &\ains{B_{fw}}{x}{a}
+      \apar   \ains{B_{fw}}{y}{a}
+      \apar   \encMJtoAP{Q}
+      \apar   \ains{B_{nil}}{l}{}
+      \apar   \ains{B_{cons}}{l'}{b, l}
+      \\
+      \apar  &\encMJtoAP{P}\substitution{\subst{b}{u},\subst{c}{v}}
+      \\
+      \apar  &\ains{B_a^P}{a}{x, y, x, l,\tilde{z}}
       \\
       \apar  &R_{garbage}
       \ \big)
     \end{aligned}
   }}}}}
 \end{align*}
+
+\TODO{1cm}{substitution, $l'$ to garbage}
+
+\begin{align*}
+  &\anew{a}{\anew{x}{\anew{y}{\anew{l}{ \\
+    &\hspace{0.5cm}
+    \begin{aligned}[t]
+      \big(\ &\ains{B_{fw}}{x}{a}
+      \apar   \ains{B_{fw}}{y}{a}
+      \apar   \encMJtoAP{Q}
+      \apar   \ains{B_{nil}}{l}{}
+      \\
+      \apar  &\encMJtoAP{P\substitution{\subst{b}{u},\subst{c}{v}}}
+      \\
+      \apar  &\ains{B_a^P}{a}{x, y, x, l,\tilde{z}}
+      \\
+      \apar  &R_{garbage}
+      \ \big)
+    \end{aligned}
+  }}}}
+\end{align*}
+
+\TODO{1cm}{has same behavior to (garbage doesn't matter)}
+
+\begin{align*}
+  \encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{P\substitution{\subst{b}{u},\subst{c}{v}} \jpar Q}}
+  =\ &\anew{a}{\anew{x}{\anew{y}{\anew{l}{ \\
+      &\hspace{0.5cm}
+      \begin{aligned}[t]
+        \big(\ &\ains{B_{fw}}{x}{a}
+        \apar   \ains{B_{fw}}{y}{a} \\
+        \apar  &\encMJtoAP{P\substitution{\subst{b}{u},\subst{c}{v}}} \apar \encMJtoAP{Q} \\
+        \apar  &\ains{B_{nil}}{l}{}
+        \apar   \ains{B_a^P}{a}{x, y, x, l}
+        \ \big)
+      \end{aligned}
+    }}}}
+\end{align*}
+
 
 
 \subsection{Full Abstraction}
