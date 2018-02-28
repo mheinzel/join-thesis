@@ -122,13 +122,12 @@ and the encoded subprocess in which the definition is available.
   $\judgement{}{}{\encMJtoAP{P}}$ for all core join terms $P$ (by structural induction)\\
   then check type correctness of definitions}
 
+Doing a trace:
+
+%TODO: reorder parallel terms?
 \begin{align*}
   &\encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{\jsnd{x}{b} \jpar \jsnd{y}{c} \jpar Q}}
-  \\ &\hspace{0.5cm}
-  \begin{aligned}[t]
-    =\ &
-    \anew{a}{\anew{x}{\anew{y}{\anew{l}{ \\
-      &\hspace{0.5cm}
+  = \anew{a}{\anew{x}{\anew{y}{\anew{l}{
       \begin{aligned}[t]
         \big(\ &\ains{B_{fw}}{x}{a}
         \apar   \ains{B_{fw}}{y}{a} \\
@@ -138,95 +137,108 @@ and the encoded subprocess in which the definition is available.
         \ \big)
       \end{aligned}
     }}}}
-    \\
-    \apireduction{}^*\ & % PAR, BEHV, INP, ...
-    \anew{a}{\anew{x}{\anew{y}{\anew{l}{ \\
-      &\hspace{0.5cm}
-      \begin{aligned}[t]
-        \big(\ &\ains{B_{fw}}{x}{a}
-        \apar   \ains{B_{fw}}{y}{a} \\
-        \apar  &\asnd{a}{x,b} \apar \asnd{a}{y,c} \apar \encMJtoAP{Q} \\
-        \apar  &\ains{B_{nil}}{l}{}
-        \apar   \ains{B_a^P}{a}{x, y, x, l}
-        \ \big)
-      \end{aligned}
-    }}}}
-    \\
-    \apireduction{}^*\ & % BEHV for B_a, pulling out news
-    \anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{k_n}{\anew{k_c}{\anew{k_P}{\anew{k_a}{ \\
-      &\hspace{0.5cm}
-      \begin{aligned}[t]
-        \big(\ &\ains{B_{fw}}{x}{a}
-        \apar   \ains{B_{fw}}{y}{a} \\
-        \apar  &\asnd{a}{y,c} \apar \encMJtoAP{Q} \\
-        \apar  &\ains{B_{nil}}{l}{} \\
-        \apar  &\asnd{l}{k_n,k_c} \\
-        \apar  &\arcv{k_n}{} . \anew{l'}{\parens{\ains{B_{cons}}{l'}{p, l} \apar \asnd{k_a}{c, l'}}} \\
-        \apar  &\arcv{k_c}{h,t} .
-          \begin{aligned}[t]
-            \acse*{c}{
-            \ &\aalt{x}{\anew{l'}{\parens{\ains{B_{cons}}{l'}{p, l} \apar \asnd{k_a}{x, l'}}}}, \\
-              &\aalt{x}{\asnd{k_P}{p,h} \apar \asnd{k_a}{x,t}}, \\
-              &\aalt{y}{\asnd{k_P}{h,p} \apar \asnd{k_a}{x,t}}
-            \ }
-          \end{aligned} \\
-        \apar  &\arcv{k_P}{u,v} . \encMJtoAP{P} \\
-        \apar  &\arcv{k_a}{f',l'} . \ains{B_a^P}{a}{x, y, f', l',\tilde{z}}
-        \ \big)
-      \end{aligned}
-    }}}}}}}}
-    \\
-    \apireduction{}^*\ & % BEHV B_nil
-    \anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{k_n}{\anew{k_c}{\anew{k_P}{\anew{k_a}{ \\
-      &\hspace{0.5cm}
-      \begin{aligned}[t]
-        \big(\ &\ains{B_{fw}}{x}{a}
-        \apar   \ains{B_{fw}}{y}{a} \\
-        \apar  &\asnd{a}{y,c} \apar \encMJtoAP{Q} \\
-        \apar  &\asnd{k_n}{} \apar \ains{B_{nil}}{l}{} \\
-        \apar  &\arcv{k_n}{} . \anew{l'}{\parens{\ains{B_{cons}}{l'}{p, l} \apar \asnd{k_a}{c, l'}}} \\
-        \apar  &\arcv{k_c}{h,t} .
-          \begin{aligned}[t]
-            \acse*{c}{
-            \ &\aalt{x}{\anew{l'}{\parens{\ains{B_{cons}}{l'}{p, l} \apar \asnd{k_a}{x, l'}}}}, \\
-              &\aalt{x}{\asnd{k_P}{p,h} \apar \asnd{k_a}{x,t}}, \\
-              &\aalt{y}{\asnd{k_P}{h,p} \apar \asnd{k_a}{x,t}}
-            \ }
-          \end{aligned} \\
-        \apar  &\arcv{k_P}{u,v} . \encMJtoAP{P} \\
-        \apar  &\arcv{k_a}{f',l'} . \ains{B_a^P}{a}{x, y, f', l',\tilde{z}}
-        \ \big)
-      \end{aligned}
-    }}}}}}}}
-    \\
-    \apireduction{}^*\ & % send k_n, dropping k_c branch, dropping k_P
-    \anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{k_n}{\anew{k_c}{\anew{k_P}{\anew{k_a}{ \\
-      &\hspace{0.5cm}
-      \begin{aligned}[t]
-        \big(\ &\asnd{a}{x,b} \apar \ains{B_{fw}}{x}{a} \\
-        \apar  &\asnd{a}{y,c} \apar \ains{B_{fw}}{y}{a} \\
-        \apar  &\ains{B_{nil}}{l}{} \\
-        \apar  &\encMJtoAP{Q} \\
-        \apar  &\anew{l'}{\parens{\ains{B_{cons}}{l'}{p, l} \apar \asnd{k_a}{c, l'}}} \\
-        \apar  &\arcv{k_a}{f',l'} . \ains{B_a^P}{a}{x, y, f', l',\tilde{z}}
-        \ \big)
-      \end{aligned}
-    }}}}}}}}
-    \\
-    \apireduction{}^*\ &
-    \anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{k_n}{\anew{k_c}{\anew{k_P}{\anew{k_a}{\anew{l'}{ \\
-      &\hspace{0.5cm}
-      \begin{aligned}[t]
-        \big(\ &\asnd{a}{x,b} \apar \ains{B_{fw}}{x}{a} \\
-        \apar  &\asnd{a}{y,c} \apar \ains{B_{fw}}{y}{a} \\
-        \apar  &\ains{B_{nil}}{l}{} \\
-        \apar  &\encMJtoAP{Q} \\
-        \apar  &\parens{\ains{B_{cons}}{l'}{p, l} \apar \asnd{k_a}{c, l'}} \\
-        \apar  &\arcv{k_a}{f',l'} . \ains{B_a^P}{a}{x, y, f', l',\tilde{z}}
-        \ \big)
-      \end{aligned}
-    }}}}}}}}}
-  \end{aligned}
+\end{align*}
+
+\TODO{2cm}{forward on x and y}
+
+\begin{align*}
+  \anew{a}{\anew{x}{\anew{y}{\anew{l}{
+    \begin{aligned}[t]
+      \big(\ &\ains{B_{fw}}{x}{a}
+      \apar   \ains{B_{fw}}{y}{a} \\
+      \apar  &\asnd{a}{x,b} \apar \asnd{a}{y,c} \apar \encMJtoAP{Q} \\
+      \apar  &\ains{B_{nil}}{l}{}
+      \apar   \ains{B_a^P}{a}{x, y, x, l}
+      \ \big)
+    \end{aligned}
+  }}}}
+\end{align*}
+
+\TODO{2cm}{receive x in $B_a^P$ (symmetry)}
+
+\begin{align*}
+  &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{k_n}{\anew{k_c}{\anew{k_P}{\anew{k_a}{ \\
+    &\hspace{0.5cm}
+    \begin{aligned}[t]
+      \big(\ &\ains{B_{fw}}{x}{a}
+      \apar   \ains{B_{fw}}{y}{a} \\
+      \apar  &\asnd{a}{y,c} \apar \encMJtoAP{Q} \\
+      \apar  &\ains{B_{nil}}{l}{} \\
+      \apar  &\asnd{l}{k_n,k_c} \\
+      \apar  &\arcv{k_n}{} . \anew{l'}{\parens{\ains{B_{cons}}{l'}{b, l} \apar \asnd{k_a}{x, l'}}} \\
+      \apar  &\arcv{k_c}{h,t} .
+        \begin{aligned}[t]
+          \acse*{x}{
+          \ &\aalt{x}{\anew{l'}{\parens{\ains{B_{cons}}{l'}{b, l} \apar \asnd{k_a}{x, l'}}}}, \\
+            &\aalt{x}{\asnd{k_P}{b,h} \apar \asnd{k_a}{x,t}}, \\
+            &\aalt{y}{\asnd{k_P}{h,b} \apar \asnd{k_a}{x,t}}
+          \ }
+        \end{aligned} \\
+      \apar  &\arcv{k_P}{u,v} . \encMJtoAP{P} \\
+      \apar  &\arcv{k_a}{f',l'} . \ains{B_a^P}{a}{x, y, f', l',\tilde{z}}
+      \ \big)
+    \end{aligned}
+  }}}}}}}}
+\end{align*}
+
+\TODO{2cm}{}
+
+\begin{align*}
+  &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{k_n}{\anew{k_c}{\anew{k_P}{\anew{k_a}{ \\
+    &\hspace{0.5cm}
+    \begin{aligned}[t]
+      \big(\ &\ains{B_{fw}}{x}{a}
+      \apar   \ains{B_{fw}}{y}{a} \\
+      \apar  &\asnd{a}{y,c} \apar \encMJtoAP{Q} \\
+      \apar  &\asnd{k_n}{} \apar \ains{B_{nil}}{l}{} \\
+      \apar  &\arcv{k_n}{} . \anew{l'}{\parens{\ains{B_{cons}}{l'}{p, l} \apar \asnd{k_a}{c, l'}}} \\
+      \apar  &\arcv{k_c}{h,t} .
+        \begin{aligned}[t]
+          \acse*{c}{
+          \ &\aalt{f}{\anew{l'}{\parens{\ains{B_{cons}}{l'}{p, l} \apar \asnd{k_a}{x, l'}}}}, \\
+            &\aalt{x}{\asnd{k_P}{p,h} \apar \asnd{k_a}{x,t}}, \\
+            &\aalt{y}{\asnd{k_P}{h,p} \apar \asnd{k_a}{x,t}}
+          \ }
+        \end{aligned} \\
+      \apar  &\arcv{k_P}{u,v} . \encMJtoAP{P} \\
+      \apar  &\arcv{k_a}{f',l'} . \ains{B_a^P}{a}{x, y, f', l',\tilde{z}}
+      \ \big)
+    \end{aligned}
+  }}}}}}}}
+\end{align*}
+
+\TODO{2cm}{}
+
+\begin{align*}
+  &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{k_n}{\anew{k_c}{\anew{k_P}{\anew{k_a}{ \\
+    &\hspace{0.5cm}
+    \begin{aligned}[t]
+      \big(\ &\asnd{a}{x,b} \apar \ains{B_{fw}}{x}{a} \\
+      \apar  &\asnd{a}{y,c} \apar \ains{B_{fw}}{y}{a} \\
+      \apar  &\ains{B_{nil}}{l}{} \\
+      \apar  &\encMJtoAP{Q} \\
+      \apar  &\anew{l'}{\parens{\ains{B_{cons}}{l'}{p, l} \apar \asnd{k_a}{c, l'}}} \\
+      \apar  &\arcv{k_a}{f',l'} . \ains{B_a^P}{a}{x, y, f', l',\tilde{z}}
+      \ \big)
+    \end{aligned}
+  }}}}}}}}
+\end{align*}
+
+\TODO{2cm}{}
+
+\begin{align*}
+  &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{k_n}{\anew{k_c}{\anew{k_P}{\anew{k_a}{\anew{l'}{ \\
+    &\hspace{0.5cm}
+    \begin{aligned}[t]
+      \big(\ &\asnd{a}{x,b} \apar \ains{B_{fw}}{x}{a} \\
+      \apar  &\asnd{a}{y,c} \apar \ains{B_{fw}}{y}{a} \\
+      \apar  &\ains{B_{nil}}{l}{} \\
+      \apar  &\encMJtoAP{Q} \\
+      \apar  &\parens{\ains{B_{cons}}{l'}{p, l} \apar \asnd{k_a}{c, l'}} \\
+      \apar  &\arcv{k_a}{f',l'} . \ains{B_a^P}{a}{x, y, f', l',\tilde{z}}
+      \ \big)
+    \end{aligned}
+  }}}}}}}}}
 \end{align*}
 
 \TODO{4cm}{"operational correspondence"}
