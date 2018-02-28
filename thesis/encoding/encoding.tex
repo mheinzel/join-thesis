@@ -88,8 +88,8 @@ to give following behavior for the actor.
                   }}\\
                   &\aalt{y}{
                     \asnd{k_p}{h,p} \apar \asnd{k_a}{f,t}
-                  }
-                \ }
+                  }\ 
+                }
               \end{aligned}
             }\\
             &\aalt{y}{
@@ -100,11 +100,11 @@ to give following behavior for the actor.
                   }}\\
                   &\aalt{x}{
                     \asnd{k_p}{p,h} \apar \asnd{k_a}{f,t}
-                  }
-                \ }
+                  }\ 
+                }
               \end{aligned}
-            }
-          \ }
+            }\ 
+          }
         \end{aligned}
       \\
       \apar  &\arcv{k_P}{u,v} . \encMJtoAP{P}
@@ -143,12 +143,14 @@ and the encoded subprocess in which the definition is available.
   $\judgement{}{}{\encMJtoAP{P}}$ for all core join terms $P$ (by structural induction)\\
   then check type correctness of definitions}
 
-Doing a trace:
+\vspace{1cm}
+Looking at a series of reductions:
 
 %TODO: reorder parallel terms?
 \begin{align*}
-  &\encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{\jsnd{x}{b} \jpar \jsnd{y}{c} \jpar Q}}
-  = \anew{a}{\anew{x}{\anew{y}{\anew{l}{
+  \encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{\jsnd{x}{b} \jpar \jsnd{y}{c} \jpar Q}}
+  = &\anew{a}{\anew{x}{\anew{y}{\anew{l}{ \\
+      &\hspace{0.5cm}
       \begin{aligned}[t]
         \big(\ &\ains{B_{fw}}{x}{a}
         \apar   \ains{B_{fw}}{y}{a} \\
@@ -160,14 +162,17 @@ Doing a trace:
     }}}}
 \end{align*}
 
-\TODO{2cm}{forward on x and y}
+\TODO{1cm}{forward on x and y}
 
 \begin{align*}
-  \anew{a}{\anew{x}{\anew{y}{\anew{l}{
+  &\anew{a}{\anew{x}{\anew{y}{\anew{l}{ \\
+    &\hspace{0.5cm}
     \begin{aligned}[t]
-      \big(\ &\ains{B_{fw}}{x}{a}
-      \apar   \ains{B_{fw}}{y}{a} \\
-      \apar  &\asnd{a}{x,b} \apar \asnd{a}{y,c} \apar \encMJtoAP{Q} \\
+      \big(\ &\asnd{a}{x,b}
+      \apar   \ains{B_{fw}}{x}{a}
+      \apar   \asnd{a}{y,c}
+      \apar   \ains{B_{fw}}{y}{a}
+      \apar   \encMJtoAP{Q} \\
       \apar  &\ains{B_{nil}}{l}{}
       \apar   \ains{B_a^P}{a}{x, y, x, l}
       \ \big)
@@ -175,94 +180,148 @@ Doing a trace:
   }}}}
 \end{align*}
 
-\TODO{2cm}{receive x in $B_a^P$ (symmetry)}
+\TODO{1cm}{receive x in $B_a^P$ (symmetry)}
 
 \begin{align*}
   &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{k_n}{\anew{k_c}{\anew{k_P}{\anew{k_a}{ \\
     &\hspace{0.5cm}
     \begin{aligned}[t]
       \big(\ &\ains{B_{fw}}{x}{a}
-      \apar   \ains{B_{fw}}{y}{a} \\
-      \apar  &\asnd{a}{y,c} \apar \encMJtoAP{Q} \\
-      \apar  &\ains{B_{nil}}{l}{} \\
-      \apar  &\asnd{l}{k_n,k_c} \\
-      \apar  &\arcv{k_n}{} . \anew{l'}{\parens{\ains{B_{cons}}{l'}{b, l} \apar \asnd{k_a}{x, l'}}} \\
+      \apar   \asnd{a}{y,c}
+      \apar   \ains{B_{fw}}{y}{a}
+      \apar   \encMJtoAP{Q}
+      \apar   \ains{B_{nil}}{l}{}
+      \apar   \asnd{l}{k_n,k_c}
+      \\
+      \apar  &\arcv{k_n}{} . \anew{l'}{\parens{\ains{B_{cons}}{l'}{b, l} \apar \asnd{k_a}{x, l'}}}
+      \\
       \apar  &\arcv{k_c}{h,t} .
         \begin{aligned}[t]
-          \acse*{x}{
-          \ &\aalt{x}{\anew{l'}{\parens{\ains{B_{cons}}{l'}{b, l} \apar \asnd{k_a}{x, l'}}}}, \\
-            &\aalt{x}{\asnd{k_P}{b,h} \apar \asnd{k_a}{x,t}}, \\
-            &\aalt{y}{\asnd{k_P}{h,b} \apar \asnd{k_a}{x,t}}
-          \ }
-        \end{aligned} \\
-      \apar  &\arcv{k_P}{u,v} . \encMJtoAP{P} \\
+          \acse*{f}{\ 
+            &\aalt{x}{
+              \begin{aligned}[t]
+                \acse*{x}{\ 
+                  &\aalt{x}{\anew*{l'}{
+                    \ains{B_{cons}}{l'}{b,l} \apar \asnd{k_a}{f,l'}
+                  }}\\
+                  &\aalt{y}{
+                    \asnd{k_p}{h,b} \apar \asnd{k_a}{f,t}
+                  }\ 
+                }
+              \end{aligned}
+            }\\
+            &\aalt{y}{
+              \begin{aligned}[t]
+                \acse*{x}{\ 
+                  &\aalt{y}{\anew*{l'}{
+                    \ains{B_{cons}}{l'}{b,l} \apar \asnd{k_a}{f,l'}
+                  }}\\
+                  &\aalt{x}{
+                    \asnd{k_p}{b,h} \apar \asnd{k_a}{f,t}
+                  }\ 
+                }
+              \end{aligned}
+            }\ 
+          }
+        \end{aligned}
+      \\
+      \apar  &\arcv{k_P}{u,v} . \encMJtoAP{P}
+      \\
       \apar  &\arcv{k_a}{f',l'} . \ains{B_a^P}{a}{x, y, f', l',\tilde{z}}
       \ \big)
     \end{aligned}
   }}}}}}}}
 \end{align*}
 
-\TODO{2cm}{}
+\TODO{1cm}{$B_{nil}$ receives continuations\\(can put $k_c$ and $k_P$ in garbage)}
 
 \begin{align*}
-  &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{k_n}{\anew{k_c}{\anew{k_P}{\anew{k_a}{ \\
+  &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{k_n}{\anew{k_a}{ \\
     &\hspace{0.5cm}
     \begin{aligned}[t]
       \big(\ &\ains{B_{fw}}{x}{a}
-      \apar   \ains{B_{fw}}{y}{a} \\
-      \apar  &\asnd{a}{y,c} \apar \encMJtoAP{Q} \\
-      \apar  &\asnd{k_n}{} \apar \ains{B_{nil}}{l}{} \\
-      \apar  &\arcv{k_n}{} . \anew{l'}{\parens{\ains{B_{cons}}{l'}{p, l} \apar \asnd{k_a}{c, l'}}} \\
-      \apar  &\arcv{k_c}{h,t} .
-        \begin{aligned}[t]
-          \acse*{c}{
-          \ &\aalt{f}{\anew{l'}{\parens{\ains{B_{cons}}{l'}{p, l} \apar \asnd{k_a}{x, l'}}}}, \\
-            &\aalt{x}{\asnd{k_P}{p,h} \apar \asnd{k_a}{x,t}}, \\
-            &\aalt{y}{\asnd{k_P}{h,p} \apar \asnd{k_a}{x,t}}
-          \ }
-        \end{aligned} \\
-      \apar  &\arcv{k_P}{u,v} . \encMJtoAP{P} \\
+      \apar   \asnd{a}{y,c}
+      \apar   \ains{B_{fw}}{y}{a}
+      \apar   \encMJtoAP{Q}
+      \apar   \asnd{k_n}{}
+      \apar   \ains{B_{nil}}{l}{}
+      \\
+      \apar  &\arcv{k_n}{} . \anew{l'}{\parens{\ains{B_{cons}}{l'}{b, l} \apar \asnd{k_a}{x, l'}}}
+      \\
       \apar  &\arcv{k_a}{f',l'} . \ains{B_a^P}{a}{x, y, f', l',\tilde{z}}
+      \\
+      \apar  &R_{garbage}
       \ \big)
     \end{aligned}
-  }}}}}}}}
+  }}}}}}
 \end{align*}
 
-\TODO{2cm}{}
+\TODO{1cm}{$k_n$, pull out scope of $l'$}
 
 \begin{align*}
-  &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{k_n}{\anew{k_c}{\anew{k_P}{\anew{k_a}{ \\
+  &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{k_a}{\anew{l'}{ \\
     &\hspace{0.5cm}
     \begin{aligned}[t]
-      \big(\ &\asnd{a}{x,b} \apar \ains{B_{fw}}{x}{a} \\
-      \apar  &\asnd{a}{y,c} \apar \ains{B_{fw}}{y}{a} \\
-      \apar  &\ains{B_{nil}}{l}{} \\
-      \apar  &\encMJtoAP{Q} \\
-      \apar  &\anew{l'}{\parens{\ains{B_{cons}}{l'}{p, l} \apar \asnd{k_a}{c, l'}}} \\
+      \big(\ &\ains{B_{fw}}{x}{a}
+      \apar   \asnd{a}{y,c}
+      \apar   \ains{B_{fw}}{y}{a}
+      \apar   \encMJtoAP{Q}
+      \apar   \ains{B_{nil}}{l}{}
+      \\
+      \apar  &\ains{B_{cons}}{l'}{b, l}
+      \apar   \asnd{k_a}{x, l'}
+      \\
       \apar  &\arcv{k_a}{f',l'} . \ains{B_a^P}{a}{x, y, f', l',\tilde{z}}
+      \\
+      \apar  &R_{garbage}
       \ \big)
     \end{aligned}
-  }}}}}}}}
+  }}}}}}
 \end{align*}
 
-\TODO{2cm}{}
+\TODO{1cm}{$k_a$}
 
 \begin{align*}
-  &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{k_n}{\anew{k_c}{\anew{k_P}{\anew{k_a}{\anew{l'}{ \\
+  &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{l'}{ \\
     &\hspace{0.5cm}
     \begin{aligned}[t]
-      \big(\ &\asnd{a}{x,b} \apar \ains{B_{fw}}{x}{a} \\
-      \apar  &\asnd{a}{y,c} \apar \ains{B_{fw}}{y}{a} \\
-      \apar  &\ains{B_{nil}}{l}{} \\
-      \apar  &\encMJtoAP{Q} \\
-      \apar  &\parens{\ains{B_{cons}}{l'}{p, l} \apar \asnd{k_a}{c, l'}} \\
-      \apar  &\arcv{k_a}{f',l'} . \ains{B_a^P}{a}{x, y, f', l',\tilde{z}}
+      \big(\ &\ains{B_{fw}}{x}{a}
+      \apar   \asnd{a}{y,c}
+      \apar   \ains{B_{fw}}{y}{a}
+      \apar   \encMJtoAP{Q}
+      \apar   \ains{B_{nil}}{l}{}
+      \apar   \ains{B_{cons}}{l'}{b, l}
+      \\
+      \apar  &\ains{B_a^P}{a}{x, y, x, l',\tilde{z}}
+      \\
+      \apar  &R_{garbage}
       \ \big)
     \end{aligned}
-  }}}}}}}}}
+  }}}}}
 \end{align*}
 
-\TODO{4cm}{"operational correspondence"}
+\TODO{1cm}{same situation as before, but $\asnd{a}{x,b}$ gone, $b$ stored in list $l'$, garbage\\
+  now receive the $y$}
+
+% TODO
+\begin{align*}
+  &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{l'}{ \\
+    &\hspace{0.5cm}
+    \begin{aligned}[t]
+      \big(\ &\ains{B_{fw}}{x}{a}
+      \apar   \asnd{a}{y,c}
+      \apar   \ains{B_{fw}}{y}{a}
+      \apar   \encMJtoAP{Q}
+      \apar   \ains{B_{nil}}{l}{}
+      \apar   \ains{B_{cons}}{l'}{b, l}
+      \\
+      \apar  &\ains{B_a^P}{a}{x, y, x, l',\tilde{z}}
+      \\
+      \apar  &R_{garbage}
+      \ \big)
+    \end{aligned}
+  }}}}}
+\end{align*}
 
 
 \subsection{Full Abstraction}
