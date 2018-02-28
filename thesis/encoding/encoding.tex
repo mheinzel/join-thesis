@@ -7,6 +7,14 @@ The simple translation of \joincalc into \asyncpicalc
 cannot be re-used for the translation to \actorpicalc,
 since it does not adhere to its typing rules.
 
+For the remainder of this chapter, we define
+$\tilde{z}_P$
+as the tuple of names in
+$\fn{P} \setminus {\{x, y, u, v\}}$.
+This is necessary since $P$ might have free names
+that are now also free in the definition of $B$ and thus
+have to be bound in the parameter list.
+
 \begin{align*}
   \encMJtoAP{P \jpar Q}
   &= \encMJtoAP{P} \apar \encMJtoAP{Q}
@@ -20,12 +28,7 @@ since it does not adhere to its typing rules.
   \text{with }
   \adef*{B}{x,y}{\tilde{z}}{\arcv{x}{u} . \arcv{y}{v} . \parens{\ains{B}{x, y}{\tilde{z}} \apar \encMJtoAP{P}}}
   \\
-  \tilde{z}
-  &= \fn{P} \setminus {\{u, v\}}
 \end{align*}
-
-Note that if $\fn{P}$ contains $x$ or $y$,
-we have to prevent conflicts by applying a renaming to $P$.
 
 \TODO{3cm}{typing derivation?}
 
@@ -58,18 +61,18 @@ We can use church-encoding to build lists from actors and avoid divergence.
   \adef*{B_{cons}}{l}{h,t}{\arcv{l}{k_n,k_c} . \parens{\asnd{k_c}{h,t} \apar \ains{B_{cons}}{l}{h,t}}}
 \end{align*}
 
-The actor now receives forwarded messages from both channels $x$ and $y$.
+The actor can now receive forwarded messages from both channels $x$ and $y$.
 If it receives more messages from one of these channels than from the other,
-it stores the excess payloads in a list and remembers from which channel
-these came (as there can only be excessive messages on one of these channels).
-We again make sure the free names in $P$ do not conflict with any of the names
-$a$, $x$, $y$, $f$, $l$, $c$, $p$, $k_n$, $k_c$, $k_P$ and $k_a$,
-and define $\tilde{z}$
-as the tuple of names in $\fn{P} \setminus {\{u, v\}}$
+it stores the excess payloads in a list $l$ and remembers from which channel
+these came using a flag $f$.
+This is possible since there can always only be excessive messages on one of these channels;
+otherwise they would have been joined already.
+We have to make sure the free names in $P$ do not conflict with any of the names
+$a$, $f$, $l$, $c$, $p$, $k_n$, $k_c$, $k_P$ and $k_a$
 to give following behavior for the actor.
 
 \begin{align*}
-  \adef*{B_a^P}{a}{x,y,f,l,\tilde{z}}{\arcv{a}{c,p} . \anew{k_n}{\anew{k_c}{\anew{k_P}{\anew{k_a}{
+  \adef*{B_a^P}{a}{x,y,f,l,\tilde{z}_P}{\arcv{a}{c,p} . \anew{k_n}{\anew{k_c}{\anew{k_P}{\anew{k_a}{
     \\
     &\hspace{1cm}
     \begin{aligned}[t]
@@ -109,7 +112,7 @@ to give following behavior for the actor.
       \\
       \apar  &\arcv{k_P}{u,v} . \encMJtoAP{P}
       \\
-      \apar  &\arcv{k_a}{f',l'} . \ains{B_a^P}{a}{x, y, f', l',\tilde{z}}
+      \apar  &\arcv{k_a}{f',l'} . \ains{B_a^P}{a}{x, y, f', l',\tilde{z}_P}
       \ \big)
     \end{aligned}
   }}}}} \\
@@ -130,7 +133,7 @@ and the encoded subprocess in which the definition is available.
   \encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{Q}}
   &= \anew{a}{\anew{x}{\anew{y}{\anew{l}{
     \begin{aligned}[t]
-      \big(\ &\ains{B_a^P}{a}{x, y, x, l, \tilde{z}} \\
+      \big(\ &\ains{B_a^P}{a}{x, y, x, l, \tilde{z}_P} \\
       \apar  &\ains{B_{fw}}{x}{a} \apar \ains{B_{fw}}{y}{a} \\
       \apar  &\ains{B_{nil}}{l}{} \\
       \apar  &\encMJtoAP{Q}
@@ -164,7 +167,7 @@ Looking at a series of reductions:
         \apar   \ains{B_{fw}}{y}{a} \\
         \apar  &\asnd{x}{b} \apar \asnd{y}{c} \apar \encMJtoAP{Q} \\
         \apar  &\ains{B_{nil}}{l}{}
-        \apar   \ains{B_a^P}{a}{x, y, x, l, \tilde{z}}
+        \apar   \ains{B_a^P}{a}{x, y, x, l, \tilde{z}_P}
         \ \big)
       \end{aligned}
     }}}}
@@ -182,7 +185,7 @@ Looking at a series of reductions:
       \apar   \ains{B_{fw}}{y}{a}
       \apar   \encMJtoAP{Q} \\
       \apar  &\ains{B_{nil}}{l}{}
-      \apar   \ains{B_a^P}{a}{x, y, x, l, \tilde{z}}
+      \apar   \ains{B_a^P}{a}{x, y, x, l, \tilde{z}_P}
       \ \big)
     \end{aligned}
   }}}}
@@ -235,7 +238,7 @@ Looking at a series of reductions:
       \\
       \apar  &\arcv{k_P}{u,v} . \encMJtoAP{P}
       \\
-      \apar  &\arcv{k_a}{f',l'} . \ains{B_a^P}{a}{x, y, f', l',\tilde{z}}
+      \apar  &\arcv{k_a}{f',l'} . \ains{B_a^P}{a}{x, y, f', l',\tilde{z}_P}
       \ \big)
     \end{aligned}
   }}}}}}}}
@@ -256,7 +259,7 @@ Looking at a series of reductions:
       \\
       \apar  &\arcv{k_n}{} . \anew{l'}{\parens{\ains{B_{cons}}{l'}{b, l} \apar \asnd{k_a}{x, l'}}}
       \\
-      \apar  &\arcv{k_a}{f',l'} . \ains{B_a^P}{a}{x, y, f', l',\tilde{z}}
+      \apar  &\arcv{k_a}{f',l'} . \ains{B_a^P}{a}{x, y, f', l',\tilde{z}_P}
       \\
       \apar  &R_{garbage}
       \ \big)
@@ -279,7 +282,7 @@ Looking at a series of reductions:
       \apar  &\ains{B_{cons}}{l'}{b, l}
       \apar   \asnd{k_a}{x, l'}
       \\
-      \apar  &\arcv{k_a}{f',l'} . \ains{B_a^P}{a}{x, y, f', l',\tilde{z}}
+      \apar  &\arcv{k_a}{f',l'} . \ains{B_a^P}{a}{x, y, f', l',\tilde{z}_P}
       \\
       \apar  &R_{garbage}
       \ \big)
@@ -300,7 +303,7 @@ Looking at a series of reductions:
       \apar   \ains{B_{nil}}{l}{}
       \apar   \ains{B_{cons}}{l'}{b, l}
       \\
-      \apar  &\ains{B_a^P}{a}{x, y, x, l',\tilde{z}}
+      \apar  &\ains{B_a^P}{a}{x, y, x, l',\tilde{z}_P}
       \\
       \apar  &R_{garbage}
       \ \big)
@@ -357,7 +360,7 @@ Looking at a series of reductions:
       \\
       \apar  &\arcv{k_P}{u,v} . \encMJtoAP{P}
       \\
-      \apar  &\arcv{k_a}{f',l''} . \ains{B_a^P}{a}{x, y, f', l'',\tilde{z}}
+      \apar  &\arcv{k_a}{f',l''} . \ains{B_a^P}{a}{x, y, f', l'',\tilde{z}_P}
       \\
       \apar  &R_{garbage}
       \ \big)
@@ -409,7 +412,7 @@ Looking at a series of reductions:
       \\
       \apar  &\arcv{k_P}{u,v} . \encMJtoAP{P}
       \\
-      \apar  &\arcv{k_a}{f',l''} . \ains{B_a^P}{a}{x, y, f', l'',\tilde{z}}
+      \apar  &\arcv{k_a}{f',l''} . \ains{B_a^P}{a}{x, y, f', l'',\tilde{z}_P}
       \\
       \apar  &R_{garbage}
       \ \big)
@@ -434,7 +437,7 @@ Looking at a series of reductions:
       \\
       \apar  &\arcv{k_P}{u,v} . \encMJtoAP{P}
       \\
-      \apar  &\arcv{k_a}{f',l''} . \ains{B_a^P}{a}{x, y, f', l'',\tilde{z}}
+      \apar  &\arcv{k_a}{f',l''} . \ains{B_a^P}{a}{x, y, f', l'',\tilde{z}_P}
       \\
       \apar  &R_{garbage}
       \ \big)
@@ -458,7 +461,7 @@ Looking at a series of reductions:
       \\
       \apar  &\encMJtoAP{P}\substitution{\subst{b}{u},\subst{c}{v}}
       \\
-      \apar  &\arcv{k_a}{f',l''} . \ains{B_a^P}{a}{x, y, f', l'',\tilde{z}}
+      \apar  &\arcv{k_a}{f',l''} . \ains{B_a^P}{a}{x, y, f', l'',\tilde{z}_P}
       \\
       \apar  &R_{garbage}
       \ \big)
@@ -480,7 +483,7 @@ Looking at a series of reductions:
       \\
       \apar  &\encMJtoAP{P}\substitution{\subst{b}{u},\subst{c}{v}}
       \\
-      \apar  &\ains{B_a^P}{a}{x, y, x, l,\tilde{z}}
+      \apar  &\ains{B_a^P}{a}{x, y, x, l,\tilde{z}_P}
       \\
       \apar  &R_{garbage}
       \ \big)
@@ -501,7 +504,7 @@ Looking at a series of reductions:
       \\
       \apar  &\encMJtoAP{P\substitution{\subst{b}{u},\subst{c}{v}}}
       \\
-      \apar  &\ains{B_a^P}{a}{x, y, x, l,\tilde{z}}
+      \apar  &\ains{B_a^P}{a}{x, y, x, l,\tilde{z}_P}
       \\
       \apar  &R_{garbage}
       \ \big)
@@ -520,7 +523,7 @@ Looking at a series of reductions:
         \apar   \ains{B_{fw}}{y}{a} \\
         \apar  &\encMJtoAP{P\substitution{\subst{b}{u},\subst{c}{v}}} \apar \encMJtoAP{Q} \\
         \apar  &\ains{B_{nil}}{l}{}
-        \apar   \ains{B_a^P}{a}{x, y, x, l, \tilde{z}}
+        \apar   \ains{B_a^P}{a}{x, y, x, l, \tilde{z}_P}
         \ \big)
       \end{aligned}
     }}}}
