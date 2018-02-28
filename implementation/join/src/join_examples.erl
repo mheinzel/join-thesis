@@ -71,6 +71,8 @@ applet_server(Location) ->
   def_single_globally(Location, cell, fun(_Cell) -> {
     fun({A, ContCell}) ->
 
+      io:format("applet requested~n"),
+
       join:def_location(Location, applet, fun(Applet, Get, Put) -> {
         fun(K, X) ->
           io:format("got ~p from cell~n", [X]),
@@ -78,11 +80,13 @@ applet_server(Location) ->
         end,
         % :
         fun() ->
+          io:format("moving applet to ~p~n", [A]),
           join:go(Applet, A, none) % can receive messages before migrating
         end,
         % in
         fun() ->
           % reply Get, Put to Cell
+          io:format("sending get, put refs of applet to ~p~n", [ContCell]),
           join:send(ContCell, {Get, Put})
         end
       } end)
