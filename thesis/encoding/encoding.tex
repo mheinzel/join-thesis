@@ -130,7 +130,7 @@ and the encoded subprocess in which the definition is available.
   \encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{Q}}
   &= \anew{a}{\anew{x}{\anew{y}{\anew{l}{
     \begin{aligned}[t]
-      \big(\ &\ains{B_a^P}{a}{x, y, x, l} \\
+      \big(\ &\ains{B_a^P}{a}{x, y, x, l, \tilde{z}} \\
       \apar  &\ains{B_{fw}}{x}{a} \apar \ains{B_{fw}}{y}{a} \\
       \apar  &\ains{B_{nil}}{l}{} \\
       \apar  &\encMJtoAP{Q}
@@ -164,7 +164,7 @@ Looking at a series of reductions:
         \apar   \ains{B_{fw}}{y}{a} \\
         \apar  &\asnd{x}{b} \apar \asnd{y}{c} \apar \encMJtoAP{Q} \\
         \apar  &\ains{B_{nil}}{l}{}
-        \apar   \ains{B_a^P}{a}{x, y, x, l}
+        \apar   \ains{B_a^P}{a}{x, y, x, l, \tilde{z}}
         \ \big)
       \end{aligned}
     }}}}
@@ -182,7 +182,7 @@ Looking at a series of reductions:
       \apar   \ains{B_{fw}}{y}{a}
       \apar   \encMJtoAP{Q} \\
       \apar  &\ains{B_{nil}}{l}{}
-      \apar   \ains{B_a^P}{a}{x, y, x, l}
+      \apar   \ains{B_a^P}{a}{x, y, x, l, \tilde{z}}
       \ \big)
     \end{aligned}
   }}}}
@@ -520,7 +520,7 @@ Looking at a series of reductions:
         \apar   \ains{B_{fw}}{y}{a} \\
         \apar  &\encMJtoAP{P\substitution{\subst{b}{u},\subst{c}{v}}} \apar \encMJtoAP{Q} \\
         \apar  &\ains{B_{nil}}{l}{}
-        \apar   \ains{B_a^P}{a}{x, y, x, l}
+        \apar   \ains{B_a^P}{a}{x, y, x, l, \tilde{z}}
         \ \big)
       \end{aligned}
     }}}}
