@@ -79,10 +79,31 @@ to give following behavior for the actor.
       \\
       \apar  &\arcv{k_c}{h,t} .
         \begin{aligned}[t]
-          \acse*{c}{
-          \ &\aalt{f}{\anew{l'}{\parens{\ains{B_{cons}}{l'}{p, l} \apar \asnd{k_a}{f, l'}}}}, \\
-            &\aalt{x}{\asnd{k_P}{p,h} \apar \asnd{k_a}{f,t}}, \\
-            &\aalt{y}{\asnd{k_P}{h,p} \apar \asnd{k_a}{f,t}}
+          \acse*{f}{\ 
+            &\aalt{x}{
+              \begin{aligned}[t]
+                \acse*{c}{\ 
+                  &\aalt{x}{\anew*{l'}{
+                    \ains{B_{cons}}{l'}{p,l} \apar \asnd{k_a}{f,l'}
+                  }}\\
+                  &\aalt{y}{
+                    \asnd{k_p}{h,p} \apar \asnd{k_a}{f,t}
+                  }
+                \ }
+              \end{aligned}
+            }\\
+            &\aalt{y}{
+              \begin{aligned}[t]
+                \acse*{c}{\ 
+                  &\aalt{y}{\anew*{l'}{
+                    \ains{B_{cons}}{l'}{p,l} \apar \asnd{k_a}{f,l'}
+                  }}\\
+                  &\aalt{x}{
+                    \asnd{k_p}{p,h} \apar \asnd{k_a}{f,t}
+                  }
+                \ }
+              \end{aligned}
+            }
           \ }
         \end{aligned}
       \\
