@@ -5,6 +5,7 @@
 
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage[amsmath]{ntheorem}
 %\usepackage{eulervm} ?
 \usepackage{stmaryrd}
 \usepackage{nccmath} %? decreases spacing around equations etc.
@@ -106,10 +107,15 @@
 \newcommand{\ch}[1]{ch(#1)}
 \newcommand{\restrict}[2]{#1 |_{#2}}
 
-\newcommand{\judgement}[3]{%
+\newcommand{\judgement}{\@ifstar{\@judgementaligned}{\@judgementunaligned}}
+\newcommand{\@judgementunaligned}[3]{%
   \ifthenelse{\isempty{#1}}{\emptyset}{#1}%
   ;\ifthenelse{\isempty{#2}}{\{\}}{#2}%
   \vdash #3}
+\newcommand{\@judgementaligned}[3]{%
+  \ifthenelse{\isempty{#1}}{\emptyset}{#1}%
+  ;\ifthenelse{\isempty{#2}}{\{\}}{#2}%
+  &\vdash #3}
 
 % semantics
 \newcommand{\apireduction}[1]{\overset{#1}{\longrightarrow}_{A\pi}}
@@ -173,8 +179,16 @@
     \AxiomC{$#3$}
     \AxiomC{$#4$}
     \AxiomC{$#5$}
-    \LeftLabel{\textsc{#1} : }
+    \LeftLabel{\rulename{#1} : }
     \infrulecondition{#2}
     \TrinaryInfC{$#6$}
   \end{prooftree}
 }
+
+
+% theorems
+\newtheorem{theorem}{Theorem}
+\theorembodyfont{\upshape}
+% TODO: block at end
+\newtheorem*{proof}{Proof}
+\newtheorem{case}{Case}

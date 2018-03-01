@@ -142,9 +142,124 @@ and the encoded subprocess in which the definition is available.
   }}}}
 \end{align*}
 
-\TODO{4cm}{type correctness\\
-  $\judgement{}{}{\encMJtoAP{P}}$ for all core join terms $P$ (by structural induction)\\
-  then check type correctness of definitions}
+
+\begin{theorem}
+  \label{enctypecorrect}
+  $\judgement{}{}{\encMJtoAP{J}}$ for all terms $J$ in \corejoincalc
+\end{theorem}
+
+\begin{proof}
+  We prove the theorem by structural induction over the grammar of \corejoincalc.
+  Let $x, y \in \mathcal{N}$ and $J$ any term in \corejoincalc.
+
+  \begin{case}
+    $J = \jsnd{x}{y}$.
+    \\
+    Then $\encMJtoAP{J} = \asnd{x}{y}$
+    and thus $\judgement{}{}{\encMJtoAP{J}}$
+    by \rulename{msg}.
+  \end{case}
+
+  \begin{case}
+    $J = P \jpar Q$
+    with $\judgement{}{}{\encMJtoAP{P}}$ and $\judgement{}{}{\encMJtoAP{Q}}$.
+    \\
+    Then $\encMJtoAP{P \jpar Q} = \encMJtoAP{P} \apar \encMJtoAP{Q}$
+    and thus $\judgement{}{}{\encMJtoAP{J}}$
+    by \rulename{comp}.
+  \end{case}
+
+  \begin{case}
+    $J = \jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{Q}$
+    with $\judgement{}{}{\encMJtoAP{P}}$ and $\judgement{}{}{\encMJtoAP{Q}}$.
+    \begin{align*}
+      \encMJtoAP{J} = \anew{a}{\anew{x}{\anew{y}{\anew{l}{
+        \underbrace{
+          \left( \ains{B_a^P}{a}{x, y, x, l, \tilde{z}_P}
+          \apar  \ains{B_{fw}}{x}{a} \apar \ains{B_{fw}}{y}{a}
+          \apar  \ains{B_{nil}}{l}{}
+          \apar  \encMJtoAP{Q}
+          \right)
+        }_{R}
+      }}}}
+    \end{align*}
+    Then $\judgement{\{a,x,y,l\}}{f}{R}$ with $f(a) = f(x) = f(y) = f(l) = \bot$
+    and
+    $\judgement{}{}{\encMJtoAP{J}}$.
+    Also, all used definitions have to be well-typed.
+    \begin{align*}
+      \adef*{B_{fw}}{x}{a}{\arcv{x}{i} . \parens{\asnd{a}{x,i} \apar \ains{B_{fw}}{x}{a}}}
+      &\judgement*{\{x\}}{\ch{x}}{\arcv{x}{i} . \parens{\asnd{a}{x,i} \apar \ains{B_{fw}}{x}{a}}}
+      \\
+      \adef*{B_{nil}}{l}{}{\arcv{l}{k_n,k_c} . \parens{\asnd{k_n}{} \apar \ains{B_{nil}}{l}{}}}
+      &\judgement*{\{l\}}{\ch{l}}{\arcv{l}{k_n,k_c} . \parens{\asnd{k_n}{} \apar \ains{B_{nil}}{l}{}}}
+      \\
+      \adef*{B_{cons}}{l}{h,t}{\arcv{l}{k_n,k_c} . \parens{\asnd{k_c}{h,t} \apar \ains{B_{cons}}{l}{h,t}}}
+      &\judgement*{\{l\}}{\ch{l}}{\arcv{l}{k_n,k_c} . \parens{\asnd{k_c}{h,t} \apar \ains{B_{cons}}{l}{h,t}}}
+    \end{align*}
+    \begin{align*}
+      \adef*{B_a^P}{a}{x,y,f,l,\tilde{z}_P}{\arcv{a}{c,p} . \anew{k_n}{\anew{k_c}{\anew{k_P}{\anew{k_a}{
+        \\
+        &\hspace{1cm}
+        R \left\lbrace
+        \begin{aligned}[c]
+          \big(\ &\asnd{l}{k_n,k_c}
+          \\
+          \apar  &\arcv{k_n}{} . \anew{l'}{\parens{\ains{B_{cons}}{l'}{p, l} \apar \asnd{k_a}{c, l'}}}
+          \\
+          \apar  &\arcv{k_c}{h,t} .
+            \begin{aligned}[t]
+              \acse*{f}{\ 
+                &\aalt{x}{
+                  \begin{aligned}[t]
+                    \acse*{c}{\ 
+                      &\aalt{x}{\anew*{l'}{
+                        \ains{B_{cons}}{l'}{p,l} \apar \asnd{k_a}{f,l'}
+                      }}\\
+                      &\aalt{y}{
+                        \asnd{k_P}{h,p} \apar \asnd{k_a}{f,t}
+                      }\ 
+                    }
+                  \end{aligned}
+                }\\
+                &\aalt{y}{
+                  \begin{aligned}[t]
+                    \acse*{c}{\ 
+                      &\aalt{y}{\anew*{l'}{
+                        \ains{B_{cons}}{l'}{p,l} \apar \asnd{k_a}{f,l'}
+                      }}\\
+                      &\aalt{x}{
+                        \asnd{k_P}{p,h} \apar \asnd{k_a}{f,t}
+                      }\ 
+                    }
+                  \end{aligned}
+                }\ 
+              }
+            \end{aligned}
+          \\
+          \apar  &\arcv{k_P}{u,v} . \encMJtoAP{P}
+          \\
+          \apar  &\arcv{k_a}{f',l'} . \ains{B_a^P}{a}{x, y, f', l',\tilde{z}_P}
+          \ \big)
+        \end{aligned}
+        \right.
+      }}}}}
+    \end{align*}
+
+    Since none of the branches in the nested case-term have any recipients
+    and the last line has type $\ch{k_a,a}$,
+    we can derive:
+    \begin{align*}
+      \judgement*{\{k_n,k_c,k_P,k_a,a\}}{g}{R}
+      \text{ \ with }
+      g(k_n) = g(k_c) = g(k_P) = g(a) = \bot, g(k_a) = a
+      \\
+      \judgement*{\{a\}}{\ch{a}}{\anew{k_n}{\anew{k_c}{\anew{k_P}{\anew{k_a}{R}}}}}
+      \\
+      \judgement*{\{a\}}{\ch{a}}{\arcv{a}{c,p} . \anew{k_n}{\anew{k_c}{\anew{k_P}{\anew{k_a}{R}}}}}
+    \end{align*}
+  \end{case}
+\end{proof}
 
 \vspace{1cm}
 
