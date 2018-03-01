@@ -650,7 +650,56 @@ Looking at a series of reductions:
     }}}}
 \end{align*}
 
-\TODO{3cm}{turn into proof of completeness?}
+\TODO{1cm}{turn into proof of completeness?\\
+  idea:}
+
+\begin{align*}
+  &S_{def}  = \jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{\jsnd{x}{b} \jpar \jsnd{y}{c} \jpar Q} \\
+  &S_{def}' = \jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{P\substitution{\subst{b}{u},\subst{c}{v}} \jpar Q} \\
+  &R \text{ is the result of the reduction steps above}
+\end{align*}
+
+show (for some equivalence $\asymp_{A\pi}$):
+
+\begin{lemma} \label{mirror}
+  $ \encMJtoAP{S_{def}} \apireduction{}^* R \text{ and } R \asymp_{A\pi} \encMJtoAP{S_{def}'} $
+  \\
+  (as seen above)
+\end{lemma}
+
+\begin{lemma}[Preservation of structural equivalence] \label{preservation}
+  f.a.
+  $ S \jstructequ S' $:
+  $ \encMJtoAP{S} \astructequ \encMJtoAP{S'} $
+\end{lemma}
+
+\begin{lemma} \label{sdef}
+  f.a.
+  $ S \joinreduction S'$:
+  $ S  \jstructequ S_{def} $,
+  $ S' \jstructequ S_{def}' $
+  \\
+  (follows from definition of $\joinreduction$)
+\end{lemma}
+
+\begin{theorem}[Completeness]
+  f.a.
+  $ S \joinreduction S' $:
+  $ \encMJtoAP{S} \apireduction{}^* \asymp_{A\pi} \encMJtoAP{S'} $
+  \\
+  with Lemma \ref{preservation}, \ref{sdef}: $ \encMJtoAP{S} \astructequ \encMJtoAP{S_{def}} $
+  \\
+  %so there exists $Q$ with $\encMJtoAP{S} \apireduction{}^* Q$ and $Q \astructequ R$
+  so $\encMJtoAP{S} \apireduction{}^* \astructequ R$
+  \\
+  and because of Lemma \ref{mirror} and \ref{preservation} $+$ \ref{sdef}:
+  $\encMJtoAP{S} \apireduction{}^* \astructequ R \asymp_{A\pi} \encMJtoAP{S_{def}'} \astructequ \encMJtoAP{S'}$
+\end{theorem}
+
+\TODO{2cm}{other proofs?\\
+  compositionality and name invariance should be simple,\\
+  divergence reflection might be hand-wavy,\\
+  I cannot do soundness.}
 
 
 \subsection{Full Abstraction}
