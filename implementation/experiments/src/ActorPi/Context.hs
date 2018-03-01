@@ -32,7 +32,12 @@ domain :: Ord n => Context n -> Set n
 domain (Ctx m) = S.fromList (M.keys m)
 
 restrictTo :: Ord n => Set n -> Context n -> Context n
-restrictTo dom (Ctx m) = Ctx $ M.filterWithKey (\k _ -> k `S.member` dom) m
+restrictTo dom (Ctx m) = Ctx $ restrict $ fmap toStar m
+  where
+    restrict = M.filterWithKey (\k _ -> k `S.member` dom)
+    toStar (N x)
+      | x `S.notMember` dom = Star
+    toStar x = x
 
 assocs :: Context n -> [(n, Star n)]
 assocs (Ctx m) = M.assocs m
