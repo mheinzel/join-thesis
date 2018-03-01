@@ -261,8 +261,9 @@ and the encoded subprocess in which the definition is available.
   \end{case}
 \end{proof}
 
+\vspace{2cm}
 
-\TODO{2cm}{step through \actorpicalc reductions corresponding to single step in \joincalc}
+In \joincalc, we can receive in a join-pattern using following reduction:
 
 \begin{align*}
   \jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{\jsnd{x}{b} \jpar \jsnd{y}{c} \jpar Q}
@@ -270,7 +271,10 @@ and the encoded subprocess in which the definition is available.
   \jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{P\substitution{\subst{b}{u},\subst{c}{v}} \jpar Q}
 \end{align*}
 
-Looking at a series of reductions:
+To see that the proposed encoding allows the same behavior,
+we can look at the reductions possible for the corresponding \actorpicalc term.
+We will make use of the structural congruence to simplify the term between reductions
+and focus on the interesting aspects.
 
 \begin{align*}
   \encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{\jsnd{x}{b} \jpar \jsnd{y}{c} \jpar Q}}
@@ -650,6 +654,9 @@ Looking at a series of reductions:
     }}}}
 \end{align*}
 
+\TODO{1cm}{show what happens when receiving twice on same channel?\\
+  or move to appendix?}
+
 \TODO{1cm}{turn into proof of completeness?\\
   idea:}
 
@@ -704,6 +711,6 @@ show (for some equivalence $\asymp_{A\pi}$):
 
 \subsection{Full Abstraction}
 
-\TODO{3cm}{join-pi encodings require firewall for full abstraction\\
+\TODO{2cm}{join-pi encodings require firewall for full abstraction\\
   (explain why by example?)\\
   this is not necessary here, because ...}
