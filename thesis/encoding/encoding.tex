@@ -1,11 +1,7 @@
-\section{\CoreJoinCalc to \ActorPiCalc}
+\section{A Naive Approach}
 
-\subsection{A Naive Approach}
-
-The simple translation of \joincalc into \asyncpicalc
-\cite{fournet_reflexive_1996}
-cannot be re-used for the translation to \actorpicalc,
-since it does not adhere to its typing rules.
+\TODO{2cm}{simple translation of \joincalc into \asyncpicalc
+  \cite{fournet_reflexive_1996}}
 
 For the remainder of this chapter, we define
 $\tilde{z}_P$
@@ -30,10 +26,11 @@ have to be bound in the parameter list.
   \\
 \end{align*}
 
-\TODO{3cm}{typing derivation?}
+\TODO{3cm}{this is not type correct\\
+  typing derivation?}
 
 
-\subsection{Forwarding}
+\section{Forwarding}
 
 \TODO{2cm}{reason: actor cannot receive on two channels interchangeably}
 
@@ -43,7 +40,7 @@ have to be bound in the parameter list.
   \adef*{B_{fw}}{x}{a}{\arcv{x}{i} . \parens{\asnd{a}{x,i} \apar \ains{B_{fw}}{x}{a}}}
 \end{align*}
 
-\subsection{Storing Payloads}
+\section{Storing Payloads}
 
 \TODO{3cm}{problem: can receive $x$ and $y$ in arbitrary order\\
   receive two $x$s, need to respawn\\
@@ -118,6 +115,8 @@ to give following behavior for the actor.
   }}}}} \\
 \end{align*}
 
+\section{The Final Encoding}
+
 To encode a \joincalc definition,
 we now start one such joining actor (with initially no excess payloads),
 a forwarder for each channel
@@ -142,6 +141,8 @@ and the encoded subprocess in which the definition is available.
   }}}}
 \end{align*}
 
+
+\subsection{Type Correctness}
 
 \begin{theorem}
   \label{enctypecorrect}
@@ -261,7 +262,8 @@ and the encoded subprocess in which the definition is available.
   \end{case}
 \end{proof}
 
-\vspace{2cm}
+
+\subsection{Semantics}
 
 In \joincalc, we can receive in a join-pattern using following reduction:
 
