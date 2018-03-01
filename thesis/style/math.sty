@@ -38,7 +38,7 @@
 
 
 % pi calculus
-\newcommand{\pnullproc}{\textbf{0}}
+\newcommand{\pnullproc}{\textbf{\textup{0}}}
 \newcommand{\ppar}{\ |\ }
 \newcommand{\prep}[1]{!#1}
 \newcommand{\pnew}{\@ifstar{\@pnewp}{\@pnewn}}
@@ -50,9 +50,9 @@
 
 % join calculus
 \newcommand{\jsnd}[2]{#1\langle#2\rangle}
-\newcommand{\jdef}[2]{\textbf{def} \ #1 \ \textbf{in} \ #2}
+\newcommand{\jdef}[2]{\textbf{\textup{def}} \ #1 \ \textbf{\textup{in}} \ #2}
 \newcommand{\jpar}{ | }
-\newcommand{\jnullproc}{\textbf{0}}
+\newcommand{\jnullproc}{\textbf{\textup{0}}}
 \newcommand{\jrct}[2]{#1 \vartriangleright #2}
 \newcommand{\jcon}{\wedge}
 \newcommand{\jnulldef}{\boldsymbol{\top}}
@@ -84,7 +84,7 @@
 
 
 % actor pi
-\newcommand{\anullproc}{\textbf{0}}
+\newcommand{\anullproc}{\textbf{\textup{0}}}
 \newcommand{\arcv}[2]{#1(#2)}
 \newcommand{\asnd}[2]{\overline{#1}\langle#2\rangle}
 \newcommand{\amrcv}[2]{#1 #2}  % monadic receive
@@ -94,8 +94,8 @@
 \newcommand{\@anewn}[2]{(\nu #1)#2}
 \newcommand{\apar}{\ |\ }
 \newcommand{\acse}{\@ifstar{\@acseb}{\@acse}}
-\newcommand{\@acse}[2]{\textbf{case} \ #1 \ \textbf{of} \ \parens{#2}}
-\newcommand{\@acseb}[2]{\textbf{case} \ #1 \ \textbf{of} \ \big( #2 \big)}
+\newcommand{\@acse}[2]{\textbf{\textup{case}} \ #1 \ \textbf{\textup{of}} \ \parens{#2}}
+\newcommand{\@acseb}[2]{\textbf{\textup{case}} \ #1 \ \textbf{\textup{of}} \ \big( #2 \big)}
 \newcommand{\aalt}[2]{#1 : #2}
 \newcommand{\ains}[3]{#1 \langle #2 ; #3 \rangle}
 \newcommand{\adef}{\@ifstar{\@adefa}{\@adefn}}
@@ -136,9 +136,11 @@
 
 % bussproofs
 \newcommand{\axiom}[1]{\AxiomC{$#1$}}
-\newcommand{\infI}[2]{\LeftLabel{\textsc{#1}:}\UnaryInfC{$#2$}}
-\newcommand{\infII}[2]{\LeftLabel{\textsc{#1}:}\BinaryInfC{$#2$}}
+\newcommand{\infI}[2]{\LeftLabel{\rulename{#1}:}\UnaryInfC{$#2$}}
+\newcommand{\infII}[2]{\LeftLabel{\rulename{#1}:}\BinaryInfC{$#2$}}
 % TODO: number argument
+
+\newcommand{\rulename}{\textsc}
 
 \newcommand{\infrulecondition}[1]{%
   \ifthenelse{\isempty{#1}}{}{
@@ -152,7 +154,7 @@
 \newcommand{\infrule}[4]{%
   \begin{prooftree}
     \AxiomC{$#3$}
-    \LeftLabel{\textsc{#1} : }
+    \LeftLabel{\rulename{#1} : }
     \infrulecondition{#2}
     \UnaryInfC{$#4$}
   \end{prooftree}
@@ -161,7 +163,7 @@
   \begin{prooftree}
     \AxiomC{$#3$}
     \AxiomC{$#4$}
-    \LeftLabel{\textsc{#1} : }
+    \LeftLabel{\rulename{#1} : }
     \infrulecondition{#2}
     \BinaryInfC{$#5$}
   \end{prooftree}
