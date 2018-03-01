@@ -244,7 +244,8 @@ Looking at a series of reductions:
   }}}}}}}}
 \end{align*}
 
-\TODO{1cm}{$B_{nil}$ receives continuations\\(can put $k_c$ and $k_P$ in garbage)}
+\TODO{1cm}{$B_{nil}$ receives continuations\\
+  (can put $k_c$ and $k_P$ in garbage)}
 
 \begin{align*}
   &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{k_n}{\anew{k_a}{ \\
@@ -290,7 +291,12 @@ Looking at a series of reductions:
   }}}}}}
 \end{align*}
 
-\TODO{1cm}{$k_a$}
+\TODO{1cm}{$k_a$, scope can be removed:
+  $ \anew{k_a}{S}
+    \astructequ \anew*{k_a}{S \apar \anullproc}
+    \astructequ S \apar \anew{k_a}{\anullproc}
+    \astructequ S \apar \anullproc
+    \astructequ S $}
 
 \begin{align*}
   &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{l'}{ \\
@@ -311,7 +317,7 @@ Looking at a series of reductions:
   }}}}}
 \end{align*}
 
-\TODO{1cm}{same situation as before, but $\asnd{a}{x,b}$ gone, $b$ stored in list $l'$, garbage\\
+\TODO{2cm}{same situation as before, but $\asnd{a}{x,b}$ gone, $b$ stored in list $l'$, garbage.\\
   now receive the $y$ (alpha-renaming $l'$)}
 
 \begin{align*}
@@ -414,7 +420,7 @@ Looking at a series of reductions:
       \\
       \apar  &\arcv{k_a}{f',l''} . \ains{B_a^P}{a}{x, y, f', l'',\tilde{z}_P}
       \\
-      \apar  &R_{garbage}
+      \apar  &R_{garbage}'
       \ \big)
     \end{aligned}
   }}}}}}}
@@ -439,7 +445,7 @@ Looking at a series of reductions:
       \\
       \apar  &\arcv{k_a}{f',l''} . \ains{B_a^P}{a}{x, y, f', l'',\tilde{z}_P}
       \\
-      \apar  &R_{garbage}
+      \apar  &R_{garbage}'
       \ \big)
     \end{aligned}
   }}}}}}}
@@ -463,7 +469,7 @@ Looking at a series of reductions:
       \\
       \apar  &\arcv{k_a}{f',l''} . \ains{B_a^P}{a}{x, y, f', l'',\tilde{z}_P}
       \\
-      \apar  &R_{garbage}
+      \apar  &R_{garbage}'
       \ \big)
     \end{aligned}
   }}}}}}
@@ -491,7 +497,7 @@ Looking at a series of reductions:
   }}}}}
 \end{align*}
 
-\TODO{1cm}{substitution, $l'$ to garbage}
+\TODO{1cm}{substitution, remove $l'$}
 
 \begin{align*}
   &\anew{a}{\anew{x}{\anew{y}{\anew{l}{ \\
