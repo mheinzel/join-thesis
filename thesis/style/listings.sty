@@ -1,15 +1,30 @@
 \usepackage{listings}
 \usepackage{xstring}
 
-\lstset{
+\lstdefinestyle{thesis}{
+  basicstyle=\footnotesize,
+  frame=single,
+  commentstyle=\color{gray}
+}
+
+\newcommand{\thesislisting}[2]{%
+  \begin{figure}
+    \lstinputlisting[language=erlang,style=thesis]{code/#1.erl}
+    \vspace{-0.5cm}
+    \label{#2}
+    \caption{#2}
+  \end{figure}
+}
+
+\lstdefinestyle{appendix}{
   basicstyle=\scriptsize,
   frame=single,
   commentstyle=\color{gray}
 }
 
-\newcommand{\includecode}[1]{%
+\newcommand{\appendixlisting}[1]{%
   \begingroup\noexpandarg
   \StrSubstitute{#1}{_}{\_}[\mllcap]%
-  \lstinputlisting[caption=\mllcap, language=erlang]{../implementation/join/#1}%
+  \lstinputlisting[caption=\mllcap, language=erlang, style=appendix]{../implementation/join/#1}%
   \endgroup
 }
