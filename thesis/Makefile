@@ -10,10 +10,12 @@ TEXFILES= thesis.tex \
 		  encoding/encoding.tex \
 		  implementation/basic.tex \
 		  implementation/distributed.tex \
+		  code/full.tex \
 		  bibliography/wrapper.tex
 BIBFILES= bibliography/thesis.bib
 STYFILES= style/thesis.sty \
 		  style/terms.sty \
+		  style/listings.sty \
 		  style/math.sty
 
 

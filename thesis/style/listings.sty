@@ -1,0 +1,15 @@
+\usepackage{listings}
+\usepackage{xstring}
+
+\lstset{
+  basicstyle=\scriptsize,
+  frame=single,
+  commentstyle=\color{gray}
+}
+
+\newcommand{\includecode}[1]{%
+  \begingroup\noexpandarg
+  \StrSubstitute{#1}{_}{\_}[\mllcap]%
+  \lstinputlisting[caption=\mllcap, language=erlang]{../implementation/join/#1}%
+  \endgroup
+}
