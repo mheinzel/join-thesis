@@ -1,7 +1,9 @@
 \section{The \JoinCalc}
 
-% short introduction?
-% or in thesis introduction?
+\TODO{2cm}{short introduction? idea?}
+
+
+\subsubsection{Syntax}
 
 We use \joincalc as described by Fournet et al.
 \cite{fournet_calculus_1996}.
@@ -39,6 +41,7 @@ and define the syntax as follows.
   \altn J \jpat K           \tag*{composed join-pattern}
 \end{align}
 
+% TODO: remove reference to pi if not explained here
 Readers familiar with \asyncpicalc
 \cite{honda_object_1991}
 \cite{boudol_asynchrony_1992}
@@ -80,9 +83,9 @@ invalid.
 \end{alignat*}
 
 
-% semantics
+\subsubsection{Semantics}
 
-% RCHAM
+% TODO: use reduction semantics instead of CHAM?
 The semantics of \joincalc is described using the reflexive chemical abstract
 machine (RCHAM) \cite{fournet_reflexive_1996}.
 A RCHAM configuration
@@ -136,8 +139,6 @@ molecules which we omit for brevity.
     \rchamcnf*{\jrct{J}{P}}{P\sigma_{\oprv}}
   }
 \end{align*}
-
-\pagebreak
 
 In (str-dev), the substitution $\sigma_{\opdv}$ instantiates the defined
 variables $\dv{D}$ to distinct, fresh names that are not free in any reaction
