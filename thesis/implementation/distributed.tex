@@ -1,6 +1,34 @@
 \section{Distributed Implementation}
 
-% cannot move actors in Erlang
-% wrapping up and respawning
 
-% locations
+\subsection{Migration}
+
+\TODO{3cm}{cannot move actors in Erlang, but we create them.\\
+  $\rightarrow$ wrapping up and respawning}
+
+\TODO{3cm}{Pids change $\rightarrow$ registry\\
+  global nameserver}
+
+\TODO{3cm}{losing messages when migrating\\
+  $\rightarrow$ keeping a forwarder (problem with gproc?)}
+
+
+\subsection{Locations}
+
+\TODO{3cm}{representation in code, wrapping up}
+
+\TODO{2cm}{physical root locations (unmovable)}
+
+\TODO{3cm}{CODE FOR NEW DEF}
+
+\TODO{2cm}{passing locations explicitly}
+
+
+\subsection{Connecting Nodes}
+
+\TODO{3cm}{need to find other nodes\\
+  but no location server\\
+  solution is to register names globally (but without explicit nameserver)}
+
+\TODO{3cm}{distributed examples\\
+  (explain how to start nodes and connect them)}
