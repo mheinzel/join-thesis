@@ -89,5 +89,20 @@ the encoding of any process in \joincalc has no recipients.
 
 \thesislisting{simple/spawn_actor}{registering and spawning an actor}
 
-We can now show a few examples.
+\begin{example}
+  We can now write down example \ref{example_print} in Erlang
+  (figure \ref{simple_examples/print}).
 
+  \thesislisting{simple_examples/print}
+  {the corresponding join example term in Erlang}
+\end{example}
+
+\begin{example}
+  Also, we can create a function for single channel join-patterns using the
+  existing primitives
+  (figure \ref{simple_examples/continuation}).
+  Such a channel can then be used as a continuation.
+
+  \thesislisting{simple_examples/continuation}
+  {a function for join-patterns consisting of only one channel}
+\end{example}
