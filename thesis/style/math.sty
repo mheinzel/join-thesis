@@ -62,6 +62,15 @@
 % locations
 \newcommand{\jloc}[3]{#1 \left[ #2 : #3 \right]}
 \newcommand{\jgo}[2]{\operatorname{go} \langle #1, #2 \rangle}
+% short-hand
+\newcommand{\jcoreloc}[8]{%
+  \jdef
+    {\jloc{#1}
+      {\jrct
+        {\jrcv{#2}{#3} \jpat \jrcv{#4}{#5}}
+        {#6}}
+      {#7}}
+    {#8}}
 
 % CHAM
 \newcommand{\rchamreduction}{\longrightarrow}

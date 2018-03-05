@@ -43,13 +43,49 @@ to the new process.
 
 \subsection{Locations}
 
-\TODO{3cm}{representation in code, wrapping up}
+Locations are modelled as processes with registered location names,
+arranged in a tree.
+They keep track of their parent location, child locations and actors.
+All of these references can be \PID{}s to avoid indirections,
+since actors and the parent location cannot be migrated without the location
+itself.
+When a child location migrates, it is not a child location anymore and can
+simply be unregistered.
+Similarly to actors, locations can be wrapped up,
+unregistering themselves from their parent location and the registry,
+and recursively wrapping up their child locations and actors.
+
+Now, we need to add an additional location parameter to many existing functions:
+\begin{enumerate}[nosep]
+  \item
+    All actors need to be spawned at a specified location.
+  \item
+    While the current location is implicit in \distjoincalc,
+    we choose to pass it around explicitly to simplify the implementation.
+\end{enumerate}
+
+Since we restricted ourselves to implenting \corejoincalc,
+we will only add location definitions to a binary join-pattern:
+
+\begin{align*}
+  \jcoreloc{a}{x}{u}{y}{v}{P}{R}{Q}
+\end{align*}
+
+The corresponding Erlang function (figure \ref{distributed/def_location})
+receives an additional location name parameter
+(which is only used to generate better information for debugging).
+Also the function argument now also receives the unique location name and
+returns three processes.
+While $Q$ is executed at the surrounding location,
+$R$ will be executed at the new location $a$.
+
+\thesislisting{distributed/def_location}{adapted location definition}
+
+\thesislisting{distributed/def_location_usage}{using the location definition}
 
 \TODO{2cm}{physical root locations (unmovable)}
 
-\TODO{3cm}{CODE FOR NEW DEF}
-
-\TODO{2cm}{passing locations explicitly}
+% TODO: create, wrap up etc. not exposed
 
 
 \subsection{Connecting Nodes}
