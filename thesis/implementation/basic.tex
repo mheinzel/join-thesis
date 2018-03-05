@@ -1,14 +1,49 @@
+Based on the presented encoding,
+we will now create the primitives of \corejoincalc
+in a language that allows us to create actor configurations.
+For this task, we chose \emph{Erlang},
+which is one of the most prominent actor-based programming languages.
+%TODO: more reasons?
+It allows us to spawn actors, referred to as \emph{Erlang processes},
+and asynchronically send messages to them by their \emph{process id} (\PID).
+In contrast, when we use the word \emph{actor},
+we refer to the concept from \actorpicalc:
+A \actorname with a behavior and values bound to its parameters.
+\TODO{1cm}{concept of actor more in-depth?}
+
+While \PID{}s are globally unique and can be used to send messages to
+processes located on another node,
+they are not flexible enough for our use case
+(the reasons are explained in chapter \ref{ch_migration}).
+Thus, we create our own, globally unique \actorname{}s to refer to actors.
+This is similar to the construct $\anew{x}{P}$ in \actorpicalc.
+To be able to send messages using such a \actorname,
+we use our own \code{send} function and require every actor to register itself
+(\code{register_self}),
+so we can maintain a registry mapping from \actorname{}s to \PID{}s.
+The implementation of these functions will be explored later.
+
+
 \section{Basic Translation}
 
+Terms of \actorpicalc can be translated into Erlang in a straightforward way.
+See for example the equivalent of the behavior definition $B_{fw}$
+(figure \ref{simple_Bforward}).
+The main difference is that the emission $\asnd{a}{x,i}$
+and recursive instantiation $\ains{B_{fw}}{x}{a}$
+are composed in parallel in \actorpicalc,
+but sequentially in Erlang.
+However, the message will be sent asynchronously,
+so its transmission and reception happen concurrently to the instantiation
+in the next line.
+Generally, we will spawn multiple Erlang processes to
+mirror parallel composition in \actorpicalc terms.
 
-\TODO{3cm}{concept of actor (in code)}
+\thesislisting{simple_Bforward}{behavior definition of a forwarder}
 
-\TODO{2cm}{not Pids, but custom IDs with send()}
 
 \TODO{2cm}{straight-forward adaption of encoding,\\
   lists are builtin, par by spawning}
-
-\thesislisting{simple_Bforward}{forwarder}
 
 \thesislisting{simple_Ba}{definition actor}
 
@@ -20,6 +55,8 @@
 \thesislisting{simple_def_usage}{creating a join definition}
 
 \TODO{2cm}{encoding a definition}
+
+%\thesislisting{simple_spawn_actor}{registering and spawning an actor}
 
 \thesislisting{simple_def_encoding}{encoding of a join definition}
 
