@@ -17,6 +17,7 @@ STYFILES= style/thesis.sty \
 		  style/terms.sty \
 		  style/listings.sty \
 		  style/math.sty
+CODEFILES=code/*
 
 
 .PHONY: all thesis clean
@@ -25,7 +26,7 @@ all: thesis
 
 thesis: thesis.pdf
 
-thesis.pdf: $(TEXFILES) $(BIBFILES) $(STYFILES)
+thesis.pdf: $(TEXFILES) $(BIBFILES) $(STYFILES) $(CODEFILES)
 	$(TEX) $(TEXFILES)
 	$(BIB) tmp/thesis
 	$(TEX) $(TEXFILES)
