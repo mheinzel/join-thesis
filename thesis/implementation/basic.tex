@@ -58,15 +58,36 @@ will also be joined first.
 
 \TODO{1cm}{additionally, status?}
 
-\TODO{2cm}{how to create a definition? (scopes x, y everywhere, u, v only in Q)}
+After defining the necessary behaviors,
+we can now translate the encoding itself.
+First we have to decide what the primitives of \joincalc should look like
+in Erlang.
+Sending a message is just a function call and parallel composition
+is not necessary when all provided actions are asynchronous.
+A join definition
+$\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{Q}$
+can be modelled using a function that receives two processes $P$ and $Q$,
+where both should have access to the channel names $x$ and $y$,
+and $P$ to $u$ and $v$ as well.
+To model this, we pass a function that receives the shared names and
+returns two functions (the first one taking the additional names).
+We can use it as shown in figure \ref{simple_def_usage}.
+The syntax is noisier than in the calculus, but the structure is recognizable.
 
 \thesislisting{simple_def_usage}{creating a join definition}
 
-\TODO{2cm}{encoding a definition}
-
-%\thesislisting{simple_spawn_actor}{registering and spawning an actor}
+The \code{def} function (figure \ref{simple_def_encoding})
+is again in close correspondence with the formal encoding.
+We create new \actorname{}s and spawn all necessary actors
+using the \code{spawn_actor} function (figure \ref{simple_spawn_actor}),
+which also registers them in our name registry.
+Note that $Q$ is not registered, since it is not an actor.
+As shown in section \ref{type_correctness},
+the encoding of any process in \joincalc has no recipients.
 
 \thesislisting{simple_def_encoding}{encoding of a join definition}
 
-\TODO{4cm}{example\\
-  (single def for continuations?)}
+\thesislisting{simple_spawn_actor}{registering and spawning an actor}
+
+We can now show a few examples.
+
