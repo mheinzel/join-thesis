@@ -1,13 +1,47 @@
-\section{The Actor Model}
+\section{The \ActorModel}
 
 The notion of actors was first developed by Hewitt \cite{hewitt_universal_1973}
 and later formalized by Agha \cite{agha_actors:_1986}
 as a model of concurrent computation.
+As described in \cite{agha_algebraic_2004},
+a computational system in the \actormodel, called a \emph{configuration},
+consists of a collection of concurrently executing actors
+and a collection of messages in transit.
+Each actor has a unique name (the \emph{uniqueness} property)
+and a \emph{behavior},
+and it communicates with other actors via asynchronous messages.
+Actors are reactive in nature,
+i.e. they execute only in response to messages receives.
+An actor's behavior is deterministic in that its response to a message is
+uniquely determined by the message contents.
+Message delivery in the \actormodel is fair.
+The delivery of a message can only be delayed
+for a finite but unbounded amount of time.
 
-\TODO{3cm}{definition, properties from \cite{agha_algebraic_2004}}
-%   uniqueness
-%   freshness
-%   persistence
+An actor can perform three basic actions on receiving a message:
+\begin{itemize}
+  \item create a finite number of actors with universally fresh names
+  \item send a finite number of messages
+  \item assume a new behavior
+\end{itemize}
+
+In addition to the already mentioned \emph{uniqueness},
+there are two other properties we should note:
+First, actors do not disappear after processing a message
+(the \emph{persistence} property).
+Second,
+actors cannot be created with well known names or names received in a message
+(the \emph{freshness} property).
+
+The description of a configuration also defines an interface
+between the configuration and its environment,
+which constrains interactions between the two.
+An interface is a set of names, called the \emph{receptionist} set,
+that contains the names of all actors in the configuration
+that are visible to the environment.
+The receptionist set may evolve during interactions,
+as the messages that the configuration sends to the environment
+may contain names of actors not currently in the receptionist set.
 
 
 \subsection{\ActorPiCalc}
