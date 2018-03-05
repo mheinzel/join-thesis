@@ -28,7 +28,7 @@ The implementation of these functions will be explored later.
 
 Terms of \actorpicalc can be translated into Erlang in a straightforward way.
 See for example the equivalent of the behavior definition $B_{fw}$
-(figure \ref{simple_Bforward}).
+(figure \ref{simple/forward}).
 The main difference is that the emission $\asnd{a}{x,i}$
 and recursive instantiation $\ains{B_{fw}}{x}{a}$
 are composed in parallel in \actorpicalc,
@@ -39,17 +39,17 @@ in the next line.
 Generally, we will spawn multiple Erlang processes to
 mirror parallel composition in \actorpicalc terms.
 
-\thesislisting{simple_Bforward}{behavior definition of a forwarder}
+\thesislisting{simple/forward}{behavior definition of a forwarder}
 
 The translation of the behavior $B_a^P$ is a bit more complex
-(figure \ref{simple_Ba}).
+(figure \ref{simple/a}).
 To obtain it, we must first pass in the process $P$,
 which is not a formal behavior parameter.
 The behavior itself then receives the expected parameters.
 Since Erlang provides built-in lists and case-expressions,
 we do not need to use church encoding and continuation passing anymore.
 
-\thesislisting{simple_Ba}{behavor definition of $B_a^P$} %TODO: better name
+\thesislisting{simple/a}{behavor definition of $B_a^P$} %TODO: better name
 
 While this is the simplest and conceptually closest translation,
 the real code uses a queue in place of the list of payloads.
@@ -71,23 +71,23 @@ where both should have access to the channel names $x$ and $y$,
 and $P$ to $u$ and $v$ as well.
 To model this, we pass a function that receives the shared names and
 returns two functions (the first one taking the additional names).
-We can use it as shown in figure \ref{simple_def_usage}.
+We can use it as shown in figure \ref{simple/def_usage}.
 The syntax is noisier than in the calculus, but the structure is recognizable.
 
-\thesislisting{simple_def_usage}{creating a join definition}
+\thesislisting{simple/def_usage}{creating a join definition}
 
-The \code{def} function (figure \ref{simple_def_encoding})
+The \code{def} function (figure \ref{simple/def_encoding})
 is again in close correspondence with the formal encoding.
 We create new \actorname{}s and spawn all necessary actors
-using the \code{spawn_actor} function (figure \ref{simple_spawn_actor}),
+using the \code{spawn_actor} function (figure \ref{simple/spawn_actor}),
 which also registers them in our name registry.
 Note that $Q$ is not registered, since it is not an actor.
 As shown in section \ref{type_correctness},
 the encoding of any process in \joincalc has no recipients.
 
-\thesislisting{simple_def_encoding}{encoding of a join definition}
+\thesislisting{simple/def_encoding}{encoding of a join definition}
 
-\thesislisting{simple_spawn_actor}{registering and spawning an actor}
+\thesislisting{simple/spawn_actor}{registering and spawning an actor}
 
 We can now show a few examples.
 
