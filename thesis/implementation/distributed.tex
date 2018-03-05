@@ -1,17 +1,43 @@
 \section{Distributed Implementation}
 
+We will now extend the implementation by adding the possibility to
+create, refer to and migrate locations as in \distjoincalc.
 
-\subsection{Migration}
+
+\subsection{Migrating Actors}
 \label{ch_migration}
 
-\TODO{3cm}{cannot move actors in Erlang, but we create them.\\
-  $\rightarrow$ wrapping up and respawning}
+Running Erlang processes cannot be migrated.
+However, functions can be serialized, sent somewhere else and spawned there.
+Since our provided primitives are the only places where actors are created,
+we can equip them with the ability to stop their execution
+and return a function capturing their behavior together with their
+current state (which consists only of the values of their parameters).
+For example, see the extended definition of the \code{forward} behavior
+(figure \ref{distributed/wrap_up_forward}).
+The returned data structure can then be sent to another node
+and re-spawned there.
 
-\TODO{3cm}{Pids change $\rightarrow$ registry\\
-  global nameserver}
+\thesislisting{distributed/wrap_up_forward}{the extended forward behavior}
 
-\TODO{3cm}{losing messages when migrating\\
-  $\rightarrow$ keeping a forwarder (problem with gproc?)}
+This creates a new process with a new \PID,
+but it should still be reachable by its name.
+This requires us to use our own globally unique names as actor addresses.
+Fortunately, the Erlang ecosystem already provides global process registries
+such as \emph{global}, which we just wrap in the \code{join_reg} module.
+
+Another problem we have to consider is that a migrating actor,
+when it handles the \code{wrap_up} message and halts execution,
+might still have messages in its inbox.
+Worse, even after stopping execution,
+nodes that are not yet aware of the migration
+could try to send a message to the old \PID.
+% TODO: and we don't want to globally lock
+% TODO: problems with gproc?
+To prevent the loss of messages, migrating actors will immediately unregister
+from their name, wait until it becomes registered somewhere else
+and stay alive for a limited time to forward any remaining messages
+to the new process.
 
 
 \subsection{Locations}

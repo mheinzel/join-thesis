@@ -9,6 +9,7 @@ and asynchronically send messages to them by their \emph{process id} (\PID).
 In contrast, when we use the word \emph{actor},
 we refer to the concept from \actorpicalc:
 A \actorname with a behavior and values bound to its parameters.
+
 \TODO{1cm}{concept of actor more in-depth?}
 
 While \PID{}s are globally unique and can be used to send messages to
@@ -25,6 +26,7 @@ The implementation of these functions will be explored later.
 
 
 \section{Basic Translation}
+\label{implementation_basic}
 
 Terms of \actorpicalc can be translated into Erlang in a straightforward way.
 See for example the equivalent of the behavior definition $B_{fw}$
