@@ -1,8 +1,15 @@
 \usepackage{listings}
 \usepackage{xstring}
+\usepackage{courier}
+
+\newcommand{\code}[1]{%
+  \begingroup\noexpandarg
+  \texttt{\StrSubstitute{#1}{_}{\_}}%
+  \endgroup
+}
 
 \lstdefinestyle{thesis}{
-  basicstyle=\footnotesize,
+  basicstyle=\footnotesize\ttfamily,
   frame=single,
   commentstyle=\color{gray}
 }
@@ -12,12 +19,12 @@
     \lstinputlisting[language=erlang,style=thesis]{code/#1.erl}
     \vspace{-0.5cm}
     \caption{#2}
-    \label{#2}
+    \label{#1}
   \end{figure}
 }
 
 \lstdefinestyle{appendix}{
-  basicstyle=\scriptsize,
+  basicstyle=\scriptsize\ttfamily,
   frame=single,
   commentstyle=\color{gray}
 }
