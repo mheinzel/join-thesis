@@ -50,23 +50,25 @@ def(Location, PQ) ->
 
 % takes an additional location identifier (just for debugging).
 % PQ now also receives a location name (as first parameter).
-def_location(Location, NewLocName, PQ) ->
-  ?DEBUG("~p", [PQ]),
+def_location(Location, NewLocName, PRQ) ->
+  ?DEBUG("~p", [PRQ]),
   % new names
   A = join_util:create_id(act),
   X = join_util:create_id(fwX),
   Y = join_util:create_id(fwY),
-  Lx = queue:new(),
-  Ly = queue:new(),
+  Payloads = queue:new(),
   % create location
   NewLocation = join_location:create(Location, NewLocName),
   % get user-supplied processes
   % def NewLocation [ X | Y > P  :  R] in Q
-  {P, R, Q} = PQ(NewLocation, X, Y),
+  {P, R, Q} = PRQ(NewLocation, X, Y),
   % spawn in parallel (no need to spawn lists)
-  join_location:spawn_actor_at(NewLocation, join_actor:definition(P), A, [X, Y, Lx, Ly]),  % P passed at runtime only in implementation
-  join_location:spawn_actor_at(NewLocation, fun join_actor:forward/2, X, [A]),
-  join_location:spawn_actor_at(NewLocation, fun join_actor:forward/2, Y, [A]),
+  join_location:spawn_actor_at(NewLocation, join_actor:definition(P),
+                               A, [X, Y, X, Payloads]),  % P passed at runtime only in implementation
+  join_location:spawn_actor_at(NewLocation,
+                               fun join_actor:forward/2, X, [A]),
+  join_location:spawn_actor_at(NewLocation,
+                               fun join_actor:forward/2, Y, [A]),
   spawn(R),
   spawn(Q),
   % return actor name just for debugging
@@ -80,14 +82,16 @@ def_globally(Location, X, Y, PQ) ->
   ?DEBUG("~p", [PQ]),
   % new names
   A = join_util:create_id(act),
-  Lx = queue:new(),
-  Ly = queue:new(),
+  Payloads = queue:new(),
   % get user-supplied processes
   {P, Q} = PQ(X, Y),
   % spawn in parallel (no need to spawn lists)
-  join_location:spawn_actor_at(Location, join_actor:definition(P), A, [X, Y, Lx, Ly]),  % P passed at runtime only in implementation
-  join_location:spawn_actor_at(Location, fun join_actor:forward/2, X, [A]),
-  join_location:spawn_actor_at(Location, fun join_actor:forward/2, Y, [A]),
+  join_location:spawn_actor_at(Location, join_actor:definition(P),
+                               A, [X, Y, X, Payloads]),  % P passed at runtime only in implementation
+  join_location:spawn_actor_at(Location,
+                               fun join_actor:forward/2, X, [A]),
+  join_location:spawn_actor_at(Location,
+                               fun join_actor:forward/2, Y, [A]),
   spawn(Q),
   % return actor name just for debugging
   A.
