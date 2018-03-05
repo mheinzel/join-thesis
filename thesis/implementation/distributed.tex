@@ -10,9 +10,10 @@ create, refer to and migrate locations as in \distjoincalc.
 Running Erlang processes cannot be migrated.
 However, functions can be serialized, sent somewhere else and spawned there.
 Since our provided primitives are the only places where actors are created,
-we can equip them with the ability to stop their execution
-and return a function capturing their behavior together with their
-current state (which consists only of the values of their parameters).
+we can equip them with the ability to ``wrap themselves up":
+stopping their execution and returning
+(a) a function capturing their behavior and
+(b) their current state, which consists only of the values of their parameters.
 For example, see the extended definition of the \code{forward} behavior
 (figure \ref{distributed/wrap_up_forward}).
 The returned data structure can then be sent to another node
@@ -22,7 +23,7 @@ and re-spawned there.
 
 This creates a new process with a new \PID,
 but it should still be reachable by its name.
-This requires us to use our own globally unique names as actor addresses.
+This requires us to generate our own globally unique names.
 Fortunately, the Erlang ecosystem already provides global process registries
 such as \emph{global}, which we just wrap in the \code{join_reg} module.
 
