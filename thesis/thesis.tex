@@ -7,12 +7,15 @@
 
 \pagenumbering{roman}
 \selectlanguage{german}
+\cleardoublepage
 \input{prelude/titlepage}
+\cleardoublepage
 \input{prelude/authorship}
 \thispagestyle{empty}
 % abstract (de)
 \selectlanguage{english}
 % abstract (en)
+\cleardoublepage
 \tableofcontents
 \thispagestyle{empty}
 \pagebreak
@@ -48,6 +51,7 @@
 % appendix?
 \begin{appendices}
   \chapter{Source Code}
+  % TODO: mention DVD
   \input{code/full}
 \end{appendices}
 
