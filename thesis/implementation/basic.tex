@@ -41,14 +41,22 @@ mirror parallel composition in \actorpicalc terms.
 
 \thesislisting{simple_Bforward}{behavior definition of a forwarder}
 
+The translation of the behavior $B_a^P$ is a bit more complex
+(figure \ref{simple_Ba}).
+To obtain it, we must first pass in the process $P$,
+which is not a formal behavior parameter.
+The behavior itself then receives the expected parameters.
+Since Erlang provides built-in lists and case-expressions,
+we do not need to use church encoding and continuation passing anymore.
 
-\TODO{2cm}{straight-forward adaption of encoding,\\
-  lists are builtin, par by spawning}
+\thesislisting{simple_Ba}{behavor definition of $B_a^P$} %TODO: better name
 
-\thesislisting{simple_Ba}{definition actor}
+While this is the simplest and conceptually closest translation,
+the real code uses a queue in place of the list of payloads.
+This ensures fairness, since messages that reach the actor first
+will also be joined first.
 
-\TODO{2cm}{real code has status etc.\\
-  queue for fairness}
+\TODO{1cm}{additionally, status?}
 
 \TODO{2cm}{how to create a definition? (scopes x, y everywhere, u, v only in Q)}
 
