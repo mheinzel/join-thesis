@@ -7,7 +7,7 @@ For the remainder of this chapter, we define
 $\tilde{z}_P$
 as the tuple of names in
 $\fn{P} \setminus {\{x, y, u, v\}}$.
-This is necessary since $P$ might have free names
+This is necessary since $P$ might contain free names
 that are now also free in the definition of $B$ and thus
 have to be bound in the parameter list.
 
@@ -155,7 +155,7 @@ and the encoded subprocess in which the definition is available.
   We prove the theorem by structural induction over the grammar of \corejoincalc.
   Let $x, y \in \mathcal{N}$ and $J$ any term in \corejoincalc.
 
-  \begin{case}
+  \begin{case}[Base Step]
     $J = \jsnd{x}{y}$.
     \\
     Then $\encMJtoAP{J} = \asnd{x}{y}$
@@ -165,31 +165,21 @@ and the encoded subprocess in which the definition is available.
 
   \begin{case}
     $J = P \jpar Q$
-    with $\judgement{}{}{\encMJtoAP{P}}$ and $\judgement{}{}{\encMJtoAP{Q}}$.
     \\
-    Then $\encMJtoAP{P \jpar Q} = \encMJtoAP{P} \apar \encMJtoAP{Q}$
-    and thus $\judgement{}{}{\encMJtoAP{J}}$
+    Then we know by inductive hypothesis that
+    $\judgement{}{}{\encMJtoAP{P}}$ and $\judgement{}{}{\encMJtoAP{Q}}$.
+    Since $\encMJtoAP{P \jpar Q} = \encMJtoAP{P} \apar \encMJtoAP{Q}$,
+    we can infer $\judgement{}{}{\encMJtoAP{J}}$
     by \rulename{comp}.
   \end{case}
 
   \begin{case}
     $J = \jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{Q}$
-    with $\judgement{}{}{\encMJtoAP{P}}$ and $\judgement{}{}{\encMJtoAP{Q}}$.
-    \begin{align*}
-      \encMJtoAP{J} = \anew{a}{\anew{x}{\anew{y}{\anew{l}{
-        \underbrace{
-          \left( \ains{B_a^P}{a}{x, y, x, l, \tilde{z}_P}
-          \apar  \ains{B_{fw}}{x}{a} \apar \ains{B_{fw}}{y}{a}
-          \apar  \ains{B_{nil}}{l}{}
-          \apar  \encMJtoAP{Q}
-          \right)
-        }_{R}
-      }}}}
-    \end{align*}
-    Then $\judgement{\{a,x,y,l\}}{f}{R}$ with $f(a) = f(x) = f(y) = f(l) = \bot$
-    and
-    $\judgement{}{}{\encMJtoAP{J}}$.
-    Also, all used definitions have to be well-typed.
+    \\
+    Then we know by inductive hypothesis that
+    $\judgement{}{}{\encMJtoAP{P}}$ and $\judgement{}{}{\encMJtoAP{Q}}$.
+
+    First, all used definitions have to be well-typed.
     \begin{align*}
       \adef*{B_{fw}}{x}{a}{\arcv{x}{i} . \parens{\asnd{a}{x,i} \apar \ains{B_{fw}}{x}{a}}}
       &\judgement*{\{x\}}{\ch{x}}{\arcv{x}{i} . \parens{\asnd{a}{x,i} \apar \ains{B_{fw}}{x}{a}}}
@@ -262,7 +252,26 @@ and the encoded subprocess in which the definition is available.
       \\
       \judgement*{\{a\}}{\ch{a}}{\arcv{a}{c,p} . \anew{k_n}{\anew{k_c}{\anew{k_P}{\anew{k_a}{R}}}}}
     \end{align*}
-  \end{case}
+
+    Now that we know that all definitions are correct,
+    we can infer the type of $\encMJtoAP{J}$:
+
+    \begin{align*}
+      \encMJtoAP{J} = \anew{a}{\anew{x}{\anew{y}{\anew{l}{
+        \underbrace{
+          \left( \ains{B_a^P}{a}{x, y, x, l, \tilde{z}_P}
+          \apar  \ains{B_{fw}}{x}{a} \apar \ains{B_{fw}}{y}{a}
+          \apar  \ains{B_{nil}}{l}{}
+          \apar  \encMJtoAP{Q}
+          \right)
+        }_{\textstyle S}
+      }}}}
+    \end{align*}
+    Then
+    $\judgement{\{a,x,y,l\}}{f}{S}$ with $f(a) = f(x) = f(y) = f(l) = \bot$
+    and
+    $\judgement{}{}{\encMJtoAP{J}}$. \hfill$\square$
+ \end{case}
 \end{proof}
 
 
