@@ -107,8 +107,13 @@ While \code{Q} is executed at the surrounding location,
   \jgo{a}{\kappa}
 \end{align*}
 
-\TODO{3cm}{additional location param\\
-  continuation}
+Again, we require to explicitly pass the current location
+as an additional parameter.
+The function \code{go(Location, Destination, Continuation)}
+then only has to wrap up \code{Location} and send both
+the resulting data structure and \code{Continuation}
+to \code{Destination}.
+There, the data will be re-spawned and the continuation called.
 
 % TODO: create, wrap up etc. not exposed
 
