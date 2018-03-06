@@ -1,9 +1,14 @@
 \section{Future Work}
 
-\TODO{4cm}{
-  complex join patterns\\
-  sync calls\\
-  syntax (macros, parsetransform)\\
-  avoid manual location passing\\
-  failure\\
-  }
+After creating a simple prototype for \corejoincalc,
+it could be interesting to extend it to the complex definitions
+of the full calculus.
+Work on compiling these patterns has been done in \cite{maranget_compiling_1998}.
+Together with support for synchronous calls and a syntax closer to the calculus
+(e.g. using macros or a preprocessor), it would improve usability quite a lot.
+
+An interesting topic to expand on is the failure model of \distjoincalc
+\cite{fournet_calculus_1996}, which handles failures on a per-location basis
+and allows detecting failure of other locations to recover from it.
+This approach seems to fit will with the typical pattern in Erlang of creating a
+\emph{supervision tree} of actors responsible for monitoring each other.
