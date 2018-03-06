@@ -56,12 +56,14 @@ To see why \PID{}s suffice, note that actors and the parent location
 cannot be migrated without the location itself.
 When a child location migrates, it is not a child location anymore and can
 simply be unregistered.
-
 Similarly to actors, locations can be wrapped up,
 unregistering themselves from their parent location and the registry,
 and recursively wrapping up their child locations and actors.
 
-\TODO{2cm}{physical root locations (unmovable)}
+Locations on the second level of the tree (directly below the root)
+correspond to physical locations.
+Each node has to initialize its top location in the beginning using
+\code{join_location:create_root()}. These top locations cannot be moved.
 
 
 \subsection{Primitives for Distribution}
