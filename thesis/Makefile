@@ -4,6 +4,7 @@ BIB= bibtex
 TEXFILES= thesis.tex \
 		  prelude/titlepage.tex \
 		  prelude/authorship.tex \
+		  introduction/introduction.tex \
 		  preliminaries/pi.tex \
 		  preliminaries/join.tex \
 		  preliminaries/actor.tex \

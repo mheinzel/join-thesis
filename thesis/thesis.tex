@@ -7,14 +7,18 @@
 
 \pagenumbering{roman}
 \selectlanguage{german}
+
 \cleardoublepage
 \input{prelude/titlepage}
+
 \cleardoublepage
 \input{prelude/authorship}
 \thispagestyle{empty}
+
 % abstract (de)
 \selectlanguage{english}
 % abstract (en)
+
 \cleardoublepage
 \tableofcontents
 \thispagestyle{empty}
@@ -23,7 +27,8 @@
 \pagenumbering{arabic}
 
 
-% INTRODUCTION
+\chapter{Introduction}
+\input{introduction/introduction}
 
 \chapter{Technical Preliminaries}
 \input{preliminaries/join}
@@ -42,7 +47,8 @@
 
 % FUTURE WORK
 
-% CONCLUSION
+\chapter{Conclusion}
+%\input{conclusion/conclusion}
 
 % BIBLIOGRAPHY
 \input{bibliography/wrapper}
