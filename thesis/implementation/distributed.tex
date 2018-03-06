@@ -72,10 +72,12 @@ We need to add an additional location parameter to many existing functions:
     All actors need to be spawned at a specified location.
   \item
     While the current location is implicit in \distjoincalc,
-    we choose to pass it around explicitly to simplify the implementation.
+    we choose to pass it around explicitly for now
+    to simplify the implementation.
 \end{enumerate}
 
-Additionally, we implement two new constructs.
+Additionally, we implement two new constructs:
+\code{def_location} and \code{go}.
 
 \subsubsection{Location Definitions}
 Since we restricted ourselves to implenting \corejoincalc,
