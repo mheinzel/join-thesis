@@ -58,8 +58,6 @@ the real code uses a queue in place of the list of payloads.
 This ensures fairness, since messages that reach the actor first
 will also be joined first.
 
-\TODO{1cm}{additionally, status?}
-
 After defining the necessary behaviors,
 we can now translate the encoding itself.
 First we have to decide what the primitives of \joincalc should look like
@@ -92,11 +90,18 @@ the encoding of any process in \joincalc has no recipients.
 \thesislisting{simple/spawn_actor}{registering and spawning an actor}
 
 \begin{example}
-  We can now write down example \ref{example_print} in Erlang
+  \label{example_print_erlang}
+  Terms such as
+  $ \ \jdef
+      {\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{\texttt{print($u$,$v$)}}}
+      {\jsnd{x}{\texttt{"a"}}
+        \jpar \jsnd{y}{1}
+        \jpar \jsnd{y}{2}} \ $
+  can now be expressed in Erlang
   (figure \ref{simple_examples/print}).
 
   \thesislisting{simple_examples/print}
-  {the corresponding join example term in Erlang}
+  {join-definition (example \ref{example_print_erlang})}
 \end{example}
 
 \begin{example}
