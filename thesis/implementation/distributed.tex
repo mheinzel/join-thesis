@@ -25,7 +25,9 @@ This creates a new process with a new \PID,
 but it should still be reachable by its name.
 This requires us to generate our own globally unique names.
 Fortunately, the Erlang ecosystem already provides global process registries
-such as \emph{global}, which we just wrap in the \code{join_reg} module.
+such as \emph{global}\footnote{\url{http://erlang.org/doc/man/global.html}},
+which we just wrap in the \code{join_reg} module.
+% TODO: gproc?
 
 Another problem we have to consider is that a migrating actor,
 when it handles the \code{wrap_up} message and halts execution,
