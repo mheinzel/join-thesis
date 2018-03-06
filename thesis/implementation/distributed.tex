@@ -29,6 +29,8 @@ such as \emph{global}\footnote{\url{http://erlang.org/doc/man/global.html}},
 which we just wrap in the \code{join_reg} module.
 % TODO: gproc?
 
+\TODO{3cm}{limitations with migrating processes}
+
 Another problem we have to consider is that a migrating actor,
 when it handles the \code{wrap_up} message and halts execution,
 might still have messages in its inbox.
@@ -73,7 +75,9 @@ We need to add an additional location parameter to many existing functions:
     we choose to pass it around explicitly to simplify the implementation.
 \end{enumerate}
 
-Additionally, we will implement two new constructs.
+Additionally, we implement two new constructs.
+
+\subsubsection{Location Definitions}
 Since we restricted ourselves to implenting \corejoincalc,
 we will only add location definitions with a binary join-pattern:
 
@@ -95,11 +99,16 @@ While \code{Q} is executed at the surrounding location,
 
 \thesislisting{distributed/def_location_usage}{using the location definition}
 
-\TODO{3cm}{go (continuation!)}
+\subsubsection{Migration}
+
+\begin{align*}
+  \jgo{a}{\kappa}
+\end{align*}
+
+\TODO{3cm}{additional location param\\
+  continuation}
 
 % TODO: create, wrap up etc. not exposed
-
-\TODO{3cm}{limitations with migrating processes}
 
 
 \subsection{Connecting Nodes}
