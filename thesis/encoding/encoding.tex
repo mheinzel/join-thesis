@@ -509,7 +509,8 @@ and focus on the interesting aspects.
   }}}}}}}}}
 \end{align*}
 
-\TODO{1cm}{$B_{cons}$ receives continuations, $k_c$ received, $k_c, k_n$ to garbage}
+\TODO{1cm}{$B_{cons}$ receives continuations, $k_c$ received, $k_c, k_n$ to garbage\\
+  (2 steps?)}
 
 \begin{align*}
   &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{l'}{\anew{k_P}{\anew{k_a}{ \\
@@ -627,13 +628,13 @@ and focus on the interesting aspects.
       \\
       \apar  &\ains{B_a^P}{a}{x, y, x, l,\tilde{z}_P}
       \\
-      \apar  &R_{garbage}
+      \apar  &R_{garbage}'
       \ \big)
     \end{aligned}
   }}}}}
 \end{align*}
 
-\TODO{1cm}{substitution, remove $l'$}
+\TODO{1cm}{substitution, move $l'$ to garbage}
 
 \begin{align*}
   &\anew{a}{\anew{x}{\anew{y}{\anew{l}{ \\
@@ -648,7 +649,7 @@ and focus on the interesting aspects.
       \\
       \apar  &\ains{B_a^P}{a}{x, y, x, l,\tilde{z}_P}
       \\
-      \apar  &R_{garbage}
+      \apar  &R_{garbage}''
       \ \big)
     \end{aligned}
   }}}}
@@ -672,8 +673,9 @@ and focus on the interesting aspects.
     }}}}
 \end{align*}
 
-\TODO{1cm}{show what happens when receiving twice on same channel?\\
-  or move to appendix?}
+\TODO{1cm}{show what happens when receiving twice on same channel?}
+
+\TODO{3cm}{anything else?}
 
 
 \subsection{Full Abstraction}
