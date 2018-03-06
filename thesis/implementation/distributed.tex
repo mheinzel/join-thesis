@@ -29,7 +29,18 @@ such as \emph{global}\footnote{\url{http://erlang.org/doc/man/global.html}},
 which we just wrap in the \code{join_reg} module.
 % TODO: gproc?
 
-\TODO{3cm}{limitations with migrating processes}
+Note that while actors (and thus their corresponding join-definitions)
+will be moved to the new location,
+already spawned non-actor processes cannot be migrated.
+However, this is not a problem in practice:
+These processes are usually short-lived;
+anytime control flow is done through sending messages (e.g. continuations),
+it will happen in the new location.
+And neither is it from a theoretical perspective:
+The processes run in parallel to the code responsible for migration.
+Thus, they could have finished before the migration anyways.
+The only way to observe the difference is through the temporal order
+of side effects like printing to the console.
 
 Another problem we have to consider is that a migrating actor,
 when it handles the \code{wrap_up} message and halts execution,
