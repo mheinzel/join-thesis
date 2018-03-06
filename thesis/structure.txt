@@ -66,6 +66,7 @@
             simple distributed examples
 
 - related work (short)
+    jocaml?
 
 - evaluation/comparison
 
