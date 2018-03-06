@@ -12,6 +12,8 @@ TEXFILES= thesis.tex \
 		  implementation/basic.tex \
 		  implementation/distributed.tex \
 		  implementation/code/full.tex \
+		  conclusion/conclusion.tex \
+		  conclusion/future_work.tex \
 		  bibliography/wrapper.tex
 BIBFILES= bibliography/thesis.bib
 STYFILES= style/thesis.sty \
