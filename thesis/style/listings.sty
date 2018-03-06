@@ -8,13 +8,21 @@
   \endgroup
 }
 
-\lstdefinestyle{thesis}{
+
+\lstset{
   basicstyle=\footnotesize\ttfamily,
   frame=single,
   commentstyle=\color{gray},
   showstringspaces=false
 }
 
+\lstdefinestyle{thesis}{
+  basicstyle=\footnotesize\ttfamily,
+  frame=single,
+  numbers=left,
+  commentstyle=\color{gray},
+  showstringspaces=false
+}
 \newcommand{\thesislisting}[2]{%
   \begin{figure}
     \lstinputlisting[language=erlang,style=thesis]{implementation/code/#1.erl}
@@ -29,7 +37,6 @@
   frame=single,
   commentstyle=\color{gray}
 }
-
 \newcommand{\appendixlisting}[1]{%
   \begingroup\noexpandarg
   \StrSubstitute{#1}{_}{\_}[\mllcap]%

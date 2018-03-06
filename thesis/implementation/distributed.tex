@@ -120,9 +120,63 @@ There, the data will be re-spawned and the continuation called.
 
 \subsection{Connecting Nodes}
 
-\TODO{3cm}{need to find other nodes\\
-  but no location server\\
-  solution is to register names globally (but without explicit nameserver)}
+To send a message on a channel, we need to know its name.
+But when we start separate nodes, they don't share any names,
+so we need a way to exchange some names in the beginning.
+On these, further names can be sent.
 
-\TODO{3cm}{distributed examples\\
-  (explain how to start nodes and connect them)}
+In \distjoincalc, we can define channels at the root of the location tree
+(effectively without a location), but this is not realistic for the
+implementation.
+In \cite{fournet_jocaml:_2002},
+a global name server is used to register and lookup names,
+but in our implementation,
+all names are registered in the process registry anyways.
+This allows us to create globally known channels
+in \code{def_globally} by using fixed Erlang atoms as keys.
+(instead of unique, generated names).
+
+
+\begin{example}[Applet]
+
+  We define a server that provides an applet on the globally available name
+  \code{cell} (figure \ref{distributed/example_applet_server}).
+  When a message containing a location \code{A} and continuation
+  is received on name \code{cell},
+  a new location with names \code{Get} and \code{Put} will be defined (line 4)
+  and sent to the continuation (line 15), where they can be used.
+  Concurrently, the newly defined location with the cell migrates to location
+  \code{A} (line 11).
+
+  The client (figure \ref{distributed/example_applet_client})
+  simply creates a continuation using the cell and sends its name and location
+  to \code{cell} (line 16).
+
+  \begin{figure}
+    \begin{lstlisting}
+rebar3 shell --sname node1
+> node().
+'node1@hostname'
+> Root = join_location:create_root().
+    \end{lstlisting}
+    \begin{lstlisting}
+rebar3 shell --sname node2
+> net_kernel:connect_node('node1@hostname').
+true
+> Root = join_location:create_root().
+    \end{lstlisting}
+  \caption{connecting multiple Erlang shells}
+  \label{connecting_shells}
+  \end{figure}
+
+  \thesislisting{distributed/example_applet_server}{the applet server}
+
+  \thesislisting{distributed/example_applet_client}{the applet client}
+
+\end{example}
+
+To make the example work, the Erlang runtimes of the two nodes need to be
+connected. In the shell, this can be achieved as shown in figure
+\ref{connecting_shells}.
+Also, they each need to create a root location
+which can then be passed to the respective definitions.
