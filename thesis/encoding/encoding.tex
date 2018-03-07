@@ -1,11 +1,13 @@
 \section{A Naive Approach}
 
-\TODO{2cm}{simple translation of \joincalc into \asyncpicalc
-  \cite{fournet_reflexive_1996}}
+When introduction \joincalc, Fournet also gave a simple encoding into
+\asyncpicalc \cite{fournet_reflexive_1996}.
+Considering the minor syntactical differences,
+we can translate it to \actorpicalc.
 
-For the remainder of this chapter, we define
+Let us also define
 $\tilde{z}_P$
-as the tuple of names in
+for the remainder of this chapter as the tuple of names in
 $\fn{P} \setminus {\{x, y, u, v\}}$.
 This is necessary since $P$ might contain free names
 that are now also free in the definition of $B$ and thus
@@ -23,42 +25,80 @@ have to be bound in the parameter list.
   \\
   \text{with }
   \adef*{B}{x,y}{\tilde{z}}{\arcv{x}{u} . \arcv{y}{v} . \parens{\ains{B}{x, y}{\tilde{z}} \apar \encMJtoAP{P}}}
-  \\
 \end{align*}
 
-\TODO{3cm}{this is not type correct\\
-  typing derivation?}
+The definition of behavior $B$ in this encoding, however, is not well-typed.
+Assuming that $P$ has no recipients, we can see that
+$\judgement{\{x,y\}}{\ch{x,y}}{\ains{B}{x,y}{\tilde{z}}} \apar \encMJtoAP{P}$,
+but then \rulename{act} does not apply to
+$\arcv{y}{v} . \parens{\ains{B}{x,y}{\tilde{z}} \apar \encMJtoAP{P}}$,
+since $y$ is already in the recipients (but not in first position).
+
+Swapping the input actions to arrive at
+$\judgement{\{x,y\}}{\ch{x,y}}
+  {\arcv{x}{u} . \parens{\ains{B}{x,y}{\tilde{z}} \apar \encMJtoAP{P}}}$
+does not help, either, as we then have the same problem
+when prefixing it by $\arcv{y}{v}$.
+Indeed, this approach is fundamentally flawed.
 
 
 \section{Forwarding}
 
-\TODO{2cm}{reason: actor cannot receive on two channels interchangeably}
-
-\TODO{2cm}{idea: sending both $x$ and $y$ to same actor}
+The \emph{persistence} property of the \actormodel is only slightly relaxed
+in \actorpicalc to temporarily allow assuming another name.
+It is not possible for an actor to receive on two different channels
+interchangeably.
+This restriction can only be circumvented by somehow sending
+both $x$ and $y$ messages on the same channel,
+for example using a forwarder.
 
 \begin{align*}
   \adef*{B_{fw}}{x}{a}{\arcv{x}{i} . \parens{\asnd{a}{x,i} \apar \ains{B_{fw}}{x}{a}}}
 \end{align*}
 
+When $B_{fw}$ receives a payload $i$ on a channel $x$,
+it forwards it to $a$, tagged with the name of the channel it was originally
+sent on.
+At the same time, it recursively assumes the same behavior again to
+forward further messages.
+
+
 \section{Storing Payloads}
 
-\TODO{3cm}{problem: can receive $x$ and $y$ in arbitrary order\\
-  receive two $x$s, need to respawn\\
-  introduces divergence\\
-  we need some storage}
+When forwarding both $x$ and $y$ to the same actor, a problem arises.
+Messages from $x$ and $y$ can occur in an arbitrary order.
+If we, for example, receive multiple messages from $x$, we must either:
+\begin{enumerate}[nosep]
+  \item
+    respawn all but one of them and wait for a $y$ message.
+    This introduces divergence, since the respawned messages could be
+    received and spawned indefinitely.
+  \item
+    store them all.
+\end{enumerate}
 
-We can use church-encoding to build lists from actors and avoid divergence.
+The only available values in \actorpicalc are names,
+but it is possible to build data structures from actors.
+A list is an actor and can either be empty or constructed from a single
+first element (\emph{head}) and a remaining list (\emph{tail}).
+To find out which of these is the case, we send it a message with two
+continuations (names) $k_n$ and $k_c$.
 
-\TODO{2cm}{explain church-encoding\\
-  (persistent)}
-
+If it is empty, it will send an empty message on $k_n$:
 \begin{align*}
   \adef*{B_{nil}}{l}{}{\arcv{l}{k_n,k_c} . \parens{\asnd{k_n}{} \apar \ains{B_{nil}}{l}{}}}
-  \\
+\end{align*}
+
+If not, it sends head and tail on $k_c$:
+\begin{align*}
   \adef*{B_{cons}}{l}{h,t}{\arcv{l}{k_n,k_c} . \parens{\asnd{k_c}{h,t} \apar \ains{B_{cons}}{l}{h,t}}}
 \end{align*}
 
-The actor can now receive forwarded messages from both channels $x$ and $y$.
+
+\section{Our Encoding}
+
+Using forwarders and lists, we can define an actor which receives
+forwarded messages from both channels $x$ and $y$.
 If it receives more messages from one of these channels than from the other,
 it stores the excess payloads in a list $l$ and remembers from which channel
 these came using a flag $f$.
@@ -115,8 +155,6 @@ to give following behavior for the actor.
     \end{aligned}
   }}}}} \\
 \end{align*}
-
-\section{Our Encoding}
 
 To encode a \joincalc definition,
 we now start one such joining actor (with initially no excess payloads),
@@ -278,7 +316,7 @@ the encoding preserves distributality.
 \end{proof}
 
 
-\subsection{Semantics}
+\subsection{Semantic Correctness}
 
 In \joincalc, we can receive in a join-pattern using following reduction:
 
