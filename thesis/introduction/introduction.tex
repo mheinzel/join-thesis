@@ -1,11 +1,11 @@
 Process calculi allow a formal, abstract description of concurrent
 and distributed systems, to simplify mathematical reasoning.
 In this setting, we are often interested in the
-\emph{degree of distributality} of a term,
+\emph{degree of distributability} of a term,
 which can be intuitively describes as the number of parallel components
 that can execute independently.
 However, when implementing these calculi in practice,
-it is often not possible to preserve their degree of distributality.
+it is often not possible to preserve their degree of distributability.
 In \picalc, for example,
 the problem arises from the possible existence of multiple senders
 and multiple receivers on a channel.
@@ -16,10 +16,10 @@ In this way, it can become necessary to solve a global consensus problem
 for the correct execution of basic communication primitives.
 
 As presented by Peters et al. \cite{peters_distributability_2013},
-this lack of distributality in \asyncpicalc can be shown by the existence of
+this lack of distributability in \asyncpicalc can be shown by the existence of
 certain synchonization patterns.
 At the same time, the \emph{join-calculus} \cite{fournet_reflexive_1996}
-is identified as a calculus with better distributality.
+is identified as a calculus that is more distributable.
 And indeed, one of its main ideas is to enforce that all receivers on a channel
 reside in the same location (\emph{locality}).
 It also explores the addition of a notion of locations,
@@ -47,7 +47,7 @@ much effort could be avoided.
 For instance, there are multiple implementations of the \actormodel
 providing support for distributed communication and code migration.
 Also, actors are freely distributable, which should make it possible
-to find a distributality-preserving translation.
+to find a distributability-preserving translation.
 % TODO: mention Erlang?
 This thesis aims to find such an encoding and, going from there,
 develop a prototype implementation of \distjoincalc.

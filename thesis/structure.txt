@@ -2,7 +2,7 @@
 
 - introduction
     motivation
-        distributality
+        distributability
             located channels
 
 - preliminaries
