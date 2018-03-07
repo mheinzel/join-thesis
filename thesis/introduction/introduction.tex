@@ -1,6 +1,5 @@
 Process calculi allow a formal, abstract description of concurrent
-and distributed systems, which can be transformed and analysed
-using algebraic laws.
+and distributed systems, to simplify mathematical reasoning.
 In this setting, we are often interested in the
 \emph{degree of distributality} of a term,
 which can be intuitively describes as the number of parallel components
@@ -9,7 +8,7 @@ However, when implementing these calculi in practice,
 it is often not possible to preserve their degree of distributality.
 In \picalc, for example,
 the problem arises from the possible existence of multiple senders
-and multiple receivers on each channel, potentially in different locations.
+and multiple receivers on a channel.
 A process wanting to send a message to one of many possible receivers
 has to make sure the receiver did not already receive a messages
 from somewhere else in the meantime.
@@ -21,7 +20,7 @@ this lack of distributality in \asyncpicalc can be shown by the existence of
 certain synchonization patterns.
 At the same time, the \emph{join-calculus} \cite{fournet_reflexive_1996}
 is identified as a calculus with better distributality.
-And indeed, one of its main features is to enforce that all receivers on a channel
+And indeed, one of its main ideas is to enforce that all receivers on a channel
 reside in the same location (\emph{locality}).
 It also explores the addition of a notion of locations,
 which allows it to not only be \emph{distributable},
