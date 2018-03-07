@@ -253,19 +253,17 @@ $ u, v, \ldots $ in $ \jsnd{x}{\tilde{v}} $
 can now be either channel or location names.
 We extend the syntax of \joincalc by two new constructs
 \cite{fournet_calculus_1996}.
+Locations can be introduced using a new kind of definition:
 
 \begin{align*}
-  P, Q
-  \grmr \dots
-  \altn \jgo{b}{\kappa}
-  \\ \\
   D, E
   \grmr \dots
   \altn \jloc{a}{D}{P}
 \end{align*}
 
-% TODO: explain what new constructs mean?
-Also, we demand two additional syntactic restrictions:
+This initializes a new sublocation $a$ with definitions $D$
+and a process $P$ residing there.
+We demand two additional syntactic restrictions:
 Firstly, location $a$ can only be defined once in any definition $D$.
 Secondly, channel $x$ may only appear in the join-patterns of one location.
 These conditions make the following definitions invalid:
@@ -283,52 +281,73 @@ These conditions make the following definitions invalid:
     {T}
 \end{align*}
 
+Also, we provide a construct for migration:
+
+\begin{align*}
+  P, Q
+  \grmr \dots
+  \altn \jgo{b}{\kappa}
+\end{align*}
+
+It migrates the current location to $b$ (becoming a sublocation)
+and afterwards emits an empty message on $\kappa$.
+
 The semantics of the new constructs are defined using a distributed version
 of the RCHAM, called DRCHAM.
-We tag configurations with their location
-$ \mathcal{L} = \{ \phi, \psi, \ldots \} $
+It is a multiset of solutions
+$ \drchamcnf{\varphi}{\mathcal{R}}{\mathcal{M}} $
+with location \emph{labels}
+$ \varphi, \psi, \ldots \in \mathcal{L}^* $,
+separated by $||$.
+We consider trees of locations.
+For each location $a$ in the tree,
+the DRCHAM contains a solution with a label
+consisting (left to right) of the path from the root down to $a$.
+This means that $\varphi$ is a sublocation of $\psi$
+if $\psi$ is a prefix of $\varphi$.
 
-$ \drchamcnf{\phi}{\mathcal{R}}{\mathcal{M}} $
-
-\TODO{3.5cm}{explain DRCHAM\\
-location tree\\
-previous rules apply\\
-(str-def gives fresh location names, too)}
-
-Then we add three new rules for the two new syntactical constructs:
-% TODO: which \phi ?
+Each single solution internally evolves by the rules introduced before
+(with the addition that (str-def) also produces fresh location names).
+Furthermore, we add three new rules for the two new syntactical constructs:
 
 \begin{align*}
   \drchamequ{str-loc}{(a \ \text{frozen)}}{
-    \drchamcnf{\phi}{\jloc{a}{D}{P}}{}
+    \drchamcnf{\varphi}{\jloc{a}{D}{P}}{}
   }{
-    \drchamcnf{\phi}{}{}
+    \drchamcnf{\varphi}{}{}
     \drchampar
-    \drchamcnf{\phi a}{D}{P}
+    \drchamcnf{\varphi a}{D}{P}
   }
   \\
   \drchamred{comm}{(x \in \dv{J})}{
-    \drchamcnf{\phi}{}{\jsnd{x}{\tilde{v}}}
+    \drchamcnf{\varphi}{}{\jsnd{x}{\tilde{v}}}
     \drchampar
     \drchamcnf{}{\jrct{J}{P}}{}
   }{
-    \drchamcnf{\phi}{}{}
+    \drchamcnf{\varphi}{}{}
     \drchampar
     \drchamcnf{}{\jrct{J}{P}}{\jsnd{x}{\tilde{v}}}
   }
   \\
   \drchamred{move}{}{
-    \drchamcnf{\phi}{\jloc{a}{D}{P \jpar \jgo{b}{\kappa}}}{}
+    \drchamcnf{\varphi}{\jloc{a}{D}{P \jpar \jgo{b}{\kappa}}}{}
     \drchampar
     \drchamcnf{\psi b}{}{}
   }{
-    \drchamcnf{\phi}{}{}
+    \drchamcnf{\varphi}{}{}
     \drchampar
     \drchamcnf{\psi b}{\jloc{a}{D}{P \jpar \jsnd{\kappa}{}}}{}
   }
 \end{align*}
 
-\TODO{3cm}{conditions\\explain new rules}
-% can dissolve new kind of definition as with str-def
-% move emitted message to correct location
-% migrate the current location
+In heating direction, (str-loc) initializes a new machine.
+The side condition ``a frozen" applies in the cooling direction
+and expresses that there may be no solutions at sublocations of $a$
+(with a label containing $a$).
+This enforces that the rule is applied to all sublocations of a first
+to freeze the whole subtree, preparing migration.
+(comm) allows a message on a channel that is located on another location
+to move to that location, where it can be received using (red) later.
+The last rule (move) gives the semantics of migration: $a$ becomes a sublocation
+of $b$. The emitted $\jsnd{\kappa}{}$ can be used to delay execution of a
+process until migration is completed.
