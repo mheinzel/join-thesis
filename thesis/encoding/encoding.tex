@@ -335,7 +335,7 @@ and focus on the interesting aspects.
 
 \begin{align*}
   \encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{\jsnd{x}{b} \jpar \jsnd{y}{c} \jpar Q}}
-  =\ &\anew{a}{\anew{x}{\anew{y}{\anew{l}{ \\
+  \astructequ\ &\anew{a}{\anew{x}{\anew{y}{\anew{l}{ \\
       &\hspace{0.5cm}
       \begin{aligned}[t]
         \big(\ &\ains{B_{fw}}{x}{a}
@@ -348,7 +348,10 @@ and focus on the interesting aspects.
     }}}}
 \end{align*}
 
-\TODO{1cm}{forward on x and y}
+In this configuration,
+the messages $\asnd{x}{b}$ and $\asnd{y}{c}$ can be received by the forwarders
+$\ains{B_{fw}}{x}{a}$ and $\ains{B_{fw}}{x}{a}$ respectively,
+emitting the forwarded messages $\asnd{a}{x,b}$ and $\asnd{a}{y,c}$.
 
 \begin{align*}
   &\anew{a}{\anew{x}{\anew{y}{\anew{l}{ \\
@@ -358,15 +361,18 @@ and focus on the interesting aspects.
       \apar   \ains{B_{fw}}{x}{a}
       \apar   \asnd{a}{y,c}
       \apar   \ains{B_{fw}}{y}{a}
-      \apar   \encMJtoAP{Q} \\
-      \apar  &\ains{B_{nil}}{l}{}
-      \apar   \ains{B_a^P}{a}{x, y, x, l, \tilde{z}_P}
+      \apar   \encMJtoAP{Q}
+      \apar   \ains{B_{nil}}{l}{} \\
+      \apar  &\ains{B_a^P}{a}{x, y, x, l, \tilde{z}_P}
       \ \big)
     \end{aligned}
   }}}}
 \end{align*}
 
-\TODO{1cm}{receive x in $B_a^P$ (symmetry)}
+Any of these can now be received by $B_a$. We pick $\asnd{a}{x,b}$ first,
+but the other case works similarly.
+To receive, we have to inline $B_a$'s definition, binding all its parameters.
+Also, we pull all introduced name scopes to the outside.
 
 \begin{align*}
   &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{k_n}{\anew{k_c}{\anew{k_P}{\anew{k_a}{ \\
@@ -377,7 +383,8 @@ and focus on the interesting aspects.
       \apar   \ains{B_{fw}}{y}{a}
       \apar   \encMJtoAP{Q}
       \apar   \ains{B_{nil}}{l}{}
-      \apar   \asnd{l}{k_n,k_c}
+      \\
+      \apar  &\asnd{l}{k_n,k_c}
       \\
       \apar  &\arcv{k_n}{} . \anew{l'}{\parens{\ains{B_{cons}}{l'}{b, l} \apar \asnd{k_a}{x, l'}}}
       \\
@@ -420,8 +427,18 @@ and focus on the interesting aspects.
   }}}}}}}}
 \end{align*}
 
-\TODO{1cm}{$B_{nil}$ receives continuations\\
-  (can put $k_c$ and $k_P$ in garbage)}
+Now, $\asnd{l}{k_n,k_c}$ is received by $\ains{B_{nil}}{l}{}$,
+which (since it is empty), emits $\jsnd{k_n}{}$.
+We use this opportunity to clean up the term a bit.
+After this step, the only occurences of $k_c$ and $k_P$ are where they are
+received or in a process blocked by such a reception. Using the
+structural congruence, we can limit the scope of these names and arrive at
+$\anew{k_c}{\anew*{k_P}{\arcv{k_c}{h,t} . P_{k_c} \apar \arcv{k_P}{u,v} . P_{k_P}}}$
+for the corresponding $P_{k_c}$ and $P_{k_P}$.
+
+This process cannot interact with its context or be reduced any further.
+To do so, a message on $k_c$ or $k_P$ would be necessary, but it can never occur.
+We denote this term as $R_{garbage}$.
 
 \begin{align*}
   &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{k_n}{\anew{k_a}{ \\
@@ -444,7 +461,8 @@ and focus on the interesting aspects.
   }}}}}}
 \end{align*}
 
-\TODO{1cm}{$k_n$, pull out scope of $l'$}
+We then receive $\asnd{k_n}{}$ in the third line
+and pull outwards the scope of $l'$.
 
 \begin{align*}
   &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{k_a}{\anew{l'}{ \\
@@ -467,12 +485,15 @@ and focus on the interesting aspects.
   }}}}}}
 \end{align*}
 
-\TODO{1cm}{$k_a$, scope can be removed:
-  $ \anew{k_a}{S}
-    \astructequ \anew*{k_a}{S \apar \anullproc}
-    \astructequ S \apar \anew{k_a}{\anullproc}
-    \astructequ S \apar \anullproc
-    \astructequ S $}
+The continuation $k_a$ is received next. Afterwards, it does not occur at all,
+which allows us to completely remove its scope using the structural congruence:
+
+$ \anew{k_a}{S}
+  \astructequ \anew*{k_a}{S \apar \anullproc}
+  \astructequ S \apar \anew{k_a}{\anullproc}
+  \astructequ S \apar \anullproc
+  \astructequ S
+  \text{ \ (for any $S$ without $k_a$)} $
 
 \begin{align*}
   &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{l'}{ \\
@@ -493,8 +514,18 @@ and focus on the interesting aspects.
   }}}}}
 \end{align*}
 
-\TODO{2cm}{same situation as before, but $\asnd{a}{x,b}$ gone, $b$ stored in list $l'$, garbage.\\
-  now receive the $y$ (alpha-renaming $l'$)}
+At this point, it is important to note that we are almost in the same situation
+as in the beginning,
+but $B_a$ successfully received its first message from $x$ and stored
+the payload $b$ in list $l'$.
+If there was another message $\asnd{x}{d}$, it could be added to the list as well,
+resulting in
+$\anew{l''}{\anew{l'}{\anew*{l}{
+  \cdots \apar \ains{B_{cons}}{l''}{d,l'} \apar \ains{B_{cons}}{l'}{b,l} \apar \ains{B_{nil}}{l}{}
+}}}$.
+
+The process can now receive the complimentary message $\asnd{a}{y,c}$.
+In its body, we alpha-rename the occurences of $l'$ to $l''$ to avoid conflicts.
 
 \begin{align*}
   &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{l'}{\anew{k_n}{\anew{k_c}{\anew{k_P}{\anew{k_a}{ \\
@@ -551,8 +582,13 @@ and focus on the interesting aspects.
   }}}}}}}}}
 \end{align*}
 
-\TODO{1cm}{$B_{cons}$ receives continuations, $k_c$ received, $k_c, k_n$ to garbage\\
-  (2 steps?)}
+We now perform multiple reductions at once:
+First, $\ains{B_{cons}}{l'}{b,l}$ receives $\asnd{l'}{k_n,k_c}$.
+Then (because it is not empty) it sends $\asnd{k_c}{b,l}$,
+which is in turn received.
+
+Also, we remove the scope of $k_c$ and add the continuation $k_n$ to
+the existing garbage (resulting in $R_{garbage}'$).
 
 \begin{align*}
   &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{l'}{\anew{k_P}{\anew{k_a}{ \\
@@ -605,7 +641,7 @@ and focus on the interesting aspects.
   }}}}}}}
 \end{align*}
 
-\TODO{1cm}{cases}
+At this point it becomes apparent which of the cases applies.
 
 \begin{align*}
   &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{l'}{\anew{k_P}{\anew{k_a}{ \\
@@ -630,7 +666,7 @@ and focus on the interesting aspects.
   }}}}}}}
 \end{align*}
 
-\TODO{1cm}{$k_P$}
+The continuation $k_P$ passes the correct parameters to $\encMJtoAP{P}$.
 
 \begin{align*}
   &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{l'}{\anew{k_a}{ \\
@@ -654,7 +690,8 @@ and focus on the interesting aspects.
   }}}}}}
 \end{align*}
 
-\TODO{1cm}{$k_a$}
+As a last step, the continuation $k_a$ prepares $B_a$ for receiving further
+messages, with an empty list of payloads again.
 
 \begin{align*}
   &\anew{a}{\anew{x}{\anew{y}{\anew{l}{\anew{l'}{ \\
@@ -676,7 +713,9 @@ and focus on the interesting aspects.
   }}}}}
 \end{align*}
 
-\TODO{1cm}{substitution, move $l'$ to garbage}
+We can make two observations:
+The substitution can be moved into the encoding, since it is name invariant.
+Also, we can add $\anew{l'}{\ains{B_{cons}}{l'}{b,l}}$ to the garbage.
 
 \begin{align*}
   &\anew{a}{\anew{x}{\anew{y}{\anew{l}{ \\
@@ -697,8 +736,11 @@ and focus on the interesting aspects.
   }}}}
 \end{align*}
 
-\TODO{1cm}{has same behavior to following:\\
-  (garbage terms are of form $\anew*{x}{\arcv{x}{y} . R}$ and can never interact)}
+Comparing this configuration to the encoding of the reduction result
+in \joincalc,
+we see that it is structurally equivalent with the exception of $R_{garbage}''$.
+As the garbage only consists of terms that cannot interact anymore,
+we conclude that both configurations have the same behavior.
 
 \begin{align*}
   \encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{P\substitution{\subst{b}{u},\subst{c}{v}} \jpar Q}}
@@ -714,8 +756,6 @@ and focus on the interesting aspects.
       \end{aligned}
     }}}}
 \end{align*}
-
-\TODO{1cm}{show what happens when receiving twice on same channel?}
 
 \TODO{3cm}{anything else?}
 
