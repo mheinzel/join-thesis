@@ -1,27 +1,28 @@
-\documentclass[a4paper,12pt,titlepage,twoside,BCOR=6mm]{scrreprt}
+\documentclass[a4paper,12pt,titlepage,twoside,BCOR=6mm,abstracton]{scrreprt}
 
 \usepackage{style/thesis}
 
 
 \begin{document}
 
-\pagenumbering{roman}
 \selectlanguage{german}
 
-\cleardoublepage
 \input{prelude/titlepage}
 
 \cleardoublepage
+\pagenumbering{roman}
 \input{prelude/authorship}
-\thispagestyle{empty}
 
-% abstract (de)
+\cleardoublepage
+\input{abstract/german}
+
 \selectlanguage{english}
-% abstract (en)
+
+\cleardoublepage
+\input{abstract/english}
 
 \cleardoublepage
 \tableofcontents
-\thispagestyle{empty}
 \pagebreak
 
 \pagenumbering{arabic}
