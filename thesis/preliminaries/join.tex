@@ -1,8 +1,5 @@
 \section{The \JoinCalc}
 
-\TODO{2cm}{short introduction? idea?}
-
-
 \subsubsection{Syntax}
 
 We use \joincalc as described by Fournet et al.
@@ -14,7 +11,6 @@ $ \tilde{x}, \tilde{y}, \ldots $
 for tuples of names
 and define the syntax as follows.
 
-% turn into figure again?
 % left-align explanations?
 \begin{align}
   \tag*{\textbf{processes}}
@@ -41,25 +37,30 @@ and define the syntax as follows.
   \altn J \jpat K           \tag*{composed join-pattern}
 \end{align}
 
-% TODO: remove reference to pi if not explained here
-Readers familiar with \asyncpicalc
-\cite{honda_object_1991}
-\cite{boudol_asynchrony_1992}
-will recognize emission,
-parallel composition and the empty process, but miss the usual constructs for
-defining new channels, reception and replication.
-All these concerns are covered by a single primitive,
-$ \jdef{D}{P} $.
-
-\TODO{3cm}{explain def (scopes)}
-% check literature
-
+The simplest possible process is the empty process $\jnullproc$.
+Also, we can send a tuple of names $\tilde{v}$ on a channel $x$
+and compose any two processes $P$ and $Q$ in parallel.
+The most interesting construct is the definition $\jdef{D}{P}$,
+which persistently defines a number of elementary clauses.
+Each elementary clause $\jrct{J}{R}$ consists of
+a join-pattern $J$,
+composed from receptions
+$\jrcv{x_1}{\tilde{v}_1} \jpat \cdots \jpat \jrcv{x_n}{\tilde{v}_n}$
+and a process R.
+When a message is available on each channel $x_1, \ldots, x_n$,
+they can be consumed atomically,
+which bindes them to the variables $\tilde{v}_1, \ldots, \tilde{v}_n$
+and starts the process R.
+THe defined names $x_1, \ldots, x_n$ are available in both $D$ and $P$
+(so they can be used recursively).
 Note that all received names in a join-pattern must be distinct,
 making both patterns
 $ \jrcv{x}{u,u} $ and
 $ \jrcv{x}{u} \jpat \jrcv{y}{u} $
 invalid.
 
+We will now define the scopes of received, defined and free variables
+($\oprv$, $\opdv$, $\opfv$).
 
 \begin{alignat*}{2}
   & \rv{\jrcv{x}{\tilde{v}}} & &= \{ u \in \tilde{v} \} \\
@@ -147,12 +148,14 @@ In (red), $\sigma_{\oprv}$ simply substitutes the received variables $\rv{J}$.
 Note that (red) makes use of the syntactic similarity between join-patterns
 and parallel emission of messages in processes.
 
-\TODO{2cm}{explain rules?}
-% note replication etc?
+To apply a reduction, we usually first need to dissolve processes
+using the heating rules until we can apply (red).
+Afterwards, the solution can be cooled down again
+(see example \ref{example_cham}).
 
-To obtain a reduction relation $\joinreduction$
-on processes (instead of RCHAM configurations),
-we can define for any two processes P and P':
+We can obtain a reduction relation $\joinreduction$
+on processes (instead of RCHAM configurations)
+by defining for any two processes P and P':
 \begin{equation*}
   P \joinreduction P'
   \ \ \textbf{iff} \ \ 
@@ -162,7 +165,8 @@ we can define for any two processes P and P':
 \end{equation*}
 
 \begin{example}
-We can follow the reduction of a simple process in the CHAM.
+\label{example_cham}
+We can follow the reduction of a simple process in the RCHAM.
 \begin{align*}
   &&\rchamcnfset*
     {}
@@ -217,7 +221,9 @@ we could also arrive at
 $ \jsnd{x}{b} \jpar P\substitution{\subst{a}{u}, \subst{c}{v}} $.
 \end{example}
 
+\begin{example}\ \\
 \TODO{3cm}{example (lock)?}
+\end{example}
 
 
 \subsection{The \CoreJoinCalc}
@@ -238,8 +244,6 @@ only using the rules (str-join), (str-def) and (red).
 
 \subsection{The \DistJoinCalc}
 
-\TODO{2cm}{short explanation of idea \cite{fournet_calculus_1996}}
-
 In addition to an infinite set of channel names
 $ \mathcal{N} = \{ x, y, z, \kappa, \ldots \} $,
 we now use an infinite set of location names
@@ -247,7 +251,8 @@ $ \mathcal{L} = \{ a, b, c, \ldots \} $.
 These can also be sent and received, which means that values
 $ u, v, \ldots $ in $ \jsnd{x}{\tilde{v}} $
 can now be either channel or location names.
-We extend the syntax of \joincalc by two new constructs.
+We extend the syntax of \joincalc by two new constructs
+\cite{fournet_calculus_1996}.
 
 \begin{align*}
   P, Q
