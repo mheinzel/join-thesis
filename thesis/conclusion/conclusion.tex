@@ -2,13 +2,13 @@ As suspected, we were able to find an encoding
 from \corejoincalc to \actorpicalc
 that preserves distributality.
 While we did not formally prove it to be correct,
-we showed that the resulting terms can emulate the source term
+we showed that the resulting terms can emulate their respective source term
 and can be reasonably sure that it does not change its behavior.
 Although the typing rules of \actorpicalc made the encoding relatively complex,
 it proved to be a good foundation for our prototype
 and could be translated very directly into Erlang source code.
 
 When implementing the distributed version,
-we were able to rely heavily on Erlang's infrastructure
+we were able to heavily rely on Erlang's infrastructure
 and create a light-weight prototype in less than 400 lines of code.
 
