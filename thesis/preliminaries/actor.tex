@@ -46,10 +46,13 @@ may contain names of actors not currently in the receptionist set.
 
 \subsection{The Actor Calculus \actorpicalc}
 
-While the \actormodel is not originally defined as a process calculus,
-we can use a variant of \picalc called \actorpicalc for this purpose.
-It provides an accurate representation of the actor model
-by imposing a type system that enforces the previously seen properties of actors.
+This definition of the \actormodel has many differences from
+\joincalc and similar calculi.
+While actors are uniquely identified,
+processes in most calculi are anonymous.
+The core idea that allows \actorpicalc to resolve this mismatch,
+is to identify processes by the channel name they receive on.
+To allow this, several restrictions are enforced by a type system.
 The definition is directly taken from \cite{agha_algebraic_2004}.
 
 \subsubsection{Syntax}
@@ -100,8 +103,6 @@ and $x_1$ denotes its first component.
 Also, the tuples $\tilde{x}$ and $\tilde{y}$ together must contain
 exactly the free names in $\arcv{x_1}{z} . P$.
 
-%TODO: names, scopes, as expected
-
 
 \subsubsection{Type System}
 
@@ -113,22 +114,13 @@ Similarly, $\arcv{x}{u} . \arcv{u}{v} . P$ creates an actor
 with a name $u$ that is received in a message,
 violating the freshness property.
 The actor properties can be enforced, however,
-by imposing a type system.
+by imposing a type system that statically tracks the recipients of terms.
 
-\TODO{3cm}{%
-  The idea is to track each actor's name as a type and prevent it\\
-  from receiving on any other channels.\\
-  As this is too restrictive, the persistence property is slightly relaxed\\
-  to allow temporally assuming a new name.\\
-  This leads to the definition of $\ch()$.\\
-}
-
-\TODO{2cm}{%
-  intuitively:\\
-  ch(x): conf of one recipient x\\
-  ch(t,x): conf of one recipient x, temporarily assuming the name t\\
-  ?
-}
+Since requiring an actor to only ever receive on one single channel
+is too restrictive, the persistence property is slightly relaxed.
+Intuitively, an actor is allowed to temporarily assume a new name,
+which requires the type system to track whether names
+are regular or only temporary assumed by an actor.
 
 % TODO: definitions like tilde and hat, tuple to set.
 Before presenting the type system, a few notational conventions are in order.
@@ -209,6 +201,12 @@ Let $f_1: \rho_1 \to \rho_1^*$ and  $f_2: \rho_2 \to \rho_2^*$.
     and
     $\ch{\tilde{x}}(x_n) = \bot$.
 \end{enumerate}
+
+Intuitively,
+$\ch{x}$ represents a configuration with a single receptionist $x$, and
+$\ch{t,x}$ represents a receptionist $x$ that temporarily assumed the name $t$.
+Note that $\ch{\tilde{x}}$ with $\operatorname{len}(\tilde{x}) > 2$
+cannot have the \emph{name mapping properties}.
 
 \begin{minipage}{0.9\textwidth}
   \axiomrule{nil}{}
