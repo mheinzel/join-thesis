@@ -35,7 +35,7 @@ actors cannot be created with well known names or names received in a message
 
 The description of a configuration also defines an interface
 between the configuration and its environment,
-which constrains interactions between the two.
+which constrains interactions between them.
 An interface is a set of names, called the \emph{receptionist} set,
 that contains the names of all actors in the configuration
 that are visible to the environment.
@@ -44,12 +44,13 @@ as the messages that the configuration sends to the environment
 may contain names of actors not currently in the receptionist set.
 
 
-\subsection{\ActorPiCalc}
+\subsection{The Actor Calculus \actorpicalc}
 
-\TODO{2cm}{variant of \picalc that imposes type restrictions\\
-  to provide a representation of the actor model in a formal process calculus}
-
-Definition directly from \cite{agha_algebraic_2004}.
+While the \actormodel is not originally defined as a process calculus,
+we can use a variant of \picalc called \actorpicalc for this purpose.
+It provides an accurate representation of the actor model
+by imposing a type system that enforces the previously seen properties of actors.
+The definition is directly taken from \cite{agha_algebraic_2004}.
 
 \subsubsection{Syntax}
 
