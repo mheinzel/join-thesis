@@ -7,7 +7,6 @@ TEXFILES= thesis.tex \
 		  abstract/german.tex \
 		  abstract/english.tex \
 		  introduction/introduction.tex \
-		  preliminaries/pi.tex \
 		  preliminaries/join.tex \
 		  preliminaries/actor.tex \
 		  encoding/encoding.tex \
