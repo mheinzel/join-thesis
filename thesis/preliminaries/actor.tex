@@ -114,9 +114,20 @@ violating the freshness property.
 The actor properties can be enforced, however,
 by imposing a type system.
 
-\TODO{2cm}{persistence vs polyadic comm}
+\TODO{3cm}{%
+  The idea is to track each actor's name as a type and prevent it\\
+  from receiving on any other channels.\\
+  As this is too restrictive, the persistence property is slightly relaxed\\
+  to allow temporally assuming a new name.\\
+  This leads to the definition of $\ch()$.\\
+}
 
-\TODO{1cm}{why ch() etc.?}
+\TODO{2cm}{%
+  intuitively:\\
+  ch(x): conf of one recipient x\\
+  ch(t,x): conf of one recipient x, temporarily assuming the name t\\
+  ?
+}
 
 % TODO: definitions like tilde and hat, tuple to set.
 
