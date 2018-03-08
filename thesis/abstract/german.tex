@@ -1,0 +1,19 @@
+\begin{abstract}
+  Der Join-Kalkül ist eine praktisch verteilbare Variante des Pi-Kalküls
+  und besitzt eine verteilte Version mit expliziten Lokalitäten und Migration.
+  Auch wenn diese Eigenschaften vielversprechend für den Einsatz in einem
+  praxis-orientierten Umfeld sind,
+  erfordert die Implementierung von Features wie maschinen-übergreifender
+  Kommunikation und Migration einen hohen Aufwand.
+  Daher untersuchen wir die Möglichkeit,
+  existierende Infrastruktur in aktorenbasierten Systemen zu verwenden.
+
+  Wir entwickeln eine verteilbarkeitserhaltende Übersetzung des
+  vereinfachten Core-Join-Kalküls in den Kalkül \actorpicalc
+  (einen typisierten Pi-Kalkül, der das Aktorenmodell repräsentiert)
+  und leiten daraus die Implementierungen
+  einer Einbettung des Join-Kalküls in die aktorenbasierte Programmiersprache
+  Erlang ab.
+  Der Prototyp wird anschließend um die Primitive des
+  Verteilten Join-Kalküls, einschließlich Migration, erweitert.
+\end{abstract}
