@@ -287,57 +287,53 @@ must be derivable.
 
 \subsubsection{Semantics}
 
-Labelled transition system module alpha-equivalence.
-Symmetric versions of COM, CLOSE, PAR are not shown.
-Transition labels are called actions and can be of five forms:
+The operational semantics of \actorpicalc is specified
+using a labeled transition system (defined modulo alpha-equivalence).
+The symmetric versions of \rulename{com}, \rulename{close}, \rulename{par}
+are not shown.
+Transition labels, which are also called actions, can be of five forms:
 $\tau$ (silent action),
 $\actoutfree{x}{y}$ (free output of message with target $x$ and content $y$),
 $\actoutbound{x}{y}$ (bound output),
 $\actinfree{x}{y}$ (free input),
 and $\actinbound{x}{y}$ (bound input).
-We let $\alpha$ range over all visible (non-$\tau$) actions.
+We let $\alpha$ range over all visible (non-$\tau$) actions $\mathcal{L}$,
+and $\beta$ over all actions.
 
+\begin{minipage}{0.9\textwidth}
 \axiomrule{out}{}
   {\amsnd{x}{y} \apireduction{\actoutfree{x}{y}} \anullproc}
-
 \axiomrule{inp}{}
   {\amrcv{x}{y} . P \apireduction{\actinfree{x}{z}} P\substitution{\subst{z}{y}}}
-
 \infrule{binp}{$ y \notin \fn{P} $}
   {P \apireduction{\actinfree{x}{y}} P'}
   {P \apireduction{\actinbound{x}{y}} P'}
-
 \infrule{res}{$ y \notin \names{\alpha} $}
   {P \apireduction{\alpha} P'}
   {\anew{y}{P} \apireduction{\alpha} \anew{y}{P'}}
-
 \infrule{open}{$ x \neq y $}
   {P \apireduction{\actoutfree{x}{y}} P'}
   {\anew{y}{P} \apireduction{\actoutbound{x}{y}} P'}
-
 \infrule{par}{$ \bn{\alpha} \cap \fn{P_2} = \emptyset $}
   {P_1 \apireduction{\alpha} P_1'}
   {P_1 \apar P_2 \apireduction{\alpha} P_1' \apar P_2}
-
 \infruleII{com}{}
   {P_1 \apireduction{\actoutfree{x}{y}} P_1'}
   {P_2 \apireduction{\actinfree{x}{y}} P_2'}
   {P_1 \apar P_2 \apireduction{\actsilent} P_1' \apar P_2}
-
 \infruleII{close}{$ y \notin \fn{P_2} $}
   {P_1 \apireduction{\actoutbound{x}{y}} P_1'}
   {P_2 \apireduction{\actinfree{x}{y}} P_2'}
   {P_1 \apar P_2 \apireduction{\actsilent} \anew{y}{P_1' \apar P_2}}
-
 \axiomrule{brnch}{$ x = y_i $}
   {\acse{x}{\aalt{y_1}{P_1}, \ldots, \aalt{y_n}{P_n}} \apireduction{\actsilent} P_i}
-
 \infrule{behv}{$ \adef{B}{\tilde{x}}{\tilde{y}}{\amrcv{x_1}{z} . P} $}
   {(\amrcv{x_1}{z} . P)\substitution{\subst{(\tilde{u},\tilde{v})}{(\tilde{x},\tilde{y})}}
     \apireduction{\alpha} P'}
   {\ains{B}{\tilde{x}}{\tilde{y}} \apireduction{\alpha} P'}
+\end{minipage}
 
-\TODO{1cm}{interpret rules?}
+\TODO{4cm}{interpret rules?}
 
 
 \subsubsection{Structural Congruence}
