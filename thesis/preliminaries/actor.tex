@@ -338,8 +338,10 @@ and $\beta$ over all actions.
 
 \subsubsection{Structural Congruence}
 
-% from Thati dissertation
-% TODO: add to bibliography
+The strucural congruence $\astructequ$ on processes
+is the smallest possible congruence closed under the following rules
+\cite{thati_theory_2003}.
+
 \begin{align*}
   P \apar \anullproc
     &\astructequ P \\
@@ -356,7 +358,13 @@ and $\beta$ over all actions.
     &\astructequ \anew*{x}{P \apar Q} \text{ if } x \notin \fn{P} \\
   \\
   \ains{B}{\tilde{u}}{\tilde{v}}
-    &\astructequ \ldots \text{ if } \ldots % TODO
+    &\astructequ (\arcv{x_1}{z} . P)\substitution{\subst{(\tilde{u},\tilde{v}}{(\tilde{x},\tilde{y}}}
+    \text{ if }
+    \begin{cases}
+      \adef{B}{\tilde{x}}{\tilde{y}}{\arcv{x_1}{z} . P}\\
+      \operatorname{len}(\tilde{u}) = \operatorname{len}(\tilde{x})\\
+      \operatorname{len}(\tilde{v}) = \operatorname{len}(\tilde{y})
+    \end{cases}
 \end{align*}
 
 
