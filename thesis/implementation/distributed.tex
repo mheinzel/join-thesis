@@ -27,7 +27,6 @@ that persist across migrations.
 Fortunately, the Erlang ecosystem already provides global process registries
 such as \emph{global}\footnote{\url{http://erlang.org/doc/man/global.html}},
 which we just wrap in the \code{join_reg} module.
-% TODO: gproc?
 
 Note that while actors (and thus their corresponding join-definitions)
 will be moved to the new location,
@@ -48,8 +47,9 @@ might still have messages in its inbox.
 Worse, even after stopping execution,
 nodes that are not yet aware of the migration
 could try to send a message to the old \PID.
-% TODO: and we don't want to globally lock
-% TODO: problems with gproc?
+% TODO:
+% and we don't want to globally lock
+% problems with gproc?
 To prevent the loss of messages, migrating actors will immediately unregister
 from their name, wait until it becomes registered somewhere else
 and stay alive for a limited time to forward any remaining messages
@@ -127,8 +127,6 @@ then only has to wrap up \code{Location} and send both
 the resulting data structure and \code{Continuation}
 to \code{Destination}.
 There, the data will be re-spawned and the continuation called.
-
-% TODO: create, wrap up etc. not exposed
 
 
 \subsection{Connecting Nodes}

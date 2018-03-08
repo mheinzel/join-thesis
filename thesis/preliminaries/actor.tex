@@ -42,7 +42,6 @@ that are visible to the environment.
 The receptionist set may evolve during interactions,
 as the messages that the configuration sends to the environment
 may contain names of actors not currently in the receptionist set.
-% TODO: "configuration"?
 
 \subsection{The Actor Calculus \actorpicalc}
 
@@ -76,7 +75,7 @@ The order of precedence among the constructs is the order in which they are
 listed.
 The simplest terms are $\anullproc$, representing an empty configuration,
 and output term $\amsnd{x}{y}$, which represents a configuration with a single message
-targeted to $x$ containing a single name $y$. %TODO: call x "subject"?
+targeted to $x$ containing a single name $y$.
 We will consider polyadic communication towards the end of this chapter.
 
 The input term $\arcv{x}{y} . P$ stands for a configuration with an actor
@@ -122,7 +121,6 @@ Intuitively, an actor is allowed to temporarily assume a new name,
 which requires the type system to track whether names
 are regular or only temporary assumed by an actor.
 
-% TODO: definitions like tilde and hat, tuple to set.
 Before presenting the type system, a few notational conventions are in order.
 For a tuple $\tilde{x}$ and $\tilde{y}$,
 we denote the set of names occuring in $\tilde{x}$ by $\{\tilde{x}\}$
