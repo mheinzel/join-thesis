@@ -1,0 +1,25 @@
+> join_debug:print_status(Root).
+|
+|-- location {root,'one@mh-tp-ubu'} (Pid: <0.158.0>, Super: none):
+|   |   forward {fwY,'one@mh-tp-ubu',4} to {act,'one@mh-tp-ubu',2}
+|   |   forward {fwX,'one@mh-tp-ubu',3} to {act,'one@mh-tp-ubu',2}
+|   |   definition {act,'one@mh-tp-ubu',2} (Pid: <0.184.0>):
+|   |     Flag: {fwY,'one@mh-tp-ubu',4}
+|   |     Payloads: {["3"],[]}
+|   |
+|   |-- location {{loc,ch2},'one@mh-tp-ubu',6} (Pid: <0.201.0>, Super: <0.158.0>):
+|   |   |
+|   |   |-- location {{loc,ch3},'one@mh-tp-ubu',7} (Pid: <0.206.0>, Super: <0.201.0>):
+|   |   |   |   forward {fwY,'one@mh-tp-ubu',13} to {act,'one@mh-tp-ubu',11}
+|   |   |   |   forward {fwX,'one@mh-tp-ubu',12} to {act,'one@mh-tp-ubu',11}
+|   |   |   |   definition {act,'one@mh-tp-ubu',11} (Pid: <0.225.0>):
+|   |   |   |     Flag: {fwY,'one@mh-tp-ubu',13}
+|   |   |   |     Payloads: {[unused],[]}
+|   |   |   |   forward {fwY,'one@mh-tp-ubu',10} to {act,'one@mh-tp-ubu',8}
+|   |   |   |   forward {fwX,'one@mh-tp-ubu',9} to {act,'one@mh-tp-ubu',8}
+|   |   |   |   definition {act,'one@mh-tp-ubu',8} (Pid: <0.221.0>):
+|   |   |   |     Flag: {fwX,'one@mh-tp-ubu',9}
+|   |   |   |     Payloads: {[],[2]}
+|   |
+|   |-- location {{loc,ch1},'one@mh-tp-ubu',5} (Pid: <0.197.0>, Super: <0.158.0>):
+ok
