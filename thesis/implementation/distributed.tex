@@ -134,7 +134,7 @@ There, the data will be re-spawned and the continuation called.
 To send a message on a channel, we need to know its name.
 But when we start separate nodes, they don't share any names,
 so we need a way to exchange some names in the beginning.
-On these, further names can be sent.
+On these, further names can be exchanged.
 
 In \distjoincalc, we can define channels at the root of the location tree
 (effectively without a location), but this is not realistic for the
@@ -144,7 +144,7 @@ a global name server is used to register and lookup names,
 but in our implementation,
 all names are registered in the process registry anyways.
 This allows us to create globally known channels
-in \code{def_globally} by using fixed Erlang atoms as keys.
+in \code{def_globally} by using fixed Erlang atoms as keys
 (instead of unique, generated names).
 
 

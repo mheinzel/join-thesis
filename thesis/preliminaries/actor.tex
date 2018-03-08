@@ -113,13 +113,13 @@ Similarly, $\arcv{x}{u} . \arcv{u}{v} . P$ creates an actor
 with a name $u$ that is received in a message,
 violating the freshness property.
 The actor properties can be enforced, however,
-by imposing a type system that statically tracks the recipients of terms.
+by imposing a type system that statically tracks the receptionists of each term.
 
 Since requiring an actor to only ever receive on one single channel
 is too restrictive, the persistence property is slightly relaxed.
 Intuitively, an actor is allowed to temporarily assume a new name,
 which requires the type system to track whether names
-are regular or only temporary assumed by an actor.
+are regular or only temporarily assumed by an actor.
 
 Before presenting the type system, a few notational conventions are in order.
 For a tuple $\tilde{x}$ and $\tilde{y}$,
@@ -177,9 +177,9 @@ Let $f_1: \rho_1 \to \rho_1^*$ and  $f_2: \rho_2 \to \rho_2^*$.
     \end{equation*}
     Note that $\oplus$ is associative.
   \item
-    If $\rho\subset\rho_1$, we define $\restriction{f}{\rho}: \rho\to\rho^*$ as
+    If $\rho\subset\rho_1$, we define $\restrict{f}{\rho}: \rho\to\rho^*$ as
     \begin{equation*}
-      (\restriction{f}{\rho})(x) =
+      (\restrict{f}{\rho})(x) =
       \begin{cases}
         *    &\text{if $f(x) \in \rho_1 - \rho$}\\
         f(x) &\text{otherwise}
@@ -275,15 +275,15 @@ The \rulename{comp} rule is critical for the uniqueness property
 by ensuring that two composed configurations do not contain actors
 with the same name.
 For the \rulename{inst} rule to be sound, for every definition
-$\adef{B}{\tilde{x}}{\tilde{y}}{arcv{x_1}{z} . P}$
+$\adef{B}{\tilde{x}}{\tilde{y}}{\arcv{x_1}{z} . P}$
 the judgement
-$\judgement{\{\tilde{x}\}}{\ch{x}}{arcv{x_1}{z} . P}$
+$\judgement{\{\tilde{x}\}}{\ch{x}}{\arcv{x_1}{z} . P}$
 must be derivable.
 
 
 \subsubsection{Semantics}
 
-The operational semantics of \actorpicalc is specified
+The operational semantics of \actorpicalc is formally specified
 using a labeled transition system (defined modulo alpha-equivalence).
 The symmetric versions of \rulename{com}, \rulename{close}, \rulename{par}
 are not shown.
@@ -328,8 +328,6 @@ and $\beta$ over all actions.
     \apireduction{\alpha} P'}
   {\ains{B}{\tilde{x}}{\tilde{y}} \apireduction{\alpha} P'}
 \end{minipage}
-
-\TODO{4cm}{interpret rules?}
 
 
 \subsubsection{Structural Congruence}
@@ -397,7 +395,7 @@ $\hat{x} = \{x\}$ if
 $\judgement{\rho \cup \{x\}}{f}{\encPolyAP{P}}$ for some $\rho, f$
 and $\hat{x} = \emptyset$ otherwise.
 
-In the paper, it is argued that this encoding can not be used
+In the paper, it is argued that this encoding cannot be used
 for polyadic reception on temporary names,
 since they cannot assume temporary names themselves.
 However, this is too restrictive.

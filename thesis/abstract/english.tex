@@ -2,9 +2,9 @@
 
   %QUESTION:
   The join-calculus is a
-  practically distributable
+  better distributable
   variant of the pi-calculus,
-  also available in a distributed version
+  with a distributed extension
   featuring explicit locations and migration.
   While
   these properties are promising
@@ -12,9 +12,9 @@
   the implementation of features such as
   inter-node communication and migration
   is an ambitious effort.
-  For this reason we explore
+  Therefore, we explore
   the possibility of
-  using existing infrastructure in
+  using existing infrastructure of
   actor-based systems.
 
   %WE DID:
@@ -25,13 +25,16 @@
   into \actorpicalc
   (a typed pi-calculus representing the \actormodel)
   and
-  use it to derive the implementation
-  of an embedding of \joincalc
-  in the actor-based programming language Erlang.
+  use it to derive an implementation
+  of \joincalc
+  as a thin layer on top of
+  the actor-based programming language Erlang.
   Our prototype is then extended
   to support
   the primitives of \distjoincalc
   including migration.
+  By using Erlang/OTP as a foundation,
+  we obtain a small and simple implementation.
 
   %RESULTS?
 
