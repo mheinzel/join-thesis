@@ -9,7 +9,7 @@
 % any messages left in the mailbox or still ariving at the old pid reach their
 % correct target.
 %
-% note that these are not safe to use when using gproc, since the old process
+% note that these currently broken when using gproc, since the old process
 % needs to die immediately to allow the new one to register.
 forward_on(Channel) ->
   % leave some time
@@ -43,6 +43,3 @@ forward_all(Channel) ->
           ?DEBUG("retiring ~p...", [Channel]),
           ok
   end.
-
-
-

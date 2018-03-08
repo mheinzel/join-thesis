@@ -33,20 +33,6 @@
 %
 % it's not possible to remove a spawned process (not actor),
 % since it cannot move on its own.
-%
-% TODO:
-% error handling
-% we can probably detect end of execution of sublocations, actors and other
-% spawned processes using something like a monitor.
-%
-% TODO:
-% top location? (should be automatically created, managed and restarted)
-%
-% TODO:
-% race conditions?
-% e.g. parent and child location location are migrated simultaneously,
-% child moves away, but receives `wrap_up` from parent and is moved with it.
-
 
 location(Name, Super, Subs, Actors) ->
   receive
@@ -71,7 +57,7 @@ location(Name, Super, Subs, Actors) ->
           Pid ! {Ref, is_root}; % cannot migrate a root location
         _ ->
           Super ! {unregister_location, self()},
-          Ss = lists:map(fun wrap_up/1, Subs), % TODO: concurrently?
+          Ss = lists:map(fun wrap_up/1, Subs),
           As = lists:map(fun join_actor:wrap_up/1, Actors),
           join_reg:unregister_self(),
           Pid ! {Ref, {ok, {Name, Ss, As}}},
@@ -117,7 +103,6 @@ go(Location, Destination, Continuation) ->
         end).
 
 
-% TODO: handling errors
 wrap_up(Pid) ->
   Ref = make_ref(),
   Pid ! {wrap_up, self(), Ref},

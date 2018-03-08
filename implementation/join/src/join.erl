@@ -64,7 +64,7 @@ def_location(Location, NewLocName, PRQ) ->
   {P, R, Q} = PRQ(NewLocation, X, Y),
   % spawn in parallel (no need to spawn lists)
   join_location:spawn_actor_at(NewLocation, join_actor:definition(P),
-                               A, [X, Y, X, Payloads]),  % P passed at runtime only in implementation
+                               A, [X, Y, X, Payloads]),
   join_location:spawn_actor_at(NewLocation,
                                fun join_actor:forward/2, X, [A]),
   join_location:spawn_actor_at(NewLocation,
@@ -87,7 +87,7 @@ def_globally(Location, X, Y, PQ) ->
   {P, Q} = PQ(X, Y),
   % spawn in parallel (no need to spawn lists)
   join_location:spawn_actor_at(Location, join_actor:definition(P),
-                               A, [X, Y, X, Payloads]),  % P passed at runtime only in implementation
+                               A, [X, Y, X, Payloads]),
   join_location:spawn_actor_at(Location,
                                fun join_actor:forward/2, X, [A]),
   join_location:spawn_actor_at(Location,

@@ -37,7 +37,6 @@ spawn_actor_here({Actor, Channel, Args}) ->
         end).
 
 % almost as for locations, but actors don't return errors
-% TODO: unify?
 wrap_up(Pid) ->
   Ref = make_ref(),
   Pid ! {wrap_up, self(), Ref},

@@ -18,7 +18,6 @@ print(L) ->
   } end).
 
 
-
 % just to make it easier to define continuations
 def_single(Location, PQ) ->
   join:def(Location, fun(X, Unused) ->
@@ -27,7 +26,6 @@ def_single(Location, PQ) ->
       fun() -> join:send(Unused, unused), Q() end}
   end).
 
-% just to make it easier to define continuations
 def_single_globally(Location, GlobalName, PQ) ->
   UnusedName = join_util:create_id(unused),
   join:def_globally(Location, GlobalName, UnusedName, fun(X, Unused) ->
@@ -35,6 +33,7 @@ def_single_globally(Location, GlobalName, PQ) ->
     { fun(U, _) -> join:send(Unused, unused), P(U) end,
       fun() -> join:send(Unused, unused), Q() end}
   end).
+
 
 pi_channel(L) ->
   join:def(L, fun(Send, Receive) -> {
@@ -53,6 +52,7 @@ pi_channel(L) ->
     end
   } end).
 
+% prints "beep" every two seconds.
 beeper(L) ->
   def_single(L, fun(Token) -> {
                         fun(_) ->
@@ -99,19 +99,14 @@ applet_server(Location) ->
     end
   } end).
 
-applet_client(User) ->
-  applet_client(User, 2, [hello, world]).
+applet_client(Location) ->
+  applet_client(Location, 2, [hello, world]).
 
-applet_client(User, NumGet, ToPrint) ->
-  % get, put = cell(User) in
-  % put("world");
-  % put("hello");
-  % print(get());
-  % print(get());
-  def_single(User, fun(Cont) -> {
+applet_client(Location, NumGet, ToPrint) ->
+  def_single(Location, fun(Cont) -> {
     fun({Get, Put}) ->
 
-      def_single(User, fun(Print) -> {
+      def_single(Location, fun(Print) -> {
         fun(X) ->
           io:format("~p~n", [X])
         end,
@@ -125,6 +120,6 @@ applet_client(User, NumGet, ToPrint) ->
     end,
     % in
     fun() ->
-      join:send(cell, {User, Cont})
+      join:send(cell, {Location, Cont})
     end
   } end).

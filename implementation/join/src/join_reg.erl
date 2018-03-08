@@ -18,16 +18,16 @@
 % case well.
 % also, it supports waiting for a name to be registered, which is useful to us.
 %
-% one problem with gproc is that a process unregistering itself seems to have
-% no effect unless it dies. this makes it impossible to stay around for a while
+% the problem with gproc is that there is a bug in the function for unregistering
+% (goodbye/0).
+% processes are only unregistered when they die.
+% this makes it impossible to stay around for a while
 % and forward everything to the newly registered process.
 % it's also impossible to just overwrite the registration in the new process.
 % currently, messages in the inbox will be lost when moving (when using gproc),
-% but this could be fixed.
-%
-% unfortunately, gproc is currently not working, so we haveto use the `global`
-% module, which takes hundreds of milliseconds to perform a registration.
+% but this could be fixed in the future.
 
+% since gproc is currently not working, we have to use the `global` module
 %-define(use_gproc, 1).
 
 
