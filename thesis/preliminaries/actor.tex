@@ -151,7 +151,7 @@ Specifically:
 \end{itemize}
 
 The function $f$ has the following properties,
-which we call \emph{name mapping properties}. For all $x, y \in \rho$,
+which we call \emph{valid mapping} properties. For all $x, y \in \rho$,
 \begin{itemize}[nosep]
   \item $f(x) \neq x$
   \item $f(x) = f(y) \notin \{\bot, *\}$ implies $x = y$,
@@ -165,7 +165,7 @@ We define a few functions and relations
 on the temporary name mapping functions.
 Let $f_1: \rho_1 \to \rho_1^*$ and  $f_2: \rho_2 \to \rho_2^*$.
 
-\begin{enumerate}
+\begin{itemize}
   \item
     We define $f_1 \oplus f_2: \rho_1 \cup \rho_2 \to (\rho_1 \cup \rho_2)^*$ as
     \begin{equation*}
@@ -188,7 +188,7 @@ Let $f_1: \rho_1 \to \rho_1^*$ and  $f_2: \rho_2 \to \rho_2^*$.
   \item
     We say $f_1$ and $f_2$ are compatible if
     $f_1 \oplus f_2 = f_2 \oplus f_1 = f$
-    has the \emph{name mapping properties}.
+    has the \emph{valid mapping} properties.
   \item
     Also, for a tuple $\tilde{x}$ we define
     $\ch{\tilde{x}}: \{\tilde{x}\} \to \{\tilde{x}\}^*$
@@ -198,13 +198,13 @@ Let $f_1: \rho_1 \to \rho_1^*$ and  $f_2: \rho_2 \to \rho_2^*$.
     $\ch{\tilde{x}}(x_i) = x_{i+1}$ for $1 \leq i < n$
     and
     $\ch{\tilde{x}}(x_n) = \bot$.
-\end{enumerate}
+\end{itemize}
 
 Intuitively,
 $\ch{x}$ represents a configuration with a single receptionist $x$, and
 $\ch{t,x}$ represents a receptionist $x$ that temporarily assumed the name $t$.
 Note that $\ch{\tilde{x}}$ with $\operatorname{len}(\tilde{x}) > 2$
-cannot have the \emph{name mapping properties}.
+cannot have the \emph{valid mapping} properties.
 
 \begin{minipage}{0.9\textwidth}
   \axiomrule{nil}{}
