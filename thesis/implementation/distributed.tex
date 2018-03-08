@@ -80,14 +80,14 @@ Each node has to initialize its top location in the beginning using
 \subsection{Primitives for Distribution}
 
 We need to add an additional location parameter to many existing functions:
-\begin{enumerate}[nosep]
+\begin{itemize}[nosep]
   \item
     All actors need to be spawned at a specified location.
   \item
     While the current location is implicit in \distjoincalc,
     we choose to pass it around explicitly for now
     to simplify the implementation.
-\end{enumerate}
+\end{itemize}
 
 Additionally, we implement two new constructs:
 \code{def_location} and \code{go}.
