@@ -19,7 +19,7 @@ The delivery of a message can only be delayed
 for a finite but unbounded amount of time.
 
 An actor can perform three basic actions on receiving a message:
-\begin{itemize}
+\begin{itemize}[nosep]
   \item create a finite number of actors with universally fresh names
   \item send a finite number of messages
   \item assume a new behavior
@@ -71,11 +71,12 @@ The set of actor configurations is defined by the following grammar.
 
 The order of precedence among the constructs is the order in which they are
 listed.
-The term $\anullproc$ represents an empty configuration.
-The output term $\amsnd{x}{y}$ represents a configuration with a single message
+The simplest terms are $\anullproc$, representing an empty configuration,
+and output term $\amsnd{x}{y}$, which represents a configuration with a single message
 targeted to $x$ containing a single name $y$. %TODO: call x "subject"?
-We will consider polyadic communication later in this chapter.
-The input term $\arcv{x}{y} . P$ represents a configuration with an actor
+We will consider polyadic communication towards the end of this chapter.
+
+The input term $\arcv{x}{y} . P$ stands for a configuration with an actor
 $x$ whose behavior is $(y) P$.
 The parameter $y$ constitutes the formal parameter list and binds all
 free occurences of $y$ in $P$.
@@ -108,7 +109,7 @@ Not all syntactically well-formed configurations are valid actor configurations.
 For example, the term $\arcv{x}{u} . P \apar \arcv{x}{v} . Q$
 contains two actors with name $x$,
 which violates the uniqueness property.
-Similarly, $\arcv{x}{u} . \arcv{u}{v}$ creates an actor
+Similarly, $\arcv{x}{u} . \arcv{u}{v} . P$ creates an actor
 with a name $u$ that is received in a message,
 violating the freshness property.
 The actor properties can be enforced, however,
@@ -130,6 +131,12 @@ by imposing a type system.
 }
 
 % TODO: definitions like tilde and hat, tuple to set.
+Before presenting the type system, a few notational conventions are in order.
+For a tuple $\tilde{x}$ and $\tilde{y}$,
+we denote the set of names occuring in $\tilde{x}$ by $\{\tilde{x}\}$
+and the result of appending $y$ to $x$ by $y,x$.
+Also, we use $\epsilon$ for the empty tuple
+and assume a variable $\hat{z}$ to be either $\emptyset$ or $\{z\}$.
 
 We assume $\bot, * \notin \mathcal{N}$
 and for $X \subset \mathcal{N}$
@@ -144,88 +151,118 @@ $\judgement{\rho}{f}{P}$,
 where $\rho$ is the receptionist set of P,
 and $f : \rho \rightarrow \rho^*$ is a temporary name mapping function
 that relates actors in $P$ to the temporary names they have currently assumed.
-\begin{itemize}
-  \item $f(x) = \bot$ \dots
-  \item $f(x) = *$ \dots
-  \item $f(x) = y \notin \{\bot, *\}$ \dots
+Specifically:
+\begin{itemize}[nosep]
+  \item $f(x) = \bot$ means that $x$ is a regular actor name,
+  \item $f(x) = y \notin \{\bot, *\}$ means that actor $y$
+    has assumed the temporary name $x$, and
+  \item $f(x) = *$ means $x$ is the temporary name
+    of an actor with a private name (bound by restriction).
 \end{itemize}
 
-Properties:
-\begin{itemize}
-  \item $f(x) \neq x$ \dots
-  \item \dots
+The function $f$ has the following properties,
+which we call \emph{name mapping properties}. For all $x, y \in \rho$,
+\begin{itemize}[nosep]
+  \item $f(x) \neq x$
+  \item $f(x) = f(y) \notin \{\bot, *\}$ implies $x = y$,
+    because an actor cannot assume
+    more than one temporary name at the same time.
+  \item $f^*(f(x)) = \bot$,
+    because temporary names cannot themselves assume temporary names.
 \end{itemize}
 
-% more or less typing work... do after hard tasks
-Define $\oplus$.
+We define a few functions and relations
+on the temporary name mapping functions.
+Let $f_1: \rho_1 \to \rho_1^*$ and  $f_2: \rho_2 \to \rho_2^*$.
 
-Define function restriction.
-
-Define compatibility.
-
-Define $ch{}$.
-
-
-
-% TODO:
-% arrangement of rules?
-% axioms as rules okay?
-\axiomrule{nil}{}
-  {\judgement{}{}{\anullproc}}
-
-\axiomrule{msg}{}
-  {\judgement{}{}{\amsnd{x}{y}}}
-
-\infrule{act}
-  {\begin{varwidth}{6cm}
-    $ \rho - \{x\} = \tilde{z}, y \notin \rho,$ and \\
-    $ f =
+\begin{enumerate}
+  \item
+    We define $f_1 \oplus f_2: \rho_1 \cup \rho_2 \to (\rho_1 \cup \rho_2)^*$ as
+    \begin{equation*}
+      (f_1 \oplus f_2)(x) =
       \begin{cases}
-        \ch{x, \tilde{z}} \text{ if } x \in \rho \\
-        \ch{\epsilon, \tilde{z}} \text{ otherwise }
-      \end{cases} $
-   \end{varwidth}}
-  {\judgement
-    {\rho}
-    {f}
-    {P}}
-  {\judgement
-    {\{x\} \cup \tilde{z}}
-    {\ch{x, \tilde{z}}}
-    {\amrcv{x}{y} . P}}
+        f_1(x) &\text{if $x \in \rho_1$, and $f_1(x) \neq \bot$ or $x \notin \rho_2$}\\
+        f_2(x) &\text{otherwise}
+      \end{cases}
+    \end{equation*}
+    Note that $\oplus$ is associative.
+  \item
+    If $\rho\subset\rho_1$, we define $\restriction{f}{\rho}: \rho\to\rho^*$ as
+    \begin{equation*}
+      (\restriction{f}{\rho})(x) =
+      \begin{cases}
+        *    &\text{if $f(x) \in \rho_1 - \rho$}\\
+        f(x) &\text{otherwise}
+      \end{cases}
+    \end{equation*}
+  \item
+    We say $f_1$ and $f_2$ are compatible if
+    $f_1 \oplus f_2 = f_2 \oplus f_1 = f$
+    has the \emph{name mapping properties}.
+  \item
+    Also, for a tuple $\tilde{x}$ we define
+    $\ch{\tilde{x}}: \{\tilde{x}\} \to \{\tilde{x}\}^*$
+    as
+    $\ch{\epsilon} = \{\}$
+    and if $\operatorname{len}(\tilde{x}) = n$,
+    $\ch{\tilde{x}}(x_i) = x_{i+1}$ for $1 \leq i < n$
+    and
+    $\ch{\tilde{x}}(x_n) = \bot$.
+\end{enumerate}
 
-\infrule{case}{$f_i$ are mutually compatible}
-  {\forall\ 1 \leq i \leq n:
-    \judgement{\rho_i}{f_i}{P_i}}
-  {\judgement
-    {(\cup_i \rho_i)}
-    {(\oplus_i f_i)}
-    {\acse{x}
-      {\aalt{y_1}{P_1}
-      ,\ldots
-      ,\aalt{y_n}{P_n}}}}
-
-\infruleII{comp}{$ \rho_1 \cap \rho_2 = \emptyset $}
-  {\judgement{\rho_1}{f_1}{P_1}}
-  {\judgement{\rho_2}{f_2}{P_2}}
-  {\judgement{\rho_1 \cup \rho_2}{f_1 \oplus f_2}{P_1 \apar P_2}}
-
-\infrule{res}{}
-  {\judgement{\rho}{f}{P}}
-  {\judgement
-    {\rho - \{x\}}
-    {\restrict{f}{\rho - \{x\}}}
-    {\anew{x}{P}}}
-
-\axiomrule{inst}{$\operatorname{len}(\tilde{x}) = 2$ implies $x_1 \neq x_2$}
-  {\judgement
-    {\{\tilde{x}\}}
-    {\ch{\tilde{x}}}
-    {\ains{B}{\tilde{x}}{\tilde{y}}}}
+\begin{minipage}{0.9\textwidth}
+  \axiomrule{nil}{}
+    {\judgement{}{}{\anullproc}}
+  \axiomrule{msg}{}
+    {\judgement{}{}{\amsnd{x}{y}}}
+  \infrule{act}
+    {\begin{varwidth}{6cm}
+      $ \rho - \{x\} = \tilde{z}, y \notin \rho,$ and \\
+      $ f =
+        \begin{cases}
+          \ch{x, \tilde{z}} \text{ if } x \in \rho \\
+          \ch{\epsilon, \tilde{z}} \text{ otherwise }
+        \end{cases} $
+     \end{varwidth}}
+    {\judgement
+      {\rho}
+      {f}
+      {P}}
+    {\judgement
+      {\{x\} \cup \tilde{z}}
+      {\ch{x, \tilde{z}}}
+      {\amrcv{x}{y} . P}}
+  \infrule{case}{$f_i$ are mutually compatible}
+    {\forall\ 1 \leq i \leq n:
+      \judgement{\rho_i}{f_i}{P_i}}
+    {\judgement
+      {(\cup_i \rho_i)}
+      {(\oplus_i f_i)}
+      {\acse{x}
+        {\aalt{y_1}{P_1}
+        ,\ldots
+        ,\aalt{y_n}{P_n}}}}
+  \infruleII{comp}{$ \rho_1 \cap \rho_2 = \emptyset $}
+    {\judgement{\rho_1}{f_1}{P_1}}
+    {\judgement{\rho_2}{f_2}{P_2}}
+    {\judgement{\rho_1 \cup \rho_2}{f_1 \oplus f_2}{P_1 \apar P_2}}
+  \infrule{res}{}
+    {\judgement{\rho}{f}{P}}
+    {\judgement
+      {\rho - \{x\}}
+      {\restrict{f}{\rho - \{x\}}}
+      {\anew{x}{P}}}
+  \axiomrule{inst}{$\operatorname{len}(\tilde{x}) = 2$ implies $x_1 \neq x_2$}
+    {\judgement
+      {\{\tilde{x}\}}
+      {\ch{\tilde{x}}}
+      {\ains{B}{\tilde{x}}{\tilde{y}}}}
+\end{minipage}
 
 \TODO{1cm}{behavior definitions need to be type correct}
 
-\TODO{3cm}{how are actor properties enforced?}
+\TODO{3cm}{explain rules\\
+  how are actor properties enforced?}
 
 
 \subsubsection{Semantics}
