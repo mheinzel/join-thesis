@@ -258,11 +258,31 @@ Let $f_1: \rho_1 \to \rho_1^*$ and  $f_2: \rho_2 \to \rho_2^*$.
       {\ch{\tilde{x}}}
       {\ains{B}{\tilde{x}}{\tilde{y}}}}
 \end{minipage}
+\\
+\\
+\\
+In the \rulename{act} rule,
+if $\hat{z} = \{z\}$, then actor $z$ has assumed temporary name $x$.
+The conditions $y \notin \rho$ and $\rho - \{x\} = \hat{z}$
+together guarantee the freshness property by ensuring that new actors
+are created with fresh names.
+Note that it is possible for $x$ to be a regular name
+and disappear after receiving a message ($x \notin \rho$).
+We interpret this as the actor $x$ having assumed a sink behavior,
+consuming messages without reaction.
+With this interpretation, the persistence property is not violated.
 
-\TODO{1cm}{behavior definitions need to be type correct}
-
-\TODO{3cm}{explain rules\\
-  how are actor properties enforced?}
+The compatibility check in \rulename{case} prevents errors such as
+two actors in different branches assuming the same temporary name
+or the same actor assuming different temporary names in different branches.
+The \rulename{comp} rule is critical for the uniqueness property
+by ensuring that two composed configurations do not contain actors
+with the same name.
+For the \rulename{inst} rule to be sound, for every definition
+$\adef{B}{\tilde{x}}{\tilde{y}}{arcv{x_1}{z} . P}$
+the judgement
+$\judgement{\{\tilde{x}\}}{\ch{x}}{arcv{x_1}{z} . P}$
+must be derivable.
 
 
 \subsubsection{Semantics}
