@@ -71,7 +71,7 @@ The set of actor configurations is defined by the following grammar.
   \altn \ains{B}{\tilde{x}}{\tilde{y}}
 \end{align*}
 
-The order of precedence among the constructs is the order in which they are
+Order of precedence among the constructs is the order in which they are
 listed.
 The simplest terms are $\anullproc$, representing an empty configuration,
 and output term $\amsnd{x}{y}$, which represents a configuration with a single message
@@ -80,12 +80,12 @@ We will consider polyadic communication towards the end of this chapter.
 
 The input term $\arcv{x}{y} . P$ stands for a configuration with an actor
 $x$ whose behavior is $(y) P$.
-The parameter $y$ constitutes the formal parameter list and binds all
+Its parameter $y$ constitutes the formal parameter list and binds all
 free occurences of $y$ in $P$.
 The actor $x$ can receive an arbitrary name $z$
 and substitute it for $y$ to behave like $P \substitution{\subst{z}{y}}$.
 %break?
-The restricted process $\anew{x}{P}$ is the same as $P$,
+A restricted process $\anew{x}{P}$ is the same as $P$,
 except that $x$ is no longer a receptionist of $P$.
 The composition $P_1 \apar P_2$ is a configuration containing
 all the actors and messages in $P_1$ and $P_2$.
@@ -94,8 +94,9 @@ $\acse{x}{\aalt{y_1}{P_1}, \ldots, \aalt{y_n}{P_n}}$
 behaves like $P_i$ if $x = y_i$ for any $i$,
 and like $\anullproc$ otherwise.
 If more than one branch matches, one of them is chosen non-deterministically.
-The term $\ains{B}{\tilde{u}}{\tilde{v}}$ is a behavior instantiation.
-The identifier $B$ must have a single defining equation of the form
+Finally, there are behavor instantiations
+$\ains{B}{\tilde{u}}{\tilde{v}}$.
+Any instantiated identifier $B$ must have a single defining equation of the form
 $\adef{B}{\tilde{u}}{\tilde{v}}{\arcv{x_1}{z} . P}$,
 where $\tilde{x}$ is a tuple of one or two distinct names
 and $x_1$ denotes its first component.
