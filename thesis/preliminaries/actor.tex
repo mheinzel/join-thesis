@@ -104,12 +104,22 @@ exactly the free names in $\arcv{x_1}{z} . P$.
 
 \subsubsection{Type System}
 
-Not all syntactically well-formed configurations are valid actor configurations,
-but we can enforce the actor properties by imposing a type system.
+Not all syntactically well-formed configurations are valid actor configurations.
+For example, the term $\arcv{x}{u} . P \apar \arcv{x}{v} . Q$
+contains two actors with name $x$,
+which violates the uniqueness property.
+Similarly, $\arcv{x}{u} . \arcv{u}{v}$ creates an actor
+with a name $u$ that is received in a message,
+violating the freshness property.
+The actor properties can be enforced, however,
+by imposing a type system.
 
-\TODO{1cm}{why ch() etc.? relaxed persistence}
+\TODO{2cm}{persistence vs polyadic comm}
 
-% verbatim quote
+\TODO{1cm}{why ch() etc.?}
+
+% TODO: definitions like tilde and hat, tuple to set.
+
 We assume $\bot, * \notin \mathcal{N}$
 and for $X \subset \mathcal{N}$
 we define
