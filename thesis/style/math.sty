@@ -1,11 +1,9 @@
-\usepackage{environ}
 \usepackage{xargs}
 \usepackage{ifthen}
 \usepackage{xifthen}
 
 \usepackage{amsmath}
 \usepackage{amssymb}
-\usepackage[amsmath]{ntheorem}
 %\usepackage{eulervm} ?
 \usepackage{stmaryrd}
 \usepackage{nccmath} %? decreases spacing around equations etc.
@@ -19,7 +17,7 @@
 
 \newcommand{\grmr}{\ ::=&\ \ }
 \newcommand{\altn}{\\ \big|&\ \ }
-\newcommand{\alt}{\ \big|\ }
+\newcommand{\altb}{\ \big|\ }
 
 \newcommand{\reduction}{\longrightarrow}
 
@@ -192,13 +190,3 @@
     \TrinaryInfC{$#6$}
   \end{prooftree}
 }
-
-
-% theorems
-\newtheorem{theorem}{Theorem}
-\newtheorem{lemma}{Lemma}
-\theorembodyfont{\upshape}
-\newtheorem*{proof}{Proof}
-\newtheorem{case}{Case}
-
-\newtheorem{example}{Example}
