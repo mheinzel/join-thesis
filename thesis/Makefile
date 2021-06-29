@@ -1,8 +1,9 @@
-TEX= pdflatex -output-directory=tmp
+TEX= pdflatex
+THESISARGS= -output-directory=tmp
+SLIDESARGS= -output-directory=slidestmp
 BIB= bibtex
 
-TEXFILES= thesis.tex \
-		  prelude/titlepage.tex \
+TEXFILES= prelude/titlepage.tex \
 		  prelude/authorship.tex \
 		  abstract/german.tex \
 		  abstract/english.tex \
@@ -24,20 +25,28 @@ STYFILES= style/thesis.sty \
 CODEFILES=implementation/code/*
 
 
-.PHONY: all thesis clean
+.PHONY: all thesis slides clean
 
-all: thesis
+all: thesis slides
 
 thesis: thesis.pdf
 
-thesis.pdf: $(TEXFILES) $(BIBFILES) $(STYFILES) $(CODEFILES)
-	$(TEX) $(TEXFILES)
+thesis.pdf: thesis.tex $(TEXFILES) $(BIBFILES) $(STYFILES) $(CODEFILES)
+	$(TEX) $(THESISARGS) thesis.tex $(TEXFILES)
 	$(BIB) tmp/thesis
-	$(TEX) $(TEXFILES)
-	$(TEX) $(TEXFILES)
+	$(TEX) $(THESISARGS) thesis.tex $(TEXFILES)
+	$(TEX) $(THESISARGS) thesis.tex $(TEXFILES)
 	mv tmp/thesis.pdf .
+
+slides: slides.pdf
+
+slides.pdf: slides.tex $(STYFILES) $(CODEFILES)
+	$(TEX) $(SLIDESARGS) slides.tex
+	$(TEX) $(SLIDESARGS) slides.tex
+	mv slidestmp/slides.pdf .
 
 clean:
 	rm -f tmp/*
+	rm -f slidestmp/*
 	rm -f thesis.pdf
-
+	rm -f slides.pdf

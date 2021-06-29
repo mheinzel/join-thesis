@@ -1,0 +1,393 @@
+\documentclass[]{beamer}
+
+\usepackage[utf8]{inputenc}
+
+\usepackage{style/math}
+\usepackage{style/terms}
+\usepackage{style/listings}
+
+\usetheme{Singapore}
+
+
+\title{Implementing the \DistJoinCalc\\using Actors}
+
+\author{Matthias Heinzel}
+\institute{Technical University Berlin}
+\date{\today}
+
+% ?
+%\AtBeginSection[]
+%{
+  %\begin{frame}
+    %\tableofcontents[currentsection]
+  %\end{frame}
+%}
+
+\begin{document}
+
+  \frame{\titlepage}
+
+  \frame{\tableofcontents}
+
+  \section{\JoinCalc}
+
+    \begin{frame}{Syntax}
+      channel names $ \mathcal{N} = \{ x, y, z, \kappa, \ldots \} $
+      \begin{align*}
+        P, Q
+        \grmr \jsnd{x}{\tilde{v}}
+        \altn \nonumber \jdef{D}{P}
+        \altn P \jpar Q
+        \altn \jnullproc
+        \\ \nonumber
+        \\
+        D, E
+        \grmr \jrct{J}{P}
+        \altn D \jcon E
+        \altn \jnulldef
+        \\ \nonumber
+        \\
+        J, K
+        \grmr \jrcv{x}{\tilde{v}}
+        \altn J \jpat K
+      \end{align*}
+    \end{frame}
+    \note{scopes!\\
+      RCHAM}
+
+    \begin{frame}{Example}
+      \begin{align*}
+      \jdef
+      {\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{\texttt{print($u$,$v$)}}}
+      {\jsnd{x}{\texttt{"a"}}
+        \jpar \jsnd{y}{1}
+        \jpar \jsnd{y}{2}}
+      \end{align*}
+    \end{frame}
+
+    \begin{frame}{Core Join-Calculus}
+      \begin{align*}
+        P, Q
+        \grmr \jsnd{x}{u}
+        \altn P \jpar Q
+        \altn \jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{Q}
+      \end{align*}
+      Every process of \joincalc can be encoded into \corejoincalc.
+    \end{frame}
+
+    \begin{frame}{\DistJoinCalc}
+      location names
+      $ \mathcal{L} = \{ a, b, c, \ldots \} $
+      \begin{align*}
+        D, E
+        \grmr \dots
+        \altn \jloc{a}{D}{P}
+      \end{align*}
+      \begin{align*}
+        P, Q
+        \grmr \dots
+        \altn \jgo{b}{\kappa}
+      \end{align*}
+      Distributed RCHAM:
+      \begin{itemize}
+        \item location tree with RCHAM at each node
+        \item additional rules for handling locations and migration
+      \end{itemize}
+    \end{frame}
+
+  \section{Actor Model}
+
+    \begin{frame}{The Actor Model}
+      \begin{block}{Actor Configuration}
+      \begin{itemize}
+        \item asynchronous messages in transit
+        \item actors identified by unique names,
+        reacting deterministically to received messages:
+        \pause
+        \begin{itemize}
+          \item create new actors
+          \item send messages
+          \item assume a new behavior
+        \end{itemize}
+      \end{itemize}
+      \end{block}
+    \end{frame}
+    \note[itemize]{
+      \item executing concurrently
+      \item finite actors with fresh names
+      \item finite messages to known names
+    }
+
+    \begin{frame}{The Actor Model}
+      \begin{block}{Actor Properties}
+      \begin{itemize}
+        \item uniqueness
+        \item freshness
+        \item persistence
+      \end{itemize}
+      \end{block}
+      \pause
+      \begin{block}{Receptionist Set}
+        names of actors visible to environment
+      \end{block}
+    \end{frame}
+    \note[itemize]{
+      \item can we find a suitable calculus?
+    }
+
+    \begin{frame}{\actorpicalc}
+      idea: actors are identified by channel they receive on.\\
+      channel names
+      $ \mathcal{N} = \{u, v, w, x, y, z, \ldots\} $
+      \begin{align*}
+        P, Q
+        \grmr \anullproc
+        \altn \amrcv{x}{y} . P
+        \altn \amsnd{x}{y}
+        \altn \anew{x}{P}
+        \altn P \apar Q
+        \altn \acse{x}{\aalt{y_1}{P_1}, \dots, \aalt{y_n}{P_n}}
+        \altn \ains{B}{\tilde{x}}{\tilde{y}}
+      \end{align*}
+      with matching behavior definitions
+      $\adef{B}{\tilde{u}}{\tilde{v}}{\arcv{x_1}{z} . P}$
+    \end{frame}
+    \note{
+    }
+
+    \begin{frame}{\actorpicalc}
+      \begin{equation*}
+        \arcv{x}{u} . P \apar \arcv{x}{v} . Q
+        \hspace{2cm}
+        \arcv{x}{u} . \arcv{u}{v} . P
+      \end{equation*}
+      \pause
+      \begin{block}{Type System}
+        tracks receptionist set and temporary names of actors
+        to enforce actor properties
+        %\begin{itemize}
+          %\item uniqueness
+          %\item freshness
+          %\item persistence (relaxed)
+        %\end{itemize}
+      \end{block}
+    \end{frame}
+    \note[itemize]{
+      \item temporary names? persistence relaxed, ...
+      \item short explanations?
+    }
+
+  \section{Encoding}
+
+    \begin{frame}{Simple Cases}
+      \begin{align*}
+        \encMJtoAP{P \jpar Q}
+        &= \encMJtoAP{P} \apar \encMJtoAP{Q} \\
+        \encMJtoAP{\jsnd{x}{y}}
+        &= \asnd{x}{y} \\
+        \encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{Q}}
+        &= \ ? \hspace{4cm}
+      \end{align*}
+    \end{frame}
+
+    \begin{frame}{First Idea}
+      \begin{align*}
+        \encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{Q}}
+        &= \anew{x}{\anew{y}{\parens{\ains{B}{x, y}{\tilde{z}_P} \apar \encMJtoAP{Q}}}}
+        \\
+        \text{with }
+        \adef*{B}{x,y}{\tilde{z}_P}{\arcv{x}{u} . \arcv{y}{v} . \parens{\ains{B}{x, y}{\tilde{z}_P} \apar \encMJtoAP{P}}}
+      \end{align*}
+      ($\tilde{y}_P$ \dots free names of $P$ except $x,y,u,v$)
+      \\[1cm]
+      \pause
+      \center
+      not well-typed!
+    \end{frame}
+
+    \begin{frame}{Forwarding}
+      forward both $x$ and $y$ messages to a common actor (tagged with the receiving channel name)
+      \begin{align*}
+        \adef*{B_{fw}}{x}{a}{\arcv{x}{i} . \parens{\asnd{a}{x,i} \apar \ains{B_{fw}}{x}{a}}}
+        \\\\
+        \encMJtoAP{\ldots}
+        &=    \ains{B_{fw}}{x}{a}
+        \apar \ains{B_{fw}}{y}{a}
+        \apar \ains{B}{a}{\ldots}
+        \apar \ldots
+      \end{align*}
+      \\[1cm]
+      \pause
+      \center
+      we need to store payloads somehow!\\
+      (or accept divergence)
+    \end{frame}
+
+    \begin{frame}{Storing Payloads}
+      we can build lists from actors (similar to Church-encoding)
+      \begin{align*}
+        \adef*{B_{nil}}{s}{}{\arcv{s}{k_n,k_c} . \parens{\asnd{k_n}{} \apar \ains{B_{nil}}{s}{}}}
+        \\
+        \adef*{B_{cons}}{s}{h,t}{\arcv{s}{k_n,k_c} . \parens{\asnd{k_c}{h,t} \apar \ains{B_{cons}}{s}{h,t}}}
+      \end{align*}
+    \end{frame}
+
+    \begin{frame}{Joining Messages}
+      store list of excess payloads $s$
+      and flag $f$ indicating whether stored payloads belong to $x$ or $y$.
+      \pause
+      \begin{align*}
+        \adef*{B_a^P}{a}{x,y,f,s,\tilde{z}_P}{\arcv{a}{c,p} . \anew{k_n}{\anew{k_c}{\anew{k_P}{\anew{k_a}{
+          \\
+          &\hspace{1cm}
+          \begin{aligned}[t]
+            \big(\ &\asnd{s}{k_n,k_c}
+            \\
+            \apar  &\arcv{k_n}{} . \anew{s'}{\parens{\ains{B_{cons}}{s'}{p, s} \apar \asnd{k_a}{c, s'}}}
+            \\
+            \apar  &\arcv{k_c}{h,t} .
+              \begin{aligned}[t]
+                &\acse*{f}{\big(\ 
+                  \\
+                  &\aalt{x}{
+                    \begin{aligned}[t]
+                      \acse*{c}{\big(\ 
+                        &\aalt{x}{\anew*{s'}{
+                          \ains{B_{cons}}{s'}{p,s} \apar \asnd{k_a}{f,s'}
+                        }}\\
+                        &\aalt{y}{
+                          \asnd{k_P}{h,p} \apar \asnd{k_a}{f,t}
+                        }\ 
+                      \big)}
+                    \end{aligned}
+                  }\\
+                  &\aalt{y}{
+                    \begin{aligned}[t]
+                      \acse*{c}{\big(\ 
+                        &\aalt{y}{\anew*{s'}{
+                          \ains{B_{cons}}{s'}{p,s} \apar \asnd{k_a}{f,s'}
+                        }}\\
+                        &\aalt{x}{
+                          \asnd{k_P}{p,h} \apar \asnd{k_a}{f,t}
+                        }\ 
+                      \big)}
+                      \ \big)
+                    \end{aligned}
+                  }\ 
+                }
+              \end{aligned}
+            \\
+            \apar  &\arcv{k_P}{u,v} . \encMJtoAP{P}
+            \\
+            \apar  &\arcv{k_a}{f',s'} . \ains{B_a^P}{a}{x, y, f', s',\tilde{z}_P}
+            \ \big)
+          \end{aligned}
+        }}}}} \\
+      \end{align*}
+    \end{frame}
+
+    \begin{frame}{Everything Together}
+      \begin{align*}
+        \encMJtoAP{P \jpar Q}
+        &= \encMJtoAP{P} \apar \encMJtoAP{Q}
+        \\
+        \encMJtoAP{\jsnd{x}{y}}
+        &= \asnd{x}{y}
+        \\
+        \encMJtoAP{\jdef{\jrct{\jrcv{x}{u} \jpat \jrcv{y}{v}}{P}}{Q}}
+        &= \anew{a}{\anew{x}{\anew{y}{\anew{s}{
+          \begin{aligned}[t]
+            \big(\ &\ains{B_a^P}{a}{x, y, x, s, \tilde{z}_P} \\
+            \apar  &\ains{B_{fw}}{x}{a} \apar \ains{B_{fw}}{y}{a} \\
+            \apar  &\ains{B_{nil}}{s}{} \\
+            \apar  &\encMJtoAP{Q}
+            \ \big)
+          \end{aligned}
+        }}}}
+      \end{align*}
+      \pause
+      \begin{itemize}
+        \item preserves distributability
+        \item well-typed, $\encMJtoAP{J}$ has no recipients (for all Join-terms $J$)
+        \item unfortunately no proof that this is a good encoding
+      \end{itemize}
+    \end{frame}
+
+  \section{Implementation}
+
+    \begin{frame}{Erlang}
+      \begin{itemize}
+        \item actor-based, functional programming language
+        \item light-weight processes
+        \item inter-node communication via PIDs
+        \item these are not flexible enough for us,\\
+          so we create own identifiers and use a process registry
+      \end{itemize}
+    \end{frame}
+
+    \begin{frame}{}
+      \begin{align*}
+        \adef*{B_{fw}}{x}{a}{\arcv{x}{i} . \parens{\asnd{a}{x,i} \apar \ains{B_{fw}}{x}{a}}}
+      \end{align*}
+      \thesislisting{simple/forward}{behavior definition of a forwarder}
+    \end{frame}
+    \note{no parallel operator}
+
+    \begin{frame}{}
+      \thesislisting{simple/def_usage}{creating a join definition}
+    \end{frame}
+    \note{
+      $B_a$: no church, no cont passing, still long
+    }
+
+    \begin{frame}{}
+      \thesislisting{simple/def_encoding}{encoding of a join definition}
+    \end{frame}
+    \note{
+      note $Q$\\
+      demo!
+    }
+
+  \section{Distributed Implementation}
+
+    \begin{frame}{Migrating Actors}
+      \begin{itemize}
+    \item running Erlang processes cannot be migrated\\
+    \item but we can let actors ``wrap themselves up''
+      \end{itemize}
+    \end{frame}
+
+    \begin{frame}{Locations}
+      \begin{itemize}
+    \item locations have sublocations and actors
+    \item actors are spawned at a location
+    \item locations can wrap themselves up, too
+    \item some changes to existing functions
+      \end{itemize}
+    \end{frame}
+
+    \begin{frame}{Primitive: Creating Locations}
+      \begin{align*}
+        \jcoreloc{a}{x}{u}{y}{v}{P}{R}{Q}
+      \end{align*}
+      \thesislisting{distributed/def_location_usage}{using the location definition}
+    \end{frame}
+
+    \begin{frame}{Migration}
+      \begin{align*}
+        \jgo{a}{\kappa}
+      \end{align*}
+      \center
+      wrap current location up, spawn it at $a$.
+    \end{frame}
+
+    \begin{frame}{}
+      Demo
+    \end{frame}
+    \note{and conclusion}
+
+    \begin{frame}{}
+      Questions?
+    \end{frame}
+
+\end{document}
